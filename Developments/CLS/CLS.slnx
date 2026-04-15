@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="cls.client/cls.client.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="CLS.Server/CLS.Server.csproj" />
+</Solution>

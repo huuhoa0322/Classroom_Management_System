@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Personas - CLS Project</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --secondary: #2563eb;
+            --admin-color: #ec4899;
+            /* Pink */
+            --teacher-color: #f59e0b;
+            /* Amber */
+            --parent-color: #10b981;
+            /* Emerald */
+            --bg: #f8fafc;
+            --text-main: #334155;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #64748b;
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .personas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .persona-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border);
+            transition: transform 0.2s;
+        }
+
+        .persona-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .p-header {
+            padding: 2rem;
+            color: white;
+            position: relative;
+        }
+
+        .p-admin {
+            background: linear-gradient(135deg, var(--admin-color), #be185d);
+        }
+
+        .p-teacher {
+            background: linear-gradient(135deg, var(--teacher-color), #b45309);
+        }
+
+        .p-parent {
+            background: linear-gradient(135deg, var(--parent-color), #047857);
+        }
+
+        .avatar-placeholder {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .p-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .p-role {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .p-body {
+            padding: 2rem;
+        }
+
+        .section-title {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748b;
+            font-weight: 700;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-title:first-child {
+            margin-top: 0;
+        }
+
+        ul {
+            padding-left: 1.25rem;
+            margin: 0;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .quote {
+            font-style: italic;
+            color: #475569;
+            background: #f1f5f9;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary);
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .tech-savvy {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .bar {
+            flex-grow: 1;
+            background: #e2e8f0;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .fill {
+            height: 100%;
+        }
+
+        .badge {
+            background: #f1f5f9;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #334155;
+            display: inline-block;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Hồ sơ Người dùng (User Personas) - CLS</h1>
+            <p>Xây dựng dựa trên kết quả phân tích Stakeholder Matrix và Business Goals. Phục vụ định hướng thiết kế
+                UI/UX cho phiên bản MVP 3-Tuần của Hệ thống Quản trị Trung tâm (CMS).</p>
+        </div>
+
+        <div class="personas-grid">
+            <!-- Persona 1 -->
+            <div class="persona-card">
+                <div class="p-header p-admin">
+                    <div class="avatar-placeholder">👩🏻‍💼</div>
+                    <h2 class="p-name">Chị Lan</h2>
+                    <p class="p-role">Key User | Giáo vụ Trung tâm (Academic Admin)</p>
+                </div>
+                <div class="p-body">
+                    <div class="quote">"Cả ngày xoay xở với các file Excel xếp lịch, đến cuối tháng lại hoa mắt dò công
+                        nợ thủ công, sợ nhất là quên nhắc phụ huynh đóng tiền."</div>
+
+                    <h3 class="section-title">Hành vi & Tích cách</h3>
+                    <p style="font-size: 0.95rem;">Làm việc đa nhiệm, cẩn thận nhưng hay bị rối. Đang phải dùng Zalo cá
+                        nhân để nhắn tin nhắc nợ và thông báo lịch học. Thường xuyên bị stress vì những công việc nhập
+                        liệu lặp đi lặp lại.</p>
+
+                    <h3 class="section-title">Nỗi Đau (Pain-Points)</h3>
+                    <ul>
+                        <li>Mất tới 15 giờ/tuần chỉ để nhập liệu và đối soát dữ liệu giữa các file Excel rời rạc.</li>
+                        <li>Xếp lịch thủ công hay dẫn đến lỗi trùng giáo viên, trùng phòng học.</li>
+                        <li>Bỏ lỡ "thời điểm vàng" để tư vấn tái tục (renewal) do Excel không tự động nhắc hạn hết gói
+                            học phí.</li>
+                    </ul>
+
+                    <h3 class="section-title">Mục tiêu từ Hệ thống CLS</h3>
+                    <ul>
+                        <li><span class="badge">Cảnh báo</span> Có hệ thống tự động báo động trước 2 tuần khi học viên
+                            cạn gói học phí.</li>
+                        <li><span class="badge">Hợp nhất</span> Chuyển đổi 100% dữ liệu vòng đời học viên từ Excel lên
+                            giao diện Web hợp nhất.</li>
+                    </ul>
+
+                    <div class="tech-savvy">
+                        <span style="font-size: 0.85rem; font-weight: 600; width: 100px;">Tech Savvy:</span>
+                        <div class="bar">
+                            <div class="fill" style="width: 60%; background: var(--admin-color);"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Persona 2 -->
+            <div class="persona-card">
+                <div class="p-header p-teacher">
+                    <div class="avatar-placeholder">👨‍🏫</div>
+                    <h2 class="p-name">Thầy Tuấn</h2>
+                    <p class="p-role">End User | Giáo viên (Teacher)</p>
+                </div>
+                <div class="p-body">
+                    <div class="quote">"Nhiệm vụ của tôi là dạy học cho tốt. Đừng bắt tôi phải mở laptop điền những form
+                        hành chính phức tạp sau giờ làm."</div>
+
+                    <h3 class="section-title">Hành vi & Tích cách</h3>
+                    <p style="font-size: 0.95rem;">Năng động, thường xuyên di chuyển giữa các lớp học/cơ sở. Thích dùng
+                        điện thoại di động để kiểm tra lịch làm việc. Ưu tiên tập trung vào chất lượng học thuật, ghét
+                        sự rườm rà.</p>
+
+                    <h3 class="section-title">Nỗi Đau (Pain-Points)</h3>
+                    <ul>
+                        <li>Thi thoảng đến lớp lại phát hiện bị trùng phòng hoặc trùng lịch với giáo viên khác do Giáo
+                            vụ xếp nhầm.</li>
+                        <li>Bị ép KPI nộp nhận xét học viên (SLA 12h) nhưng công cụ ghi nhận hiện tại quá bất tiện và
+                            mất thời gian.</li>
+                    </ul>
+
+                    <h3 class="section-title">Mục tiêu từ Hệ thống CLS</h3>
+                    <ul>
+                        <li><span class="badge">Chính xác</span> Thuật toán hệ thống đảm bảo 0% xung đột lịch biểu (No
+                            double-booking).</li>
+                        <li><span class="badge">Mobile-first</span> Form nhập nhận xét (Feedback) cực kỳ đơn giản, thao
+                            tác nhanh trên điện thoại ngay sau khi kết thúc lớp.</li>
+                    </ul>
+
+                    <div class="tech-savvy">
+                        <span style="font-size: 0.85rem; font-weight: 600; width: 100px;">Tech Savvy:</span>
+                        <div class="bar">
+                            <div class="fill" style="width: 85%; background: var(--teacher-color);"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Persona 3 -->
+            <div class="persona-card">
+                <div class="p-header p-parent">
+                    <div class="avatar-placeholder">👨‍👩‍👧</div>
+                    <h2 class="p-name">Anh Hoàng</h2>
+                    <p class="p-role">External User | Phụ huynh (Financial Sponsor)</p>
+                </div>
+                <div class="p-body">
+                    <div class="quote">"Tôi sẵn sàng đóng học phí cao nhưng trung tâm phải chuyên nghiệp. Tôi lười cài
+                        App lạ lắm, có gì cứ báo thẳng vào Email cho tôi."</div>
+
+                    <h3 class="section-title">Hành vi & Tích cách</h3>
+                    <p style="font-size: 0.95rem;">Làm quản lý cấp trung, bận rộn. Quan tâm đến tiến độ học tập của con
+                        nhưng không có thói quen chủ động hỏi thăm. Không thích bị làm phiền bởi các tin nhắn thủ công
+                        qua số điện thoại/Zalo cá nhân.</p>
+
+                    <h3 class="section-title">Nỗi Đau (Pain-Points)</h3>
+                    <ul>
+                        <li>Thiếu minh bạch: Không biết con mình có đi học đầy đủ hay không, tiến bộ ra sao.</li>
+                        <li>Cảm thấy thiếu tính doanh nghiệp khi trung tâm nhắc nợ học phí qua tin nhắn Zalo cá nhân của
+                            nhân viên.</li>
+                    </ul>
+
+                    <h3 class="section-title">Mục tiêu từ Hệ thống CLS</h3>
+                    <ul>
+                        <li><span class="badge">Zero-touch</span> Tự động hóa 100% việc nhận thông báo điểm danh, lịch
+                            học sửa đổi trực tiếp qua Email (Parent Portal).</li>
+                        <li><span class="badge">Chuyên nghiệp</span> Nhận được các báo cáo và nhắc nhở đóng phí theo
+                            format chuẩn mực của tổ chức thay vì tin nhắn cá nhân.</li>
+                    </ul>
+
+                    <div class="tech-savvy">
+                        <span style="font-size: 0.85rem; font-weight: 600; width: 100px;">Tech Savvy:</span>
+                        <div class="bar">
+                            <div class="fill" style="width: 70%; background: var(--parent-color);"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>

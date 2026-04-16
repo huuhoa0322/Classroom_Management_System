@@ -1,0 +1,43 @@
+<mxfile host="Electron" modified="2024-05-15" type="device">
+  <diagram name="Teacher Use Cases" id="uc_tch">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- System Boundary -->
+        <mxCell id="sys_box" value="Classroom Management System (CLS)" style="shape=umlFrame;whiteSpace=wrap;html=1;width=250;height=30;boundedLbl=1;verticalAlign=top;align=left;spacingLeft=5;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="250" y="80" width="400" height="400" as="geometry" />
+        </mxCell>
+
+        <!-- Actor -->
+        <mxCell id="actor" value="&lt;b&gt;Teacher&lt;/b&gt;" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="80" y="240" width="50" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Use Cases -->
+        <mxCell id="uc1" value="View Personalized&lt;br&gt;Timetables" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="350" y="150" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc2" value="Record Class&lt;br&gt;Attendance" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="350" y="260" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc3" value="Submit Academic&lt;br&gt;Performance Feedback" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="350" y="370" width="160" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Associations -->
+        <mxCell id="edge1" style="endArrow=none;html=1;exitX=1;exitY=0.33;entryX=0;entryY=0.5;" edge="1" parent="1" source="actor" target="uc1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge2" style="endArrow=none;html=1;exitX=1;exitY=0.33;entryX=0;entryY=0.5;" edge="1" parent="1" source="actor" target="uc2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge3" style="endArrow=none;html=1;exitX=1;exitY=0.33;entryX=0;entryY=0.5;" edge="1" parent="1" source="actor" target="uc3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

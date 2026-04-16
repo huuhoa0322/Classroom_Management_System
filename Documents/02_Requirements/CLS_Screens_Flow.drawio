@@ -1,0 +1,100 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36" version="29.6.6">
+  <diagram name="Screens Flow" id="screens_flow">
+    <mxGraphModel dx="1110" dy="1476" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="UkO2EW1TJ10PdvHbGYwh-1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="610" width="1130" x="30" y="-10" as="geometry" />
+        </mxCell>
+        <mxCell id="login" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=1;" value="User Login" vertex="1">
+          <mxGeometry height="50" width="150" x="50" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="admin_dash" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=1;" value="Admin Dashboard" vertex="1">
+          <mxGeometry height="50" width="150" x="280" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="teacher_dash" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=1;" value="Teacher Dashboard" vertex="1">
+          <mxGeometry height="50" width="150" x="280" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="stud_list" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=1;" value="Students List" vertex="1">
+          <mxGeometry height="50" width="150" x="520" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="sched_list" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=1;" value="Core Schedules" vertex="1">
+          <mxGeometry height="50" width="150" x="520" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="alert_list" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=1;" value="Renewal Alerts" vertex="1">
+          <mxGeometry height="50" width="150" x="520" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="stud_det" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=1;" value="Student Profile&#xa;Details" vertex="1">
+          <mxGeometry height="50" width="150" x="760" as="geometry" />
+        </mxCell>
+        <mxCell id="rec_pay" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=1;" value="Record Offline&#xa;Tuition Payment" vertex="1">
+          <mxGeometry height="50" width="150" x="760" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="admin_sess" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=1;" value="Session Details" vertex="1">
+          <mxGeometry height="50" width="150" x="760" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="res_conf" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=1;" value="Resolve Conflicts&#xa;Screen" vertex="1">
+          <mxGeometry height="50" width="150" x="980" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="alert_det" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=1;" value="Alert Action&#xa;Screen" vertex="1">
+          <mxGeometry height="50" width="150" x="760" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="t_time" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=1;" value="My Timetable" vertex="1">
+          <mxGeometry height="50" width="150" x="520" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="t_sess" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=1;" value="Class Session&#xa;Details" vertex="1">
+          <mxGeometry height="50" width="150" x="760" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="t_att" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=1;" value="Record Attendance" vertex="1">
+          <mxGeometry height="50" width="150" x="1000" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="t_fb" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=1;" value="Submit Academic&#xa;Feedback" vertex="1">
+          <mxGeometry height="50" width="150" x="1000" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="login" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="admin_dash">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="login" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="teacher_dash">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="admin_dash" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="stud_list">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="admin_dash" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="sched_list">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="admin_dash" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="alert_list">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="stud_list" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="stud_det">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="stud_list" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="rec_pay">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="sched_list" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="admin_sess">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="admin_sess" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="res_conf">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="alert_list" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="alert_det">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="1" source="teacher_dash" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="t_time">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="1" source="t_time" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="t_sess">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e13" edge="1" parent="1" source="t_sess" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="t_att">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e14" edge="1" parent="1" source="t_sess" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="t_fb">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

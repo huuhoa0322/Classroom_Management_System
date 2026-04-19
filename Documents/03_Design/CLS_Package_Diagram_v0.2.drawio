@@ -1,0 +1,100 @@
+<mxfile host="Electron" agent="Mozilla/5.0">
+  <diagram name="Package Diagram" id="pkg_diagram_cls_v2">
+    <mxGraphModel dx="2886" dy="2212" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="4jm1p-97tQa3UvrTqjgX-1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="1240" width="1500" x="-260" y="-60" as="geometry" />
+        </mxCell>
+        <mxCell id="system_boundary" parent="1" style="swimlane;whiteSpace=wrap;html=1;startSize=30;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;fontStyle=1;fontSize=14;" value="Classroom Management System (CLS) - Modular Monolith Layered Architecture" vertex="1">
+          <mxGeometry height="1040" width="1190" x="-60" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="frontend_pkg" parent="system_boundary" style="shape=folder;fontStyle=1;tabWidth=220;tabHeight=28;tabPosition=left;html=1;whiteSpace=wrap;verticalAlign=top;align=left;spacingTop=4;spacingLeft=10;" value="Presentation (Frontend SPA)" vertex="1">
+          <mxGeometry height="260" width="320" x="40" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="frontend_components" parent="frontend_pkg" style="shape=folder;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;verticalAlign=top;align=left;tabWidth=100;tabHeight=22;" value="&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;Components&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- UI Elements&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- Layouts&lt;/span&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="130" x="20" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="frontend_pages" parent="frontend_pkg" style="shape=folder;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;verticalAlign=top;align=left;tabWidth=70;tabHeight=22;" value="&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;Pages&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- Routing&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- Views&lt;/span&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="130" x="170" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="frontend_services" parent="frontend_pkg" style="shape=folder;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;verticalAlign=top;align=left;tabWidth=80;tabHeight=22;" value="&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;Services&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- Axios Hooks&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- API Calls&lt;/span&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="130" x="20" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="frontend_store" parent="frontend_pkg" style="shape=folder;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;verticalAlign=top;align=left;tabWidth=70;tabHeight=22;" value="&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;State&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- Zustand&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- Stores&lt;/span&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="130" x="170" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="api_pkg" parent="system_boundary" style="shape=folder;fontStyle=1;tabWidth=190;tabHeight=28;tabPosition=left;html=1;whiteSpace=wrap;verticalAlign=top;align=left;spacingTop=4;spacingLeft=10;" value="Presentation (CLS.API)" vertex="1">
+          <mxGeometry height="260" width="620" x="540" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="api_controllers" parent="api_pkg" style="shape=folder;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;verticalAlign=top;align=left;tabWidth=90;tabHeight=22;" value="&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;Controllers&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:14px;margin-left:8px;&quot;&gt;- AuthController&lt;br&gt;- StudentController&lt;br&gt;- CourseController&lt;br&gt;- ScheduleController&lt;br&gt;- AttendanceController&lt;br&gt;- TuitionController&lt;br&gt;- FeedbackController&lt;/div&gt;" vertex="1">
+          <mxGeometry height="180" width="180" x="20" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="api_middlewares" parent="api_pkg" style="shape=folder;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;verticalAlign=top;align=left;tabWidth=100;tabHeight=22;" value="&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;Middlewares&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:14px;margin-left:8px;&quot;&gt;- JwtMiddleware&lt;br&gt;- ExceptionMiddleware&lt;br&gt;- CorsMiddleware&lt;/div&gt;" vertex="1">
+          <mxGeometry height="100" width="160" x="220" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="api_config" parent="api_pkg" style="html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;align=center;verticalAlign=middle;" value="&lt;b&gt;Program.cs&lt;/b&gt;&lt;br&gt;appsettings.json" vertex="1">
+          <mxGeometry height="60" width="200" x="400" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="api_di" parent="api_pkg" style="html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;align=center;verticalAlign=middle;" value="&lt;b&gt;Dependency Injection&lt;/b&gt;" vertex="1">
+          <mxGeometry height="40" width="200" x="400" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="bll_pkg" parent="system_boundary" style="shape=folder;fontStyle=1;tabWidth=240;tabHeight=28;tabPosition=left;html=1;whiteSpace=wrap;verticalAlign=top;align=left;spacingTop=4;spacingLeft=10;" value="Business Logic Layer (CLS.BLL)" vertex="1">
+          <mxGeometry height="360" width="780" x="380" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="bll_auth" parent="bll_pkg" style="shape=folder;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;verticalAlign=top;align=left;tabWidth=60;tabHeight=22;" value="&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;Auth&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:14px;margin-left:8px;&quot;&gt;- Services&lt;br&gt;- DTOs&lt;br&gt;- Interfaces&lt;br&gt;- Validators&lt;/div&gt;" vertex="1">
+          <mxGeometry height="120" width="130" x="20" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="bll_student" parent="bll_pkg" style="shape=folder;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;verticalAlign=top;align=left;tabWidth=70;tabHeight=22;" value="&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;Student&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:14px;margin-left:8px;&quot;&gt;- Services&lt;br&gt;- DTOs&lt;br&gt;- Interfaces&lt;br&gt;- Validators&lt;/div&gt;" vertex="1">
+          <mxGeometry height="120" width="130" x="170" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="bll_course" parent="bll_pkg" style="shape=folder;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;verticalAlign=top;align=left;tabWidth=70;tabHeight=22;" value="&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;Course&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:14px;margin-left:8px;&quot;&gt;- Services&lt;br&gt;- DTOs&lt;br&gt;- Interfaces&lt;br&gt;- Validators&lt;/div&gt;" vertex="1">
+          <mxGeometry height="120" width="130" x="320" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="bll_scheduling" parent="bll_pkg" style="shape=folder;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;verticalAlign=top;align=left;tabWidth=90;tabHeight=22;" value="&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;Scheduling&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:14px;margin-left:8px;&quot;&gt;- Services&lt;br&gt;- DTOs&lt;br&gt;- Interfaces&lt;br&gt;- Validators&lt;/div&gt;" vertex="1">
+          <mxGeometry height="120" width="130" x="470" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="bll_attendance" parent="bll_pkg" style="shape=folder;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;verticalAlign=top;align=left;tabWidth=90;tabHeight=22;" value="&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;Attendance&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:14px;margin-left:8px;&quot;&gt;- Services&lt;br&gt;- DTOs&lt;br&gt;- Interfaces&lt;br&gt;- Validators&lt;/div&gt;" vertex="1">
+          <mxGeometry height="120" width="130" x="620" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="bll_tuition" parent="bll_pkg" style="shape=folder;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;verticalAlign=top;align=left;tabWidth=70;tabHeight=22;" value="&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;Tuition&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:14px;margin-left:8px;&quot;&gt;- Services&lt;br&gt;- DTOs&lt;br&gt;- Interfaces&lt;br&gt;- Validators&lt;/div&gt;" vertex="1">
+          <mxGeometry height="130" width="130" x="20" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="bll_notification" parent="bll_pkg" style="shape=folder;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;verticalAlign=top;align=left;tabWidth=90;tabHeight=22;" value="&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;Notification&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:14px;margin-left:8px;&quot;&gt;- Services&lt;br&gt;- DTOs&lt;br&gt;- Interfaces&lt;/div&gt;" vertex="1">
+          <mxGeometry height="130" width="130" x="170" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="bll_feedback" parent="bll_pkg" style="shape=folder;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;verticalAlign=top;align=left;tabWidth=80;tabHeight=22;" value="&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;Feedback&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:14px;margin-left:8px;&quot;&gt;- Services&lt;br&gt;- DTOs&lt;br&gt;- Interfaces&lt;/div&gt;" vertex="1">
+          <mxGeometry height="130" width="130" x="320" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="bll_common" parent="bll_pkg" style="shape=folder;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;verticalAlign=top;align=left;tabWidth=80;tabHeight=22;" value="&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;Common&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- ApiResponse, PagedResult&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- Enums, Constants&lt;/span&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="280" x="470" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="bll_mappings" parent="bll_pkg" style="shape=folder;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;verticalAlign=top;align=left;tabWidth=90;tabHeight=22;" value="&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;Mappings&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- AutoMapper Profiles&lt;/span&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="70" width="280" x="470" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="dal_pkg" parent="system_boundary" style="shape=folder;fontStyle=1;tabWidth=280;tabHeight=28;tabPosition=left;html=1;whiteSpace=wrap;verticalAlign=top;align=left;spacingTop=4;spacingLeft=10;" value="Data Access Layer (CLS.DAL) &amp; Domain" vertex="1">
+          <mxGeometry height="230" width="780" x="380" y="790" as="geometry" />
+        </mxCell>
+        <mxCell id="dal_entities" parent="dal_pkg" style="shape=folder;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;verticalAlign=top;align=left;tabWidth=70;tabHeight=22;" value="&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;Entities&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:14px;margin-left:8px;&quot;&gt;- Student, Course, Class&lt;br&gt;- Schedule, Attendance&lt;br&gt;- Tuition, User, Role&lt;br&gt;- AuditableEntity&lt;/div&gt;" vertex="1">
+          <mxGeometry height="150" width="220" x="20" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dal_repositories" parent="dal_pkg" style="shape=folder;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;verticalAlign=top;align=left;tabWidth=100;tabHeight=22;" value="&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;Repositories&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:14px;margin-left:8px;&quot;&gt;- GenericRepository&lt;br&gt;- StudentRepository&lt;br&gt;- ScheduleRepository&lt;br&gt;- ...&lt;/div&gt;" vertex="1">
+          <mxGeometry height="150" width="220" x="260" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dal_data" parent="dal_pkg" style="shape=folder;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;verticalAlign=top;align=left;tabWidth=60;tabHeight=22;" value="&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:4px;margin-left:6px;&quot;&gt;&lt;b&gt;Data&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;margin-top:14px;margin-left:8px;&quot;&gt;- AppDbContext&lt;br&gt;- EntityTypeConfigurations&lt;br&gt;- Migrations&lt;br&gt;- SeedData&lt;/div&gt;" vertex="1">
+          <mxGeometry height="150" width="260" x="500" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dep1" edge="1" parent="system_boundary" source="frontend_pkg" style="endArrow=open;endSize=12;dashed=1;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontStyle=0;edgeStyle=orthogonalEdgeStyle;rounded=1;" target="api_pkg" value="&amp;lt;&amp;lt;import&amp;gt;&amp;gt;&#xa;(REST API / Axios)">
+          <mxGeometry relative="1" width="160" as="geometry" />
+        </mxCell>
+        <mxCell id="dep2" edge="1" parent="system_boundary" source="api_pkg" style="endArrow=open;endSize=12;dashed=1;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.6;entryY=0;entryDx=0;entryDy=0;fontStyle=0;edgeStyle=orthogonalEdgeStyle;rounded=1;" target="bll_pkg" value="&amp;lt;&amp;lt;import&amp;gt;&amp;gt;&#xa;(Project Reference)">
+          <mxGeometry relative="1" width="160" as="geometry" />
+        </mxCell>
+        <mxCell id="dep3" edge="1" parent="system_boundary" source="bll_pkg" style="endArrow=open;endSize=12;dashed=1;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontStyle=0;edgeStyle=orthogonalEdgeStyle;rounded=1;" target="dal_pkg" value="&amp;lt;&amp;lt;import&amp;gt;&amp;gt;&#xa;(Project Reference)">
+          <mxGeometry relative="1" width="160" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

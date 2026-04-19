@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Student Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #f3f4f6; font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="p-8">
+    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6">
+        <div class="border-b pb-4 mb-6">
+            <h1 class="text-2xl font-bold text-gray-800">Add New Student Profile</h1>
+            <p class="text-sm text-gray-500 mt-1">System UI mapping to UC-01: Onboard New Student Profiles.</p>
+        </div>
+        
+        <form class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Full Name *</label>
+                    <input type="text" class="mt-1 block w-full rounded-md border-gray-300 border p-2 shadow-sm" placeholder="e.g. Nguyen Van A" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Date of Birth</label>
+                    <input type="date" class="mt-1 block w-full rounded-md border-gray-300 border p-2 shadow-sm" />
+                </div>
+            </div>
+            <h3 class="text-lg font-medium text-gray-900 border-b pb-2 mt-4">Parent/Guardian Details</h3>
+            <div class="grid grid-cols-2 gap-4 mt-2">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Parent Name *</label>
+                    <input type="text" class="mt-1 block w-full rounded-md border-gray-300 border p-2 shadow-sm" placeholder="Parent Name" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Parent Email *</label>
+                    <input type="email" class="mt-1 block w-full rounded-md border-gray-300 border p-2 shadow-sm" placeholder="parent@email.com" />
+                </div>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Parent Phone *</label>
+                <input type="text" class="mt-1 block w-full rounded-md border-gray-300 border p-2 shadow-sm" placeholder="+84 ..." />
+            </div>
+            <div class="pt-4 flex justify-end space-x-3">
+                <button type="button" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md shadow-sm">Cancel</button>
+                <button type="button" class="bg-blue-600 text-white px-4 py-2 rounded-md shadow-sm">Save Profile</button>
+            </div>
+        </form>
+        
+    </div>
+</body>
+</html>

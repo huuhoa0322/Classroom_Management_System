@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Record Class Attendance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #f3f4f6; font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="p-8">
+    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6">
+        <div class="border-b pb-4 mb-6">
+            <h1 class="text-2xl font-bold text-gray-800">Record Class Attendance</h1>
+            <p class="text-sm text-gray-500 mt-1">System UI mapping to UC-08: Record Class Attendance.</p>
+        </div>
+        
+        <div class="bg-gray-50 p-4 rounded-md border mb-4">
+            <h3 class="font-bold">IELTS-2026-A1</h3>
+            <p class="text-sm text-gray-600">Session Time: 18:00 - 20:00 | Date: Oct 12, 2026</p>
+        </div>
+        <form>
+            <div class="overflow-hidden border border-gray-200 rounded-md">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase">Student</th>
+                            <th class="px-4 py-3 text-center text-xs font-medium text-gray-600 uppercase">Status</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase">Note</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Nguyen Van A</td>
+                            <td class="px-4 py-4 whitespace-nowrap text-center space-x-2">
+                                <label><input type="radio" name="att_1" checked class="text-green-600"> <span class="text-xs">Present</span></label>
+                                <label><input type="radio" name="att_1" class="text-red-600"> <span class="text-xs">Absent</span></label>
+                                <label><input type="radio" name="att_1" class="text-yellow-600"> <span class="text-xs">Late</span></label>
+                            </td>
+                            <td class="px-4 py-2"><input type="text" class="w-full border rounded p-1 text-sm bg-gray-50" placeholder="Optional Note"/></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Tran Thi B</td>
+                            <td class="px-4 py-4 whitespace-nowrap text-center space-x-2">
+                                <label><input type="radio" name="att_2" class="text-green-600"> <span class="text-xs">Present</span></label>
+                                <label><input type="radio" name="att_2" checked class="text-red-600"> <span class="text-xs">Absent</span></label>
+                                <label><input type="radio" name="att_2" class="text-yellow-600"> <span class="text-xs">Late</span></label>
+                            </td>
+                            <td class="px-4 py-2"><input type="text" value="Sick leave" class="w-full border rounded p-1 text-sm bg-gray-50" /></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="pt-4 flex justify-end">
+                <button type="button" class="bg-indigo-600 text-white px-6 py-2 rounded-md shadow-sm font-medium">Submit Attendance (Triggers Email)</button>
+            </div>
+        </form>
+        
+    </div>
+</body>
+</html>

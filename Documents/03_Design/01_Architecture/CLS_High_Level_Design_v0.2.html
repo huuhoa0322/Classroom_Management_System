@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>High Level Design - CLS Project</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --accent: #2563eb;
+            --accent-light: #dbeafe;
+            --accent-dark: #1e40af;
+            --text-main: #334155;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --bg-page: #f1f5f9;
+            --bg-card: #f8fafc;
+            --success: #166534;
+            --success-bg: #dcfce7;
+            --warning: #92400e;
+            --warning-bg: #fef3c7;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            line-height: 1.7;
+            padding: 2rem;
+            margin: 0;
+        }
+
+        .doc-container {
+            max-width: 1060px;
+            margin: 0 auto;
+            background: white;
+            padding: 3.5rem 4rem;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            border-top: 6px solid var(--accent);
+            border-radius: 8px;
+        }
+
+        /* ── Header ── */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .title {
+            font-size: 2.2rem;
+            margin: 0 0 0.3rem 0;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .sub-title { color: var(--text-secondary); font-size: 1.1rem; }
+
+        .vi-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            display: block;
+            margin-top: 0.2rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: #e0e7ff;
+            color: #4338ca;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            border: 1px solid #c7d2fe;
+            white-space: nowrap;
+        }
+
+        /* ── Headings ── */
+        h2 {
+            color: var(--primary);
+            font-size: 1.5rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0.5rem;
+            margin-top: 3rem;
+        }
+
+        h2 .section-num {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        h3 {
+            color: #1d4ed8;
+            font-size: 1.15rem;
+            margin-top: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* ── Meta Table ── */
+        .meta-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+            font-size: 0.92rem;
+        }
+
+        .meta-table td {
+            padding: 0.6rem 1rem;
+            border: 1px solid var(--border);
+        }
+
+        .meta-table td:first-child {
+            width: 200px;
+            background: var(--bg-card);
+            color: #1d4ed8;
+            font-weight: 600;
+        }
+
+        /* ── Tables ── */
+        table.data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.92rem;
+        }
+
+        table.data-table th,
+        table.data-table td {
+            padding: 0.7rem 1rem;
+            border: 1px solid var(--border);
+            text-align: left;
+            vertical-align: top;
+        }
+
+        table.data-table th {
+            background: var(--bg-card);
+            color: var(--accent-dark);
+            font-weight: 600;
+        }
+
+        table.data-table td code {
+            background: #f1f5f9;
+            padding: 0.15rem 0.4rem;
+            border-radius: 3px;
+            font-size: 0.88rem;
+            color: #4338ca;
+        }
+
+        /* ── Diagram Container ── */
+        .diagram-container {
+            background: #fafbfc;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-top: 1.5rem;
+            overflow-x: auto;
+        }
+
+        .diagram-container svg {
+            display: block;
+            margin: 0 auto;
+        }
+
+        .diagram-caption {
+            text-align: center;
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+            font-style: italic;
+        }
+
+        /* ── Info Box ── */
+        .info-box {
+            background: #eff6ff;
+            border-left: 4px solid var(--accent);
+            padding: 1.2rem 1.5rem;
+            margin-top: 1.5rem;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .info-box p { margin: 0; color: var(--accent-dark); line-height: 1.6; font-size: 0.92rem; }
+
+        .note-box {
+            background: #fefce8;
+            border-left: 4px solid #ca8a04;
+            padding: 1rem 1.5rem;
+            margin-top: 1.5rem;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .note-box p { margin: 0; color: #854d0e; line-height: 1.6; font-size: 0.92rem; }
+
+        /* ── Tag Badges ── */
+        .tech-tag {
+            display: inline-block;
+            background: #ecfdf5;
+            color: var(--success);
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            border: 1px solid #bbf7d0;
+            margin: 0.1rem;
+        }
+
+        .layer-tag {
+            display: inline-block;
+            background: var(--accent-light);
+            color: #1d4ed8;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            border: 1px solid #93c5fd;
+        }
+
+        /* ── Principle List ── */
+        .principle-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .principle-item {
+            border: 1px solid var(--border);
+            padding: 1rem 1.2rem;
+            border-radius: 6px;
+            background: var(--bg-card);
+        }
+
+        .principle-item strong {
+            color: #1d4ed8;
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        .principle-item span {
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }
+
+        /* ── Footer ── */
+        .doc-footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* ── Print ── */
+        @media print {
+            body { background: #fff; padding: 0; }
+            .doc-container { box-shadow: none; border-top: none; padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="doc-container">
+
+        <!-- ════════════════════════════════════════════════════════════════
+             HEADER
+             ════════════════════════════════════════════════════════════════ -->
+        <div class="header">
+            <div>
+                <h1 class="title">High Level Design (HLD)</h1>
+                <span class="vi-text" style="font-size: 1.1rem;">Thiết kế Kiến trúc Tổng thể Hệ thống</span>
+                <div class="sub-title" style="margin-top: 0.7rem;">CLS — Classroom Management System (English &amp; Kids Coding Center)</div>
+            </div>
+            <div>
+                <span class="status-badge">Version: v0.2</span>
+            </div>
+        </div>
+
+        <!-- Document Metadata -->
+        <table class="meta-table">
+            <tbody>
+                <tr><td>Project</td><td>CLS — Classroom Management System (Hệ thống Quản trị Trung tâm)</td></tr>
+                <tr><td>Architecture Pattern</td><td>Modular Monolith — Layered Architecture (Ref: ADR-001)</td></tr>
+                <tr><td>Tech Stack</td><td>ASP.NET Core 10 (C# / .NET) + React 19 (TypeScript / Vite / Tailwind CSS)</td></tr>
+                <tr><td>Author</td><td>Solution Architect / Tech Lead</td></tr>
+                <tr><td>Date</td><td>2026-04-17</td></tr>
+                <tr><td>Status</td><td>Draft — Pending Review</td></tr>
+            </tbody>
+        </table>
+
+        <!-- ════════════════════════════════════════════════════════════════
+             1.1 SOFTWARE ARCHITECTURE
+             ════════════════════════════════════════════════════════════════ -->
+        <h2><span class="section-num">1.1</span> Software Architecture</h2>
+        <span class="vi-text" style="font-size: 0.95rem;">Kiến trúc Phần mềm Tổng thể — Modular Monolith (Layered Architecture)</span>
+
+        <p>The CLS system adopts a <strong>Modular Monolith</strong> architecture following the <strong>Layered Architecture</strong> pattern (3-project solution) as defined in <strong>ADR-001</strong>. This combination provides domain-centric design with clear bounded contexts while maintaining a single deployable unit — optimized for the project's 3-week MVP timeline, lean operational scale (1 branch, 50-150 learners), and a small development team (1 Tech Lead + 2-4 developers).</p>
+
+        <!-- Architecture Principles -->
+        <h3>1.1.1 Architecture Principles</h3>
+        <div class="principle-grid">
+            <div class="principle-item">
+                <strong>Layered Architecture (3-Tier)</strong>
+                <span>Strict top-down dependency flow: API depends on Business Logic Layer (BLL), and BLL depends on Data Access Layer (DAL). Entities are defined within the DAL to facilitate direct ORM mappings.</span>
+            </div>
+            <div class="principle-item">
+                <strong>Module Encapsulation</strong>
+                <span>Each business domain (Student, Scheduling, Tuition, etc.) is encapsulated with its own Services, DTOs, Entities, and Validators. Inter-module calls only through service interfaces.</span>
+            </div>
+            <div class="principle-item">
+                <strong>Shared Kernel</strong>
+                <span>Common base entities (<code>AuditableEntity</code>), enums, and shared value objects are centralized in <code>Domain.Common</code> to ensure consistency across all modules.</span>
+            </div>
+            <div class="principle-item">
+                <strong>Stateless Communication</strong>
+                <span>REST API with JWT Bearer authentication via ASP.NET Identity. No server-side sessions. Horizontal scalability without sticky sessions.</span>
+            </div>
+        </div>
+
+        <!-- Layered Architecture Diagram -->
+        <h3>1.1.2 Layered Architecture Overview</h3>
+        <p>The system is organized into <strong>3 logical backend layers</strong> following Layered Architecture principles, with dependencies strictly flowing downward from Presentation to Data Access:</p>
+
+        <div class="diagram-container">
+            <svg viewBox="0 0 920 810" xmlns="http://www.w3.org/2000/svg" width="920" height="810" font-family="Inter, sans-serif">
+                <defs>
+                    <filter id="shadow" x="-2%" y="-2%" width="104%" height="108%">
+                        <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.08"/>
+                    </filter>
+                    <marker id="arrowDown" markerWidth="10" markerHeight="7" refX="5" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+                    </marker>
+                </defs>
+
+                <rect x="0" y="0" width="920" height="810" fill="#fafbfc" rx="8"/>
+
+                <!-- ── LAYER 1: CLIENT / PRESENTATION ── -->
+                <rect x="30" y="20" width="860" height="115" rx="8" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.5" filter="url(#shadow)"/>
+                <text x="50" y="46" font-size="11" fill="#1e40af" font-weight="700" letter-spacing="1.5">PRESENTATION LAYER</text>
+                <text x="50" y="65" font-size="10" fill="#3b82f6">Client-Side Single Page Application (React + Tailwind CSS)</text>
+
+                <rect x="60" y="78" width="130" height="42" rx="5" fill="#fff" stroke="#93c5fd" stroke-width="1"/>
+                <text x="125" y="96" font-size="11" font-weight="600" fill="#1e3a8a" text-anchor="middle">React 19</text>
+                <text x="125" y="110" font-size="9" fill="#64748b" text-anchor="middle">TypeScript + Vite 8</text>
+
+                <rect x="200" y="78" width="130" height="42" rx="5" fill="#fff" stroke="#93c5fd" stroke-width="1"/>
+                <text x="265" y="96" font-size="11" font-weight="600" fill="#1e3a8a" text-anchor="middle">Tailwind CSS 4</text>
+                <text x="265" y="110" font-size="9" fill="#64748b" text-anchor="middle">Shadcn/ui</text>
+
+                <rect x="340" y="78" width="130" height="42" rx="5" fill="#fff" stroke="#93c5fd" stroke-width="1"/>
+                <text x="405" y="96" font-size="11" font-weight="600" fill="#1e3a8a" text-anchor="middle">TanStack Query</text>
+                <text x="405" y="110" font-size="9" fill="#64748b" text-anchor="middle">Server State Mgmt</text>
+
+                <rect x="480" y="78" width="130" height="42" rx="5" fill="#fff" stroke="#93c5fd" stroke-width="1"/>
+                <text x="545" y="96" font-size="11" font-weight="600" fill="#1e3a8a" text-anchor="middle">Zustand</text>
+                <text x="545" y="110" font-size="9" fill="#64748b" text-anchor="middle">Client State Mgmt</text>
+
+                <rect x="620" y="78" width="130" height="42" rx="5" fill="#fff" stroke="#93c5fd" stroke-width="1"/>
+                <text x="685" y="96" font-size="11" font-weight="600" fill="#1e3a8a" text-anchor="middle">Axios + JWT</text>
+                <text x="685" y="110" font-size="9" fill="#64748b" text-anchor="middle">HTTP Client</text>
+
+                <rect x="760" y="78" width="110" height="42" rx="5" fill="#fff" stroke="#93c5fd" stroke-width="1"/>
+                <text x="815" y="96" font-size="11" font-weight="600" fill="#1e3a8a" text-anchor="middle">React Router 7</text>
+                <text x="815" y="110" font-size="9" fill="#64748b" text-anchor="middle">SPA Routing</text>
+
+                <!-- Arrow: Presentation → API -->
+                <line x1="460" y1="135" x2="460" y2="168" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrowDown)"/>
+                <text x="475" y="157" font-size="9" fill="#64748b">HTTPS / REST</text>
+
+                <!-- ── LAYER 2: API LAYER (CLS.API) ── -->
+                <rect x="30" y="170" width="860" height="100" rx="8" fill="#fef3c7" stroke="#fbbf24" stroke-width="1.5" filter="url(#shadow)"/>
+                <text x="50" y="196" font-size="11" fill="#92400e" font-weight="700" letter-spacing="1.5">PRESENTATION LAYER (API) — CLS.API</text>
+                <text x="50" y="215" font-size="10" fill="#b45309">HTTP Entry Point, Middleware Pipeline, Controllers &amp; Swagger</text>
+
+                <rect x="60" y="228" width="160" height="32" rx="5" fill="#fff" stroke="#fbbf24" stroke-width="1"/>
+                <text x="140" y="249" font-size="11" font-weight="600" fill="#78350f" text-anchor="middle">ASP.NET Core 10</text>
+
+                <rect x="235" y="228" width="160" height="32" rx="5" fill="#fff" stroke="#fbbf24" stroke-width="1"/>
+                <text x="315" y="249" font-size="11" font-weight="600" fill="#78350f" text-anchor="middle">JWT Bearer Auth</text>
+
+                <rect x="410" y="228" width="160" height="32" rx="5" fill="#fff" stroke="#fbbf24" stroke-width="1"/>
+                <text x="490" y="249" font-size="11" font-weight="600" fill="#78350f" text-anchor="middle">ASP.NET Identity</text>
+
+                <rect x="585" y="228" width="140" height="32" rx="5" fill="#fff" stroke="#fbbf24" stroke-width="1"/>
+                <text x="655" y="249" font-size="11" font-weight="600" fill="#78350f" text-anchor="middle">Swagger UI</text>
+
+                <rect x="740" y="228" width="130" height="32" rx="5" fill="#fff" stroke="#fbbf24" stroke-width="1"/>
+                <text x="805" y="249" font-size="11" font-weight="600" fill="#78350f" text-anchor="middle">CORS + Filters</text>
+
+                <!-- Arrow: API → Application -->
+                <line x1="460" y1="270" x2="460" y2="303" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrowDown)"/>
+                <text x="475" y="291" font-size="9" fill="#64748b">Dependency Injection</text>
+
+                <!-- ── LAYER 3: APPLICATION LAYER (CLS.BLL) ── -->
+                <rect x="30" y="305" width="860" height="270" rx="8" fill="#dcfce7" stroke="#86efac" stroke-width="1.5" filter="url(#shadow)"/>
+                <text x="50" y="331" font-size="11" fill="#166534" font-weight="700" letter-spacing="1.5">BUSINESS LOGIC LAYER — CLS.BLL (Business Logic + Bounded Contexts)</text>
+                <text x="50" y="350" font-size="10" fill="#16a34a">Services, DTOs, Validators (FluentValidation), AutoMapper Profiles — Module-per-Domain</text>
+
+                <!-- Module boxes -->
+                <!-- Auth -->
+                <rect x="50" y="365" width="125" height="80" rx="6" fill="#fff" stroke="#86efac" stroke-width="1.5"/>
+                <rect x="50" y="365" width="125" height="22" rx="6" fill="#166534"/>
+                <rect x="50" y="381" width="125" height="6" fill="#166534"/>
+                <text x="112" y="381" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">Auth</text>
+                <text x="112" y="404" font-size="9" fill="#334155" text-anchor="middle">Login / Register</text>
+                <text x="112" y="418" font-size="9" fill="#334155" text-anchor="middle">Role Assignment</text>
+                <text x="112" y="432" font-size="9" fill="#334155" text-anchor="middle">JWT Token Mgmt</text>
+
+                <!-- Student -->
+                <rect x="185" y="365" width="125" height="80" rx="6" fill="#fff" stroke="#86efac" stroke-width="1.5"/>
+                <rect x="185" y="365" width="125" height="22" rx="6" fill="#166534"/>
+                <rect x="185" y="381" width="125" height="6" fill="#166534"/>
+                <text x="247" y="381" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">Student</text>
+                <text x="247" y="404" font-size="9" fill="#334155" text-anchor="middle">Enrollment Lifecycle</text>
+                <text x="247" y="418" font-size="9" fill="#334155" text-anchor="middle">Parent Contact</text>
+                <text x="247" y="432" font-size="9" fill="#334155" text-anchor="middle">Package Tracking</text>
+
+                <!-- Course -->
+                <rect x="320" y="365" width="125" height="80" rx="6" fill="#fff" stroke="#86efac" stroke-width="1.5"/>
+                <rect x="320" y="365" width="125" height="22" rx="6" fill="#166534"/>
+                <rect x="320" y="381" width="125" height="6" fill="#166534"/>
+                <text x="382" y="381" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">Course</text>
+                <text x="382" y="404" font-size="9" fill="#334155" text-anchor="middle">Class Management</text>
+                <text x="382" y="418" font-size="9" fill="#334155" text-anchor="middle">Curriculum Config</text>
+                <text x="382" y="432" font-size="9" fill="#334155" text-anchor="middle">Level / Program</text>
+
+                <!-- Scheduling -->
+                <rect x="455" y="365" width="125" height="80" rx="6" fill="#fff" stroke="#86efac" stroke-width="1.5"/>
+                <rect x="455" y="365" width="125" height="22" rx="6" fill="#166534"/>
+                <rect x="455" y="381" width="125" height="6" fill="#166534"/>
+                <text x="517" y="381" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">Scheduling</text>
+                <text x="517" y="404" font-size="9" fill="#334155" text-anchor="middle">Timetable Mgmt</text>
+                <text x="517" y="418" font-size="9" fill="#334155" text-anchor="middle">Room Assignment</text>
+                <text x="517" y="432" font-size="9" fill="#334155" text-anchor="middle">Conflict Detection</text>
+
+                <!-- Attendance -->
+                <rect x="590" y="365" width="125" height="80" rx="6" fill="#fff" stroke="#86efac" stroke-width="1.5"/>
+                <rect x="590" y="365" width="125" height="22" rx="6" fill="#166534"/>
+                <rect x="590" y="381" width="125" height="6" fill="#166534"/>
+                <text x="652" y="381" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">Attendance</text>
+                <text x="652" y="404" font-size="9" fill="#334155" text-anchor="middle">Daily Check-in</text>
+                <text x="652" y="418" font-size="9" fill="#334155" text-anchor="middle">Session Counter</text>
+                <text x="652" y="432" font-size="9" fill="#334155" text-anchor="middle">Auto Email Trigger</text>
+
+                <!-- Tuition -->
+                <rect x="725" y="365" width="125" height="80" rx="6" fill="#fff" stroke="#86efac" stroke-width="1.5"/>
+                <rect x="725" y="365" width="125" height="22" rx="6" fill="#166534"/>
+                <rect x="725" y="381" width="125" height="6" fill="#166534"/>
+                <text x="787" y="381" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">Tuition</text>
+                <text x="787" y="404" font-size="9" fill="#334155" text-anchor="middle">Fee Collection</text>
+                <text x="787" y="418" font-size="9" fill="#334155" text-anchor="middle">Payment Status</text>
+                <text x="787" y="432" font-size="9" fill="#334155" text-anchor="middle">Renewal Alert (2w)</text>
+
+                <!-- Row 2 modules -->
+                <!-- Notification -->
+                <rect x="50" y="458" width="185" height="55" rx="6" fill="#fff" stroke="#86efac" stroke-width="1.5"/>
+                <rect x="50" y="458" width="185" height="22" rx="6" fill="#166534"/>
+                <rect x="50" y="474" width="185" height="6" fill="#166534"/>
+                <text x="142" y="474" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">Notification</text>
+                <text x="142" y="497" font-size="9" fill="#334155" text-anchor="middle">Email Dispatch Engine (SendGrid / SES)</text>
+
+                <!-- Feedback -->
+                <rect x="245" y="458" width="185" height="55" rx="6" fill="#fff" stroke="#86efac" stroke-width="1.5"/>
+                <rect x="245" y="458" width="185" height="22" rx="6" fill="#166534"/>
+                <rect x="245" y="474" width="185" height="6" fill="#166534"/>
+                <text x="337" y="474" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">Feedback</text>
+                <text x="337" y="497" font-size="9" fill="#334155" text-anchor="middle">Teacher Evaluation (12h SLA) + QA Report</text>
+
+                <!-- Shared Kernel -->
+                <rect x="50" y="528" width="800" height="35" rx="6" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5" stroke-dasharray="6,3"/>
+                <text x="450" y="548" font-size="10" font-weight="700" fill="#1e40af" text-anchor="middle">SHARED: Common DTOs (ApiResponse, PagedResult)  |  FluentValidation Rules  |  AutoMapper Profiles  |  Service Interfaces</text>
+
+                <!-- Inter-module dependency lines -->
+                <line x1="175" y1="415" x2="185" y2="415" stroke="#86efac" stroke-width="1" stroke-dasharray="4,2"/>
+                <line x1="310" y1="415" x2="320" y2="415" stroke="#86efac" stroke-width="1" stroke-dasharray="4,2"/>
+                <line x1="445" y1="415" x2="455" y2="415" stroke="#86efac" stroke-width="1" stroke-dasharray="4,2"/>
+                <line x1="580" y1="415" x2="590" y2="415" stroke="#86efac" stroke-width="1" stroke-dasharray="4,2"/>
+                <line x1="715" y1="415" x2="725" y2="415" stroke="#86efac" stroke-width="1" stroke-dasharray="4,2"/>
+
+                <!-- Arrow: Application → Domain -->
+                <line x1="460" y1="575" x2="460" y2="608" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrowDown)"/>
+                <text x="475" y="596" font-size="9" fill="#64748b">Depends on Domain</text>
+
+                <!-- ── LAYER 4: DOMAIN LAYER (CLS.DAL) ── -->
+                <rect x="30" y="610" width="860" height="80" rx="8" fill="#e0e7ff" stroke="#a5b4fc" stroke-width="1.5" filter="url(#shadow)"/>
+                <text x="50" y="636" font-size="11" fill="#3730a3" font-weight="700" letter-spacing="1.5"> (Zero Dependencies)</text>
+                <text x="50" y="655" font-size="10" fill="#4f46e5">Core Entities, Enums, Value Objects — No Framework References</text>
+
+                <rect x="60" y="666" width="130" height="18" rx="4" fill="#fff" stroke="#a5b4fc" stroke-width="1"/>
+                <text x="125" y="679" font-size="9" font-weight="600" fill="#3730a3" text-anchor="middle">Student.cs</text>
+
+                <rect x="200" y="666" width="130" height="18" rx="4" fill="#fff" stroke="#a5b4fc" stroke-width="1"/>
+                <text x="265" y="679" font-size="9" font-weight="600" fill="#3730a3" text-anchor="middle">Course.cs / Class.cs</text>
+
+                <rect x="340" y="666" width="130" height="18" rx="4" fill="#fff" stroke="#a5b4fc" stroke-width="1"/>
+                <text x="405" y="679" font-size="9" font-weight="600" fill="#3730a3" text-anchor="middle">Schedule.cs</text>
+
+                <rect x="480" y="666" width="130" height="18" rx="4" fill="#fff" stroke="#a5b4fc" stroke-width="1"/>
+                <text x="545" y="679" font-size="9" font-weight="600" fill="#3730a3" text-anchor="middle">Attendance.cs</text>
+
+                <rect x="620" y="666" width="130" height="18" rx="4" fill="#fff" stroke="#a5b4fc" stroke-width="1"/>
+                <text x="685" y="679" font-size="9" font-weight="600" fill="#3730a3" text-anchor="middle">Tuition.cs</text>
+
+                <rect x="760" y="666" width="110" height="18" rx="4" fill="#fff" stroke="#a5b4fc" stroke-width="1"/>
+                <text x="815" y="679" font-size="9" font-weight="600" fill="#3730a3" text-anchor="middle">AuditableEntity</text>
+
+                <!-- Arrow: Domain referenced by Infrastructure -->
+                <line x1="460" y1="690" x2="460" y2="718" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrowDown)"/>
+                <text x="475" y="710" font-size="9" fill="#64748b">Implemented by Infra</text>
+
+                <!-- ── LAYER 4: DATA ACCESS LAYER (CLS.DAL) ── -->
+                <rect x="30" y="720" width="860" height="50" rx="8" fill="#fce7f3" stroke="#f9a8d4" stroke-width="1.5" filter="url(#shadow)"/>
+                <text x="50" y="744" font-size="11" fill="#9d174d" font-weight="700" letter-spacing="1.5">DATA ACCESS LAYER — CLS.DAL</text>
+                <text x="440" y="744" font-size="10" fill="#be185d">EF Core 10 (AppDbContext)  |  PostgreSQL 15+  |  EF Migrations  |  Email Service (SendGrid)  |  Repositories</text>
+
+                <!-- ── EXTERNAL: DevOps ── -->
+                <rect x="30" y="783" width="860" height="22" rx="4" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="5,3"/>
+                <text x="460" y="798" font-size="9" fill="#64748b" text-anchor="middle" font-weight="600">INFRASTRUCTURE: Docker Compose  |  GitHub Actions (CI/CD)  |  DigitalOcean / Railway  |  Vercel (FE)  |  ASP.NET Health Checks  |  $20–40/month</text>
+            </svg>
+            <p class="diagram-caption">Figure 1.1 — CLS Layered Architecture Overview (Modular Monolith — Layered Architecture — ADR-001)</p>
+        </div>
+
+        <!-- Layer Responsibility Table -->
+        <h3>1.1.3 Layer Responsibilities</h3>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th width="18%">Layer / Project</th>
+                    <th width="27%">Technology</th>
+                    <th width="55%">Responsibility</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="layer-tag">Presentation</span></td>
+                    <td>React 19, Vite 8, Tailwind CSS 4, Shadcn/ui, TanStack Query, TypeScript</td>
+                    <td>Renders the user interface (SPA). Handles client-side routing, form validation (React Hook Form + Zod), server state management (TanStack Query), and API communication via Axios with JWT token interceptors. Deployed separately on Vercel/Netlify.</td>
+                </tr>
+                <tr>
+                    <td><span class="layer-tag">CLS.API</span></td>
+                    <td>ASP.NET Core 10, Kestrel, ASP.NET Identity, JWT Bearer</td>
+                    <td>HTTP entry point. Hosts REST Controllers, JWT authentication middleware, CORS policy, action filters, global exception handling, and Swagger UI documentation. Orchestrates DI registration for all layers.</td>
+                </tr>
+                <tr>
+                    <td><span class="layer-tag">CLS.BLL</span></td>
+                    <td>C# Services, FluentValidation, AutoMapper</td>
+                    <td>Contains all domain-specific business logic organized into bounded contexts. Each module owns its Services, DTOs, Validators, and Mapping Profiles. Directly references CLS.DAL.</td>
+                </tr>
+                
+                <tr>
+                    <td><span class="layer-tag">CLS.DAL</span></td>
+                    <td>EF Core 10, PostgreSQL 15+, Npgsql.EntityFrameworkCore.PostgreSQL Provider, SendGrid</td>
+                    <td>Implements data access (AppDbContext, Repositories), EF Core Migrations, entity type configurations (Fluent API), and external service integrations (email dispatch via SendGrid/Amazon SES).</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Module Mapping -->
+        <h3>1.1.4 Module-to-Business Goal Mapping</h3>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th width="15%">Module</th>
+                    <th width="18%">Core Entity</th>
+                    <th width="25%">Business Goal (Ref)</th>
+                    <th width="42%">Key Functions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>Auth</code></td>
+                    <td>User / Role</td>
+                    <td>Cross-cutting (Security)</td>
+                    <td>User registration/login, JWT issuance, role-based access (ADMIN, TEACHER, PARENT), ASP.NET Identity integration</td>
+                </tr>
+                <tr>
+                    <td><code>Student</code></td>
+                    <td>Student, Enrollment</td>
+                    <td>G3: Optimize Admin Efficiency</td>
+                    <td>Learner profile management, enrollment lifecycle (Onboarding → Active → Expired), parent contact info, package/session tracking, bulk import from Excel</td>
+                </tr>
+                <tr>
+                    <td><code>Course</code></td>
+                    <td>Course, Class</td>
+                    <td>G4: Centralized Resource Allocation</td>
+                    <td>Course/program configuration, class creation, teacher-to-class assignment, level/curriculum management</td>
+                </tr>
+                <tr>
+                    <td><code>Scheduling</code></td>
+                    <td>Schedule, Room</td>
+                    <td>G4: 0 Scheduling Conflicts</td>
+                    <td>Timetable management, room/teacher assignment, algorithmic double-booking validation, conflict detection and prevention</td>
+                </tr>
+                <tr>
+                    <td><code>Attendance</code></td>
+                    <td>Attendance</td>
+                    <td>G1: Digitize Parent Engagement</td>
+                    <td>Daily check-in/check-out tracking, session counter per student, auto-trigger email notification to parents on attendance events</td>
+                </tr>
+                <tr>
+                    <td><code>Tuition</code></td>
+                    <td>Tuition, Payment</td>
+                    <td>G2: Reduce Churn by 20%</td>
+                    <td>Fee collection tracking, payment status (Paid/Unpaid/Overdue), automated renewal alert 2 weeks before package depletion, cash flow dashboard</td>
+                </tr>
+                <tr>
+                    <td><code>Notification</code></td>
+                    <td>NotificationLog</td>
+                    <td>G1: 100% Automated Communication</td>
+                    <td>Email dispatch engine (SendGrid/SES), template management, delivery tracking, batch notifications for schedule changes</td>
+                </tr>
+                <tr>
+                    <td><code>Feedback</code></td>
+                    <td>Feedback</td>
+                    <td>G4: Academic QA</td>
+                    <td>Teacher post-session academic evaluation form, 12-hour SLA compliance tracking, parent-visible progress reports</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="info-box">
+            <p><strong>Architecture Decision Reference:</strong> This design strictly adheres to <strong>ADR-001: Adopt Modular Monolith with ASP.NET + React Tech Stack</strong>. The modular monolith was selected over Microservices (rejected — over-engineered for 50-500 CCU) and Serverless (rejected — cold-start latency and vendor lock-in). Layered Architecture's 4-project structure (API → BLL → DAL) enforces dependency inversion by design, with module boundaries reinforced via <code>internal</code> access modifiers in .NET project references.</p>
+        </div>
+
+
+        <!-- ════════════════════════════════════════════════════════════════
+             1.2 PACKAGE DIAGRAM
+             ════════════════════════════════════════════════════════════════ -->
+        <h2><span class="section-num">1.2</span> Package Diagram</h2>
+        <span class="vi-text" style="font-size: 0.95rem;">Biểu đồ Gói (Package Diagram) — Cấu trúc Mã nguồn Backend (Layered Architecture) &amp; Frontend</span>
+
+        <p>The package diagram illustrates the physical code organization for both the <strong>backend</strong> (.NET Solution with 4 projects) and <strong>frontend</strong> (React/TypeScript) codebases. The backend follows Layered Architecture with strict project-level dependency rules enforced by the .NET build system.</p>
+
+        <!-- Backend Package Diagram -->
+        <h3>1.2.1 Backend Package Structure (.NET Solution)</h3>
+        <p>Solution: <code>CLS.sln</code></p>
+
+        <div class="diagram-container">
+            <svg viewBox="0 0 920 870" xmlns="http://www.w3.org/2000/svg" width="920" height="870" font-family="Inter, sans-serif">
+                <defs>
+                    <filter id="shadow2" x="-2%" y="-2%" width="104%" height="108%">
+                        <feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.06"/>
+                    </filter>
+                    <marker id="depArrow2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                        <polygon points="0 0, 8 3, 0 6" fill="#94a3b8"/>
+                    </marker>
+                </defs>
+
+                <rect x="0" y="0" width="920" height="870" fill="#fafbfc" rx="8"/>
+
+                <!-- Root Solution -->
+                <rect x="20" y="15" width="880" height="840" rx="8" fill="none" stroke="#cbd5e1" stroke-width="2"/>
+                <rect x="20" y="15" width="120" height="26" rx="8" fill="#0f172a"/>
+                <rect x="20" y="33" width="120" height="8" fill="#0f172a"/>
+                <text x="35" y="34" font-size="12" font-weight="700" fill="#fff">CLS.sln</text>
+
+                <!-- ═══ PROJECT 1: CLS.API ═══ -->
+                <rect x="45" y="55" width="840" height="100" rx="6" fill="#fef3c7" stroke="#fbbf24" stroke-width="1.5" filter="url(#shadow2)"/>
+                <rect x="45" y="55" width="120" height="22" rx="6" fill="#b45309"/>
+                <rect x="45" y="71" width="120" height="6" fill="#b45309"/>
+                <text x="58" y="72" font-size="10.5" font-weight="700" fill="#fff">CLS.API</text>
+
+                <text x="65" y="96" font-size="9.5" fill="#78350f" font-weight="600">Controllers/</text>
+                <text x="65" y="112" font-size="8.5" fill="#92400e">AuthController, StudentController, CourseController, ScheduleController</text>
+                <text x="65" y="126" font-size="8.5" fill="#92400e">AttendanceController, TuitionController, FeedbackController</text>
+
+                <text x="500" y="96" font-size="9.5" fill="#78350f" font-weight="600">Middlewares/</text>
+                <text x="500" y="112" font-size="8.5" fill="#92400e">JwtMiddleware, ExceptionMiddleware, CorsMiddleware</text>
+
+                <text x="500" y="130" font-size="9.5" fill="#78350f" font-weight="600">Program.cs</text>
+                <text x="600" y="130" font-size="8.5" fill="#92400e">DI registration + Pipeline config</text>
+
+                <text x="740" y="96" font-size="9.5" fill="#78350f" font-weight="600">appsettings.json</text>
+                <text x="740" y="112" font-size="8.5" fill="#92400e">DB, JWT, Email config</text>
+
+                <!-- Arrow: API → Application -->
+                <line x1="460" y1="155" x2="460" y2="178" stroke="#64748b" stroke-width="1.5" marker-end="url(#depArrow2)"/>
+                <text x="475" y="172" font-size="8" fill="#64748b">references</text>
+
+                <!-- ═══ PROJECT 2: CLS.BLL ═══ -->
+                <rect x="45" y="180" width="840" height="345" rx="6" fill="#dcfce7" stroke="#86efac" stroke-width="1.5" filter="url(#shadow2)"/>
+                <rect x="45" y="180" width="160" height="22" rx="6" fill="#166534"/>
+                <rect x="45" y="196" width="160" height="6" fill="#166534"/>
+                <text x="58" y="197" font-size="10.5" font-weight="700" fill="#fff">CLS.BLL</text>
+
+                <!-- Service modules in Application -->
+                <!-- Auth -->
+                <rect x="65" y="215" width="122" height="145" rx="5" fill="#fff" stroke="#bbf7d0" stroke-width="1" filter="url(#shadow2)"/>
+                <rect x="65" y="215" width="122" height="18" rx="5" fill="#15803d"/>
+                <rect x="65" y="228" width="122" height="5" fill="#15803d"/>
+                <text x="126" y="229" font-size="9" font-weight="700" fill="#fff" text-anchor="middle">Auth</text>
+                <text x="78" y="250" font-size="8" fill="#166534" font-weight="600">Services/</text>
+                <text x="78" y="264" font-size="8" fill="#334155">AuthService.cs</text>
+                <text x="78" y="278" font-size="8" fill="#166534" font-weight="600">DTOs/</text>
+                <text x="78" y="292" font-size="8" fill="#334155">LoginReq, RegisterReq</text>
+                <text x="78" y="306" font-size="8" fill="#166534" font-weight="600">Interfaces/</text>
+                <text x="78" y="320" font-size="8" fill="#334155">IAuthService</text>
+                <text x="78" y="334" font-size="8" fill="#166534" font-weight="600">Validators/</text>
+                <text x="78" y="348" font-size="8" fill="#334155">LoginValidator</text>
+
+                <!-- Student -->
+                <rect x="197" y="215" width="122" height="145" rx="5" fill="#fff" stroke="#bbf7d0" stroke-width="1" filter="url(#shadow2)"/>
+                <rect x="197" y="215" width="122" height="18" rx="5" fill="#15803d"/>
+                <rect x="197" y="228" width="122" height="5" fill="#15803d"/>
+                <text x="258" y="229" font-size="9" font-weight="700" fill="#fff" text-anchor="middle">Student</text>
+                <text x="210" y="250" font-size="8" fill="#166534" font-weight="600">Services/</text>
+                <text x="210" y="264" font-size="8" fill="#334155">StudentService.cs</text>
+                <text x="210" y="278" font-size="8" fill="#166534" font-weight="600">DTOs/</text>
+                <text x="210" y="292" font-size="8" fill="#334155">StudentReq, StudentRes</text>
+                <text x="210" y="306" font-size="8" fill="#166534" font-weight="600">Interfaces/</text>
+                <text x="210" y="320" font-size="8" fill="#334155">IStudentService</text>
+                <text x="210" y="334" font-size="8" fill="#166534" font-weight="600">Validators/</text>
+                <text x="210" y="348" font-size="8" fill="#334155">EnrollmentValidator</text>
+
+                <!-- Scheduling -->
+                <rect x="329" y="215" width="122" height="145" rx="5" fill="#fff" stroke="#bbf7d0" stroke-width="1" filter="url(#shadow2)"/>
+                <rect x="329" y="215" width="122" height="18" rx="5" fill="#15803d"/>
+                <rect x="329" y="228" width="122" height="5" fill="#15803d"/>
+                <text x="390" y="229" font-size="9" font-weight="700" fill="#fff" text-anchor="middle">Scheduling</text>
+                <text x="342" y="250" font-size="8" fill="#166534" font-weight="600">Services/</text>
+                <text x="342" y="264" font-size="8" fill="#334155">ScheduleService.cs</text>
+                <text x="342" y="278" font-size="8" fill="#166534" font-weight="600">DTOs/</text>
+                <text x="342" y="292" font-size="8" fill="#334155">ScheduleReq, TimeSlotRes</text>
+                <text x="342" y="306" font-size="8" fill="#166534" font-weight="600">Interfaces/</text>
+                <text x="342" y="320" font-size="8" fill="#334155">IScheduleService</text>
+                <text x="342" y="334" font-size="8" fill="#166534" font-weight="600">Validators/</text>
+                <text x="342" y="348" font-size="8" fill="#334155">ConflictValidator</text>
+
+                <!-- Attendance -->
+                <rect x="461" y="215" width="122" height="145" rx="5" fill="#fff" stroke="#bbf7d0" stroke-width="1" filter="url(#shadow2)"/>
+                <rect x="461" y="215" width="122" height="18" rx="5" fill="#15803d"/>
+                <rect x="461" y="228" width="122" height="5" fill="#15803d"/>
+                <text x="522" y="229" font-size="9" font-weight="700" fill="#fff" text-anchor="middle">Attendance</text>
+                <text x="474" y="250" font-size="8" fill="#166534" font-weight="600">Services/</text>
+                <text x="474" y="264" font-size="8" fill="#334155">AttendanceService.cs</text>
+                <text x="474" y="278" font-size="8" fill="#166534" font-weight="600">DTOs/</text>
+                <text x="474" y="292" font-size="8" fill="#334155">CheckInReq, AttendRes</text>
+                <text x="474" y="306" font-size="8" fill="#166534" font-weight="600">Interfaces/</text>
+                <text x="474" y="320" font-size="8" fill="#334155">IAttendanceService</text>
+                <text x="474" y="334" font-size="8" fill="#166534" font-weight="600">Validators/</text>
+                <text x="474" y="348" font-size="8" fill="#334155">CheckInValidator</text>
+
+                <!-- Tuition -->
+                <rect x="593" y="215" width="122" height="145" rx="5" fill="#fff" stroke="#bbf7d0" stroke-width="1" filter="url(#shadow2)"/>
+                <rect x="593" y="215" width="122" height="18" rx="5" fill="#15803d"/>
+                <rect x="593" y="228" width="122" height="5" fill="#15803d"/>
+                <text x="654" y="229" font-size="9" font-weight="700" fill="#fff" text-anchor="middle">Tuition</text>
+                <text x="606" y="250" font-size="8" fill="#166534" font-weight="600">Services/</text>
+                <text x="606" y="264" font-size="8" fill="#334155">TuitionService.cs</text>
+                <text x="606" y="278" font-size="8" fill="#166534" font-weight="600">DTOs/</text>
+                <text x="606" y="292" font-size="8" fill="#334155">PaymentReq, TuitionRes</text>
+                <text x="606" y="306" font-size="8" fill="#166534" font-weight="600">Interfaces/</text>
+                <text x="606" y="320" font-size="8" fill="#334155">ITuitionService</text>
+                <text x="606" y="334" font-size="8" fill="#166534" font-weight="600">Validators/</text>
+                <text x="606" y="348" font-size="8" fill="#334155">PaymentValidator</text>
+
+                <!-- Notification + Feedback (compact) -->
+                <rect x="725" y="215" width="145" height="70" rx="5" fill="#fff" stroke="#bbf7d0" stroke-width="1" filter="url(#shadow2)"/>
+                <rect x="725" y="215" width="145" height="18" rx="5" fill="#15803d"/>
+                <rect x="725" y="228" width="145" height="5" fill="#15803d"/>
+                <text x="797" y="229" font-size="9" font-weight="700" fill="#fff" text-anchor="middle">Notification</text>
+                <text x="738" y="250" font-size="8" fill="#166534" font-weight="600">Services/</text>
+                <text x="738" y="264" font-size="8" fill="#334155">IEmailService (interface)</text>
+                <text x="738" y="278" font-size="8" fill="#334155">NotificationService.cs</text>
+
+                <rect x="725" y="293" width="145" height="67" rx="5" fill="#fff" stroke="#bbf7d0" stroke-width="1" filter="url(#shadow2)"/>
+                <rect x="725" y="293" width="145" height="18" rx="5" fill="#15803d"/>
+                <rect x="725" y="306" width="145" height="5" fill="#15803d"/>
+                <text x="797" y="307" font-size="9" font-weight="700" fill="#fff" text-anchor="middle">Feedback</text>
+                <text x="738" y="328" font-size="8" fill="#166534" font-weight="600">Services/</text>
+                <text x="738" y="342" font-size="8" fill="#334155">FeedbackService.cs</text>
+                <text x="738" y="354" font-size="8" fill="#334155">IFeedbackService</text>
+
+                <!-- Common (Shared in Application) -->
+                <rect x="65" y="375" width="600" height="38" rx="5" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5" stroke-dasharray="6,3"/>
+                <text x="365" y="394" font-size="9.5" font-weight="700" fill="#1e40af" text-anchor="middle">Common (Shared Application Logic)</text>
+                <text x="365" y="407" font-size="8" fill="#3b82f6" text-anchor="middle">ApiResponse.cs  |  PagedResult.cs  |  ServiceResult.cs  |  AutoMapper MappingProfile.cs</text>
+
+                <!-- Mappings -->
+                <rect x="65" y="420" width="290" height="26" rx="5" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+                <text x="78" y="437" font-size="8.5" fill="#166534" font-weight="600">Mappings/</text>
+                <text x="145" y="437" font-size="8" fill="#334155">StudentProfile, CourseProfile, TuitionProfile (AutoMapper)</text>
+
+                <rect x="365" y="420" width="300" height="26" rx="5" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+                <text x="378" y="437" font-size="8.5" fill="#166534" font-weight="600">DependencyInjection.cs</text>
+                <text x="510" y="437" font-size="8" fill="#334155">Register all services in IServiceCollection</text>
+
+                <!-- Module dependency arrows within Application -->
+                <line x1="522" y1="360" x2="583" y2="280" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,2"/>
+                <text x="558" y="310" font-size="7" fill="#94a3b8" transform="rotate(-30, 558, 310)">uses</text>
+
+                <line x1="390" y1="360" x2="318" y2="300" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,2"/>
+                <text x="345" y="325" font-size="7" fill="#94a3b8" transform="rotate(25, 345, 325)">uses</text>
+
+                <!-- Arrow: Application → Domain -->
+                <line x1="460" y1="525" x2="460" y2="555" stroke="#64748b" stroke-width="1.5" marker-end="url(#depArrow2)"/>
+                <text x="475" y="545" font-size="8" fill="#64748b">references</text>
+
+                <!-- ═══ PROJECT 3: CLS.DAL ═══ -->
+                <rect x="45" y="558" width="840" height="232" rx="6" fill="#fce7f3" stroke="#f9a8d4" stroke-width="1.5" filter="url(#shadow2)"/>
+                <rect x="45" y="558" width="165" height="22" rx="6" fill="#9d174d"/>
+                <rect x="45" y="574" width="165" height="6" fill="#9d174d"/>
+                <text x="58" y="575" font-size="10.5" font-weight="700" fill="#fff">CLS.DAL</text>
+
+                <text x="65" y="600" font-size="9" fill="#831843" font-weight="600">Entities/</text>
+                <text x="65" y="614" font-size="8" fill="#9d174d">Student.cs, Course.cs, Schedule.cs, Attendance.cs ...</text>
+                
+                <text x="320" y="600" font-size="9" fill="#831843" font-weight="600">Data/</text>
+                <text x="320" y="614" font-size="8" fill="#9d174d">AppDbContext.cs, Configurations/</text>
+
+                <text x="560" y="600" font-size="9" fill="#831843" font-weight="600">Repositories/</text>
+                <text x="560" y="614" font-size="8" fill="#9d174d">StudentRepository, CourseRepository...</text>
+
+                <text x="720" y="600" font-size="9" fill="#831843" font-weight="600">Migrations/</text>
+                <text x="720" y="614" font-size="8" fill="#9d174d">EF Core Migrations</text>
+
+                <!-- ═══ FRONTEND SECTION ═══ -->
+                <rect x="45" y="805" width="840" height="40" rx="6" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5" filter="url(#shadow2)"/>
+                <rect x="45" y="805" width="130" height="20" rx="6" fill="#7e22ce"/>
+                <rect x="45" y="819" width="130" height="6" fill="#7e22ce"/>
+                <text x="58" y="820" font-size="10" font-weight="700" fill="#fff">frontend/src</text>
+                <text x="190" y="828" font-size="9" fill="#6b21a8">app/ (guards, layouts, providers, routers)  |  features/ (booking, student, teacher, billing, dashboard, auth)  |  shared/ (components, hooks, services, utils, types)</text>
+
+                <!-- Legend -->
+                <rect x="55" y="855" width="8" height="8" rx="2" fill="#b45309"/>
+                <text x="68" y="862" font-size="8" fill="#334155">CLS.API</text>
+                <rect x="130" y="855" width="8" height="8" rx="2" fill="#166534"/>
+                <text x="143" y="862" font-size="8" fill="#334155">CLS.BLL</text>
+                <rect x="230" y="855" width="8" height="8" rx="2" fill="#4338ca"/>
+                <text x="243" y="862" font-size="8" fill="#334155">CLS.DAL</text>
+                <rect x="315" y="855" width="8" height="8" rx="2" fill="#9d174d"/>
+                <text x="328" y="862" font-size="8" fill="#334155">CLS.DAL</text>
+                <line x1="445" y1="860" x2="475" y2="860" stroke="#64748b" stroke-width="1.2"/>
+                <text x="480" y="862" font-size="8" fill="#334155">Project reference (dependency direction)</text>
+                <line x1="645" y1="860" x2="675" y2="860" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,2"/>
+                <text x="680" y="862" font-size="8" fill="#334155">Inter-module service call</text>
+            </svg>
+            <p class="diagram-caption">Figure 1.2 — CLS Package Diagram (Layered Architecture: 3-Project .NET Solution + React Frontend)</p>
+        </div>
+
+        <!-- Dependency Rules -->
+        <h3>1.2.2 Project Dependency Rules (Layered Architecture)</h3>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th width="5%">#</th>
+                    <th width="45%">Rule</th>
+                    <th width="50%">Rationale</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td><code>CLS.DAL</code> has <strong>zero</strong> local project references</td>
+                    <td>Data Access Layer and Entities contain no local dependencies. Contains core Entities, DbContext, and Repositories.</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td><code>CLS.BLL</code> references only <code>CLS.DAL</code></td>
+                    <td>Business logic depends on DAL\'s entities and repository interfaces.</td>
+                </tr>
+                
+                <tr>
+                    <td>4</td>
+                    <td><code>CLS.API</code> references <code>CLS.BLL</code> and <code>CLS.DAL</code></td>
+                    <td>Orchestrates DI registration. Hosts Controllers that consume BLL services.</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Use <code>internal</code> access modifier for repository implementations</td>
+                    <td>.NET enforces module boundaries at the project level. Repository classes in Infrastructure are <code>internal</code> — only exposed via interface registration in DI container.</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>Frontend <code>features/</code> mirror backend modules</td>
+                    <td>Reduces cognitive overhead. Developers can locate frontend code for any backend module instantly (e.g., <code>features/student/</code> → <code>Student</code> module).</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Inter-Module Dependencies -->
+        <h3>1.2.3 Inter-Module Dependency Matrix</h3>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Source Module</th>
+                    <th>Target Module</th>
+                    <th>Dependency Type</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>Scheduling</code></td>
+                    <td><code>Course</code></td>
+                    <td>Service interface</td>
+                    <td>Schedule creation requires class and teacher lookup for room/teacher assignment and conflict validation.</td>
+                </tr>
+                <tr>
+                    <td><code>Attendance</code></td>
+                    <td><code>Student</code></td>
+                    <td>Service interface</td>
+                    <td>Check-in requires student lookup. Session counter decrements student's remaining package sessions.</td>
+                </tr>
+                <tr>
+                    <td><code>Attendance</code></td>
+                    <td><code>Notification</code></td>
+                    <td>Service interface</td>
+                    <td>Attendance events trigger automated email dispatch to parent's registered email address.</td>
+                </tr>
+                <tr>
+                    <td><code>Tuition</code></td>
+                    <td><code>Student</code></td>
+                    <td>Service interface</td>
+                    <td>Payment tracking is linked to student enrollment. Package depletion alert requires student's remaining sessions.</td>
+                </tr>
+                <tr>
+                    <td><code>Tuition</code></td>
+                    <td><code>Notification</code></td>
+                    <td>Service interface</td>
+                    <td>Renewal alert (2-week warning) triggers email to both Admin and Parent via notification engine.</td>
+                </tr>
+                <tr>
+                    <td><code>Feedback</code></td>
+                    <td><code>Scheduling</code></td>
+                    <td>Service interface</td>
+                    <td>Teacher feedback is submitted post-session. Feedback references the specific schedule entry (class + time slot).</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="note-box">
+            <p><strong>Design Constraint:</strong> All inter-module dependencies are <em>unidirectional</em> and flow through <strong>service interfaces</strong> defined in <code>CLS.BLL</code>. Circular dependencies between modules are strictly prohibited. The .NET project reference system provides compile-time enforcement — if a circular reference is introduced, the build will fail immediately.</p>
+        </div>
+
+        <!-- Related Documents -->
+        <h3>Related Documents</h3>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th width="30%">Document</th>
+                    <th width="40%">File</th>
+                    <th width="30%">Relationship</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Architecture Decision Record</td>
+                    <td><code>ADR-001-adopt-modular-monolith-dotnet-react.md</code></td>
+                    <td>Architecture pattern &amp; tech stack decision</td>
+                </tr>
+                <tr>
+                    <td>Business Goals &amp; KPIs</td>
+                    <td><code>CLS_Business_Goals_v0.2.html</code></td>
+                    <td>Business requirements, pain points &amp; SMART goals</td>
+                </tr>
+                <tr>
+                    <td>Project Charter</td>
+                    <td><code>CLS_Project_Charter_v0.2.html</code></td>
+                    <td>Project scope, 3-week timeline, deliverables</td>
+                </tr>
+                <tr>
+                    <td>Stakeholder Matrix</td>
+                    <td><code>CLS_Stakeholder_Matrix_v0.2.html</code></td>
+                    <td>User roles &amp; engagement strategy</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Footer -->
+        <div class="doc-footer">
+            <div>CLS — Classroom Management System (English &amp; Kids Coding Center)</div>
+            <div>High Level Design v0.2 — 2026-04-17</div>
+        </div>
+
+    </div>
+</body>
+</html>

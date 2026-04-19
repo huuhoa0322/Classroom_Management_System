@@ -1,0 +1,370 @@
+openapi: 3.0.3
+info:
+  title: Classroom Management System - APIs Design
+  description: API specifications based on CLS Software Requirement Specification (Covering UC-01 to UC-11) and predefined API Design Rules.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Local Development Server
+tags:
+  - name: Authentication
+    description: User authentication flows
+  - name: Student Management
+    description: Manage student profiles and lifecycles (UC-01, UC-02)
+  - name: Financial Administration
+    description: Manage transactions and payouts (UC-03)
+  - name: Schedule Management
+    description: Manage teaching schedules and conflicts (UC-04, UC-05)
+  - name: Retention Management
+    description: Track retention metrics and alerts (UC-06)
+  - name: Academic Operations
+    description: Handle timetables and attendances (UC-07, UC-08)
+  - name: Academic Quality Assurance
+    description: Collect and manage academic feedbacks (UC-09)
+  - name: System Automation
+    description: Automated scanning and dispatching processes (UC-10, UC-11)
+
+paths:
+  /api/v1/auth/login:
+    post:
+      summary: User Login
+      description: Authenticates a user and returns a JWT access token.
+      tags:
+        - Authentication
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+
+  /api/v1/student-profiles:
+    post:
+      summary: Onboard New Student Profiles (UC-01)
+      description: Create a new student profile in the system.
+      tags:
+        - Student Management
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fullName: 
+                  type: string
+                email: 
+                  type: string
+                dateOfBirth: 
+                  type: string
+                  format: date
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardResponse'
+
+  /api/v1/student-profiles/{id}/lifecycle:
+    put:
+      summary: Update Student Lifecycles (UC-02)
+      description: Modify the current lifecycle stage of an existing student.
+      tags:
+        - Student Management
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status: 
+                  type: string
+                  example: ACTIVE
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardResponse'
+
+  /api/v1/tuition-payments/offline:
+    post:
+      summary: Record Offline Tuition Payments (UC-03)
+      description: Register a tuition payment made offline via cash or bank transfer.
+      tags:
+        - Financial Administration
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                studentId: 
+                  type: integer
+                amount: 
+                  type: number
+                paymentMethod: 
+                  type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardResponse'
+
+  /api/v1/teaching-schedules/core:
+    post:
+      summary: Setup Core Teaching Schedules (UC-04)
+      description: Establish the primary teaching timetable for a class.
+      tags:
+        - Schedule Management
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                classId: 
+                  type: integer
+                teacherId: 
+                  type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardResponse'
+
+  /api/v1/teaching-schedules/conflicts/resolve:
+    put:
+      summary: Resolve Scheduling Conflicts (UC-05)
+      description: Provide resolutions for identified schedule overlaps or conflicts.
+      tags:
+        - Schedule Management
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                conflictId: 
+                  type: integer
+                actionType: 
+                  type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardResponse'
+
+  /api/v1/renewal-alerts:
+    get:
+      summary: Review Package Renewal Alerts (UC-06)
+      description: Fetch a list of alerts for student packages due for renewal.
+      tags:
+        - Retention Management
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayResponse'
+
+  /api/v1/timetables/personalized:
+    get:
+      summary: View Personalized Timetables (UC-07)
+      description: Retrieve the specific class timetable aligned with a student or staff.
+      tags:
+        - Academic Operations
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: studentId
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayResponse'
+
+  /api/v1/class-attendances:
+    post:
+      summary: Record Class Attendance (UC-08)
+      description: Mark attendance data for students participating in a scheduled class.
+      tags:
+        - Academic Operations
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                scheduleId: 
+                  type: integer
+                attendees: 
+                  type: array
+                  items:
+                    type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardResponse'
+
+  /api/v1/academic-feedback:
+    post:
+      summary: Submit Academic Performance Feedback (UC-09)
+      description: Log academic evaluations and feedback for an individual student.
+      tags:
+        - Academic Quality Assurance
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                studentId: 
+                  type: integer
+                comments: 
+                  type: string
+                score: 
+                  type: number
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardResponse'
+
+  /api/v1/system-automations/depletion-scans/execute:
+    post:
+      summary: Execute Daily Depletion Scans (UC-10)
+      description: Trigger the automated daily system scan to calculate package depletions.
+      tags:
+        - System Automation
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardResponse'
+
+  /api/v1/system-automations/parent-notifications/dispatch:
+    post:
+      summary: Dispatch Zero-Touch Parent Notifications (UC-11)
+      description: Trigger the automated dispatch of zero-touch status notifications to parents.
+      tags:
+        - System Automation
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardResponse'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    StandardResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 200
+        message:
+          type: string
+          example: "Operation completed successfully."
+        data:
+          type: object
+          nullable: true
+          example: {}
+    ArrayResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 200
+        message:
+          type: string
+          example: "Data retrieved successfully."
+        data:
+          type: array
+          items:
+            type: object
+    LoginResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 200
+        message:
+          type: string
+          example: "Login successful"
+        data:
+          type: object
+          properties:
+            accessToken:
+              type: string
+              example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            email:
+              type: string
+              example: "user@example.com"
+            fullName:
+              type: string
+              example: "John Doe"

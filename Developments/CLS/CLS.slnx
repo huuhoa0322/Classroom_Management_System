@@ -1,7 +1,9 @@
 <Solution>
+  <Project Path="CLS.BLL/CLS.BLL.csproj" Id="4660360c-d405-4ffa-9dee-3da1f4d519ab" />
   <Project Path="cls.client/cls.client.esproj">
     <Build />
     <Deploy />
   </Project>
+  <Project Path="CLS.DAL/CLS.DAL.csproj" Id="d0cd52a6-c6b0-4e5c-b137-bd9bb6168887" />
   <Project Path="CLS.Server/CLS.Server.csproj" />
 </Solution>

@@ -1,5 +1,8 @@
 using System.Reflection;
 using System.Text;
+using CLS.BLL.Interfaces;
+using CLS.BLL.Services;
+using CLS.Server.Middlewares;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -84,12 +87,11 @@ try
         });
     });
 
-    // ── TODO P4: Register ExceptionHandlingMiddleware ─────────────────────────
-    // builder.Services.AddTransient<ExceptionHandlingMiddleware>();
+    // ── ExceptionHandlingMiddleware (P4) ────────────────────────────────────────
+    builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 
-    // ── TODO P5–P6: Register Services & Repositories ─────────────────────────
-    // builder.Services.AddScoped<IStudentService, StudentService>();
-    // builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+    // ── JWT Service (P5) ────────────────────────────────────────────────────
+    builder.Services.AddScoped<IJwtService, JwtService>();
 
     // ── TODO P6: Register AppDbContext (EF Core + Npgsql) ────────────────────
     // builder.Services.AddDbContext<AppDbContext>(opts =>
@@ -119,7 +121,7 @@ try
     app.UseSerilogRequestLogging();
     app.UseHttpsRedirection();
 
-    // TODO P4: app.UseMiddleware<ExceptionHandlingMiddleware>();
+    app.UseMiddleware<ExceptionHandlingMiddleware>();  // ← phải trước Authentication
 
     app.UseAuthentication();           // ← PHẢI trước UseAuthorization
     app.UseAuthorization();

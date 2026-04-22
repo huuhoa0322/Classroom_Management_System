@@ -361,8 +361,10 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-# SQL Server Data Tools (SSDT) files
-.sql
+# SQL Server Data Tools (SDT) files
+# SQL Schema files (chứa connection info, chỉ dùng nội bộ)
+*.sql
 # User-specific files
-.env.*
 .env
+.env.*
+!.env.example

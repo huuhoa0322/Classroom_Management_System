@@ -7,6 +7,7 @@
     <SpaRoot>..\cls.client</SpaRoot>
     <SpaProxyLaunchCommand>npm run dev</SpaProxyLaunchCommand>
     <SpaProxyServerUrl>https://localhost:57264</SpaProxyServerUrl>
+    <UserSecretsId>a58bd3c4-b840-4a10-a721-d2efdc8ffde7</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,6 +27,10 @@
     <!-- OpenAPI + Scalar UI — Native .NET 10 stack (không conflict) -->
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.6" />
     <PackageReference Include="Scalar.AspNetCore" Version="2.4.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.6">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>

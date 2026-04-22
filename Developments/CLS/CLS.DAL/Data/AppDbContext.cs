@@ -17,9 +17,9 @@ public class AppDbContext : DbContext
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
     // ── DbSets — thêm dần theo từng Vertical Slice (P7 trở đi) ──────────────
-    // public DbSet<Student> Students => Set<Student>();
-    // public DbSet<ClassSession> ClassSessions => Set<ClassSession>();
-    // public DbSet<User> Users => Set<User>();
+    public DbSet<User> Users => Set<User>();
+    public DbSet<Parent> Parents => Set<Parent>();
+    public DbSet<Student> Students => Set<Student>();
 
     // ─────────────────────────────────────────────────────────────────────────
     protected override void OnModelCreating(ModelBuilder modelBuilder)

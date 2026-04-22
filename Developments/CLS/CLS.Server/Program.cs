@@ -1,8 +1,12 @@
 using System.Reflection;
 using System.Text;
 using CLS.BLL.Interfaces;
+using CLS.BLL.Mappings;
 using CLS.BLL.Services;
+using CLS.DAL.Data;
+using CLS.DAL.Repositories;
 using CLS.Server.Middlewares;
+using Microsoft.EntityFrameworkCore;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -93,9 +97,19 @@ try
     // ── JWT Service (P5) ────────────────────────────────────────────────────
     builder.Services.AddScoped<IJwtService, JwtService>();
 
-    // ── TODO P6: Register AppDbContext (EF Core + Npgsql) ────────────────────
-    // builder.Services.AddDbContext<AppDbContext>(opts =>
-    //     opts.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    // ── EF Core & Database (P6) ───────────────────────────────────────────────
+    builder.Services.AddDbContext<AppDbContext>(opts =>
+        opts.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+    // ── Repositories (P7/P8 — Student Slice) ─────────────────────────────────
+    builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+    builder.Services.AddScoped<IParentRepository, ParentRepository>();
+
+    // ── Services (P9 — Student Slice) ─────────────────────────────────────────
+    builder.Services.AddScoped<IStudentService, StudentService>();
+
+    // ── AutoMapper ────────────────────────────────────────────────────────────
+    builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(StudentMappingProfile)));
 
     // ═════════════════════════════════════════════════════════════════════════
     var app = builder.Build();

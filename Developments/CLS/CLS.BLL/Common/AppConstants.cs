@@ -49,4 +49,11 @@ public static class AppConstants
         /// <summary>User ID claim — giá trị của JwtRegisteredClaimNames.Sub.</summary>
         public const string UserId = "sub";
     }
+
+    // ── Student Status ────────────────────────────────────────────────────────
+    public static class StudentStatus
+    {
+        public const string Active   = "active";
+        public const string Inactive = "inactive";
+    }
 }

@@ -4,11 +4,11 @@ import { useAuthStore } from '@/app/provider/authStore';
 /**
  * Axios instance cốt lõi của CLS Frontend.
  * - Tự động đính JWT Bearer Token vào mọi request.
- * - Tự động unwrap định dạng ApiResponse<T> từ Backend.
+ * - Tự động unwrap định dạng ApiResponse<T> { code, message, data } từ Backend.
  * - Xử lý lỗi 401 (hết phiên) và 403 (không có quyền) tập trung.
  */
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api/v1',
+  baseURL: import.meta.env.VITE_API_BASE_URL || '/api/v1',
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
@@ -30,22 +30,23 @@ axiosInstance.interceptors.request.use(
 // ── Response Interceptor: Unwrap ApiResponse<T> + Xử lý lỗi ────────────────
 axiosInstance.interceptors.response.use(
   (response) => {
-    // Backend luôn trả về { success, message, data }
+    // Backend luôn trả về { code, message, data }
     const apiResponse = response.data;
 
-    if (apiResponse && typeof apiResponse === 'object' && 'success' in apiResponse) {
-      if (!apiResponse.success) {
+    if (apiResponse && typeof apiResponse === 'object' && 'code' in apiResponse) {
+      // Nếu code không phải 2xx → reject với message từ backend
+      if (apiResponse.code < 200 || apiResponse.code >= 300) {
         return Promise.reject(new Error(apiResponse.message || 'Có lỗi xảy ra từ máy chủ.'));
       }
-      // Trả về chỉ phần data bên trong, ví dụ: { items, totalCount } hoặc entity object
+      // Unwrap: trả về phần data (LoginResponse, PagedResult, entity object, v.v.)
       return apiResponse.data;
     }
 
-    // Trường hợp response không theo chuẩn ApiResponse (ví dụ: file download)
+    // Response không theo chuẩn ApiResponse (ví dụ: file download)
     return response.data;
   },
   (error) => {
-    const status = error.response?.status;
+    const status  = error.response?.status;
     const message = error.response?.data?.message;
 
     if (status === 401) {

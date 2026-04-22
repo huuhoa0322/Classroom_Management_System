@@ -51,6 +51,12 @@ export default defineConfig({
             '^/weatherforecast': {
                 target,
                 secure: false
+            },
+            // Proxy toàn bộ /api/* sang backend — tránh mixed-content & SSL cert issues
+            '^/api': {
+                target,
+                secure: false,
+                changeOrigin: true
             }
         },
         port: parseInt(env.DEV_SERVER_PORT || '57264'),

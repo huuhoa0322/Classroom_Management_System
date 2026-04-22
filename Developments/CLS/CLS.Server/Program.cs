@@ -29,6 +29,24 @@ try
            .ReadFrom.Services(services)
            .Enrich.FromLogContext());
 
+    // ── CORS — cho phép Vite dev server gọi API ──────────────────────────────
+    builder.Services.AddCors(options =>
+    {
+        // Dev: Mở toàn bộ origin — tránh CORS block khi debug với bất kỳ Vite port nào
+        options.AddPolicy("DevCors", policy =>
+            policy.SetIsOriginAllowed(_ => true)   // Chấp nhận mọi origin trong dev
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials());
+
+        options.AddPolicy("ProductionCors", policy =>
+            policy.WithOrigins(
+                    builder.Configuration.GetValue<string>("AllowedOrigins") ?? ""
+                  )
+                  .AllowAnyHeader()
+                  .AllowAnyMethod());
+    });
+
     // ── Controllers + JSON camelCase ──────────────────────────────────────────
     builder.Services.AddControllers()
         .AddJsonOptions(opts =>
@@ -68,7 +86,10 @@ try
             ValidAudience            = jwtSection["Audience"],
             IssuerSigningKey         = new SymmetricSecurityKey(
                                            Encoding.UTF8.GetBytes(secretKey)),
-            ClockSkew                = TimeSpan.Zero
+            ClockSkew                = TimeSpan.Zero,
+            // JsonWebTokenHandler (.NET 10) — map đúng role claim
+            RoleClaimType            = System.Security.Claims.ClaimTypes.Role,
+            NameClaimType            = System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub
         };
     });
 
@@ -97,6 +118,9 @@ try
     // ── JWT Service (P5) ────────────────────────────────────────────────────
     builder.Services.AddScoped<IJwtService, JwtService>();
 
+    // ── Auth Service ──────────────────────────────────────────────────────────
+    builder.Services.AddScoped<IAuthService, AuthService>();
+
     // ── EF Core & Database (P6) ───────────────────────────────────────────────
     builder.Services.AddDbContext<AppDbContext>(opts =>
         opts.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -108,8 +132,7 @@ try
     // ── Services (P9 — Student Slice) ─────────────────────────────────────────
     builder.Services.AddScoped<IStudentService, StudentService>();
 
-    // ── AutoMapper ────────────────────────────────────────────────────────────
-    builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(StudentMappingProfile)));
+    // (AutoMapper đã đăng ký ở trên — không cần đăng ký lại)
 
     // ═════════════════════════════════════════════════════════════════════════
     var app = builder.Build();
@@ -133,7 +156,14 @@ try
 
     // ── Middleware pipeline (thứ tự quan trọng) ───────────────────────────────
     app.UseSerilogRequestLogging();
-    app.UseHttpsRedirection();
+
+    // HTTPS redirect chỉ bật ở Production — dev dùng http để tránh 307 redirect phá POST request
+    if (!app.Environment.IsDevelopment())
+        app.UseHttpsRedirection();
+
+    // CORS phải đứng TRƯỚC Authentication/Authorization
+    var corsPolicy = app.Environment.IsDevelopment() ? "DevCors" : "ProductionCors";
+    app.UseCors(corsPolicy);
 
     app.UseMiddleware<ExceptionHandlingMiddleware>();  // ← phải trước Authentication
 

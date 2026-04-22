@@ -13,6 +13,7 @@ export const useAuthStore = create(
       accessToken: null,
       refreshToken: null,
       isAuthenticated: false,
+      _hasHydrated: false,      // true sau khi persist đọc xong localStorage
 
       // ── Actions ────────────────────────────────────────────────────────────
 
@@ -46,6 +47,8 @@ export const useAuthStore = create(
        */
       updateToken: (newAccessToken) =>
         set({ accessToken: newAccessToken }),
+
+      setHasHydrated: (state) => set({ _hasHydrated: state }),
     }),
     {
       name: 'cls-auth-storage',  // Tên key trong localStorage
@@ -55,6 +58,10 @@ export const useAuthStore = create(
         refreshToken: state.refreshToken,
         isAuthenticated: state.isAuthenticated,
       }),
+      onRehydrateStorage: () => (state) => {
+        // Đánh dấu hydration hoàn tất — PrivateRoute sẽ không render trước bước này
+        state?.setHasHydrated(true);
+      },
     }
   )
 );

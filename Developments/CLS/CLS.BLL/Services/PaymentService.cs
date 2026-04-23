@@ -19,6 +19,7 @@ public class PaymentService : IPaymentService
     private readonly IMapper                               _mapper;
     private readonly ILogger<PaymentService>                _logger;
     private readonly IValidator<RecordPaymentRequest>       _recordValidator;
+    private readonly IValidator<UpdatePaymentStatusRequest> _updateStatusValidator;
 
     public PaymentService(
         IPaymentRepository paymentRepo,
@@ -27,15 +28,17 @@ public class PaymentService : IPaymentService
         IStudentRepository studentRepo,
         IMapper mapper,
         ILogger<PaymentService> logger,
-        IValidator<RecordPaymentRequest> recordValidator)
+        IValidator<RecordPaymentRequest> recordValidator,
+        IValidator<UpdatePaymentStatusRequest> updateStatusValidator)
     {
-        _paymentRepo        = paymentRepo;
-        _studentPackageRepo = studentPackageRepo;
-        _tuitionPackageRepo = tuitionPackageRepo;
-        _studentRepo        = studentRepo;
-        _mapper             = mapper;
-        _logger             = logger;
-        _recordValidator    = recordValidator;
+        _paymentRepo            = paymentRepo;
+        _studentPackageRepo     = studentPackageRepo;
+        _tuitionPackageRepo     = tuitionPackageRepo;
+        _studentRepo            = studentRepo;
+        _mapper                 = mapper;
+        _logger                 = logger;
+        _recordValidator        = recordValidator;
+        _updateStatusValidator  = updateStatusValidator;
     }
 
     // ── RECORD PAYMENT (CLS-003 AC1) ─────────────────────────────────────────
@@ -107,6 +110,12 @@ public class PaymentService : IPaymentService
     public async Task<PaymentResponse> UpdatePaymentStatusAsync(
         int paymentId, UpdatePaymentStatusRequest request, CancellationToken ct = default)
     {
+        // Validate input trước khi query DB
+        var validation = await _updateStatusValidator.ValidateAsync(request, ct);
+        if (!validation.IsValid)
+            throw new CLS.BLL.Common.Exceptions.ValidationException(
+                string.Join("; ", validation.Errors.Select(e => e.ErrorMessage)));
+
         var payment = await _paymentRepo.GetByIdWithDetailsAsync(paymentId, ct)
             ?? throw new NotFoundException($"Thanh toán #{paymentId} không tồn tại.");
 

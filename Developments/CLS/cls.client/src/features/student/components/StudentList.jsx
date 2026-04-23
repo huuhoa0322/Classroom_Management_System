@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useStudentList, useUpdateStudentStatus } from '../hooks/useStudents';
 import { StatusBadge } from './StatusBadge';
 import { formatDate } from '@/shared/utils/formatters';
@@ -97,6 +98,12 @@ export const StudentList = ({ onEdit }) => {
                   </td>
                   <td className="px-4 py-3 text-right">
                     <div className="flex justify-end gap-2">
+                      <Link
+                        to={`/students/${s.id}/financials`}
+                        className="text-xs px-3 py-1.5 rounded-lg text-blue-600 border border-blue-200 hover:bg-blue-50 transition-colors"
+                      >
+                        Tài chính
+                      </Link>
                       <button
                         onClick={() => onEdit(s)}
                         className="text-xs px-3 py-1.5 rounded-lg text-indigo-600 border border-indigo-200 hover:bg-indigo-50 transition-colors"

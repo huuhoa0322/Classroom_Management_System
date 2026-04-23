@@ -20,8 +20,8 @@ public class StudentMappingProfile : Profile
         CreateMap<CreateStudentRequest, Student>()
             .ForMember(d => d.EnrolledAt, o => o.MapFrom(_ => DateTime.UtcNow))
             .ForMember(d => d.Status,     o => o.MapFrom(_ => "active"))
-            .ForMember(d => d.ParentId,   o => o.Ignore())   // set sau khi upsert Parent
-            .ForMember(d => d.Parent,     o => o.Ignore());
+            .ForMember(d => d.ParentId,   o => o.Ignore())   // set qua navigation property
+            .ForMember(d => d.Parent,     o => o.Ignore());   // service gán thủ công sau upsert
 
         // CreateStudentRequest → Parent (chỉ fields của Parent)
         CreateMap<CreateStudentRequest, Parent>()

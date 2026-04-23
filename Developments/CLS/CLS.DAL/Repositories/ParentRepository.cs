@@ -32,4 +32,7 @@ public class ParentRepository : IParentRepository
         entity.IsDeleted = true;
         _ctx.Parents.Update(entity);
     }
+
+    public Task<int> SaveChangesAsync(CancellationToken ct = default)
+        => _ctx.SaveChangesAsync(ct);
 }

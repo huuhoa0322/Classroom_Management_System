@@ -54,4 +54,7 @@ public class StudentRepository : IStudentRepository
         entity.IsDeleted = true;
         _ctx.Students.Update(entity);
     }
+
+    public Task<int> SaveChangesAsync(CancellationToken ct = default)
+        => _ctx.SaveChangesAsync(ct);
 }

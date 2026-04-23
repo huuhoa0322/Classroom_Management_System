@@ -368,3 +368,5 @@ FodyWeavers.xsd
 .env
 .env.*
 !.env.example
+# JavaScript module files
+*.mjs

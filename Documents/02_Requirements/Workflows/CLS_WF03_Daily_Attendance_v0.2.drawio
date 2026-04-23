@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+  <root>
+    <mxCell id="0" /><mxCell id="1" parent="0" />
+
+    <mxCell id="2" value="WF-03 v0.2: Luồng Điểm Danh Hàng Ngày &amp; Thông Báo Phụ Huynh (Daily Attendance &amp; Parent Notification)" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontStyle=1;fontSize=14;fontColor=#1e3a5f;" vertex="1" parent="1">
+      <mxGeometry x="20" y="8" width="1100" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="3" value="KPI: 100% Automated Email (G1) | SLA: Điểm danh phải submit trong 30 phút sau buổi học | Actors: Teacher, System, Academic Admin, Parent" style="text;html=1;strokeColor=#cccccc;fillColor=#f5f5f5;align=center;fontSize=10;fontColor=#666666;" vertex="1" parent="1">
+      <mxGeometry x="20" y="44" width="1100" height="20" as="geometry" />
+    </mxCell>
+    <mxCell id="4" value="📋 PRE-CONDITIONS: (1) Buổi học đang diễn ra / vừa kết thúc và ở trạng thái In-Progress | (2) Teacher đã đăng nhập | (3) Danh sách học viên trong lớp đã tồn tại" style="text;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;align=left;fontSize=10;fontColor=#1e3a5f;rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="20" y="66" width="1100" height="22" as="geometry" />
+    </mxCell>
+
+    <!-- Lanes: Teacher | System | Academic Admin | Parent -->
+    <mxCell id="10" value="Teacher / Giáo viên" style="swimlane;startSize=35;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="20" y="95" width="240" height="740" as="geometry" />
+    </mxCell>
+    <mxCell id="20" value="System (CLS)" style="swimlane;startSize=35;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="265" y="95" width="280" height="740" as="geometry" />
+    </mxCell>
+    <!-- NEW lane: Academic Admin -->
+    <mxCell id="40" value="Academic Admin (Giáo vụ)" style="swimlane;startSize=35;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="550" y="95" width="245" height="740" as="geometry" />
+    </mxCell>
+    <mxCell id="30" value="Parent / Phụ huynh" style="swimlane;startSize=35;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="800" y="95" width="230" height="740" as="geometry" />
+    </mxCell>
+
+    <!-- Teacher shapes -->
+    <mxCell id="101" value="Bắt đầu&#xa;(Buổi học diễn ra / kết thúc)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e3a5f;fontColor=#ffffff;strokeColor=#1e3a5f;fontStyle=1;fontSize=10;" vertex="1" parent="10">
+      <mxGeometry x="55" y="45" width="130" height="45" as="geometry" />
+    </mxCell>
+    <mxCell id="102" value="Mở màn hình Điểm danh cho buổi học hiện tại" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="10">
+      <mxGeometry x="30" y="125" width="180" height="50" as="geometry" />
+    </mxCell>
+    <mxCell id="103" value="Đánh dấu từng học viên:&#xa;✅ Có mặt / ❌ Vắng / ⏰ Trễ" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="10">
+      <mxGeometry x="30" y="210" width="180" height="55" as="geometry" />
+    </mxCell>
+    <mxCell id="104" value="Submit điểm danh (Confirm &amp; Save)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="10">
+      <mxGeometry x="30" y="300" width="180" height="48" as="geometry" />
+    </mxCell>
+    <!-- NEW: Teacher receives SLA reminder -->
+    <mxCell id="105" value="📱 Nhận nhắc nhở SLA từ System&#xa;→ Mở app và submit ngay" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="10">
+      <mxGeometry x="30" y="550" width="180" height="50" as="geometry" />
+    </mxCell>
+
+    <!-- System shapes -->
+    <mxCell id="201" value="Ghi nhận dữ liệu điểm danh vào DB" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="20">
+      <mxGeometry x="50" y="300" width="180" height="48" as="geometry" />
+    </mxCell>
+    <mxCell id="202" value="Cập nhật số buổi học còn lại của từng học viên" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="20">
+      <mxGeometry x="50" y="380" width="180" height="50" as="geometry" />
+    </mxCell>
+
+    <!-- NEW: SLA 30-min parallel check -->
+    <mxCell id="203" value="⏱ SLA Timer: Sau 30 phút kể từ khi buổi học kết thúc, Teacher chưa submit?" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="20">
+      <mxGeometry x="50" y="460" width="180" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="204" value="Chưa submit?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="20">
+      <mxGeometry x="70" y="550" width="145" height="55" as="geometry" />
+    </mxCell>
+    <!-- SLA: send reminder to Teacher -->
+    <mxCell id="205" value="📧 Gửi nhắc nhở submit điểm danh tới Teacher" style="shape=message;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="20">
+      <mxGeometry x="50" y="637" width="180" height="42" as="geometry" />
+    </mxCell>
+    <!-- SLA: alert Admin if still not submitted -->
+    <mxCell id="206" value="⚠ Cảnh báo Admin: Teacher chưa điểm danh sau giờ quy định" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="20">
+      <mxGeometry x="50" y="695" width="180" height="48" as="geometry" />
+    </mxCell>
+
+    <!-- Attendance sent emails (parallel) -->
+    <mxCell id="210" value="Kiểm tra học viên vắng mặt" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="20">
+      <mxGeometry x="50" y="140" width="180" height="45" as="geometry" />
+    </mxCell>
+    <mxCell id="211" value="Có học viên vắng?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="20">
+      <mxGeometry x="65" y="218" width="155" height="55" as="geometry" />
+    </mxCell>
+    <!-- Note about parallel emails -->
+    <mxCell id="212n" value="⚡ Parallel:&#xa;(a) Email vắng → Phụ huynh học viên vắng&#xa;(b) Email tổng kết → Tất cả Phụ huynh" style="text;html=1;strokeColor=#82b366;fillColor=#f0fff0;fontSize=9;fontStyle=2;align=left;rounded=1;" vertex="1" parent="20">
+      <mxGeometry x="50" y="210" width="180" height="60" as="geometry" />
+    </mxCell>
+
+    <!-- Admin shapes (NEW) -->
+    <mxCell id="401" value="Xem Dashboard điểm danh tổng hợp (theo lớp, theo ngày)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=11;" vertex="1" parent="40">
+      <mxGeometry x="32" y="300" width="181" height="50" as="geometry" />
+    </mxCell>
+    <!-- NEW: Admin receives SLA alert -->
+    <mxCell id="402" value="Nhận cảnh báo: Teacher chưa submit điểm danh" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="40">
+      <mxGeometry x="32" y="695" width="181" height="48" as="geometry" />
+    </mxCell>
+    <!-- NEW: Admin correction capability -->
+    <mxCell id="403" value="[Tùy chọn] Admin chỉnh sửa điểm danh (Correction Mode) + Ghi audit log" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;dashed=1;" vertex="1" parent="40">
+      <mxGeometry x="32" y="390" width="181" height="55" as="geometry" />
+    </mxCell>
+
+    <!-- Parent shapes -->
+    <mxCell id="301" value="Nhận Email thông báo vắng mặt (nếu có)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="30">
+      <mxGeometry x="25" y="380" width="180" height="50" as="geometry" />
+    </mxCell>
+    <mxCell id="302" value="Nhận Email tổng kết điểm danh &amp; số buổi còn lại" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="30">
+      <mxGeometry x="25" y="460" width="180" height="50" as="geometry" />
+    </mxCell>
+    <mxCell id="303" value="Kết thúc" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e3a5f;fontColor=#ffffff;strokeColor=#1e3a5f;fontStyle=1;" vertex="1" parent="30">
+      <mxGeometry x="65" y="540" width="100" height="38" as="geometry" />
+    </mxCell>
+
+    <mxCell id="5" value="✅ POST-CONDITIONS: (1) 100% học viên có bản ghi điểm danh trong DB | (2) Số buổi còn lại đã cập nhật | (3) Email tự động đã gửi tới Phụ huynh" style="text;html=1;strokeColor=#82b366;fillColor=#d5e8d4;align=left;fontSize=10;fontColor=#1e3a5f;rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="20" y="842" width="1100" height="22" as="geometry" />
+    </mxCell>
+
+    <!-- EDGES: Main flow -->
+    <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="101" target="102" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="102" target="103" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="103" target="104" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="104" target="201" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="201" target="202" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e5b" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="201" target="401" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <!-- Emails triggered after submit -->
+    <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="202" target="210" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="210" target="211" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e8" value="Có" style="edgeStyle=orthogonalEdgeStyle;fontColor=#b85450;fontStyle=2;fontSize=10;" edge="1" source="211" target="301" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="211" target="302" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e10" value="Không" style="edgeStyle=orthogonalEdgeStyle;fontColor=#82b366;fontStyle=2;fontSize=10;" edge="1" source="211" target="302" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e11" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="301" target="302" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e12" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="302" target="303" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <!-- SLA timer exception edges -->
+    <mxCell id="e13" style="edgeStyle=orthogonalEdgeStyle;dashed=1;" edge="1" source="101" target="203" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e14" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="203" target="204" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e15" value="Chưa submit" style="edgeStyle=orthogonalEdgeStyle;fontColor=#b85450;fontStyle=2;fontSize=10;" edge="1" source="204" target="205" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e16" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="205" target="105" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e17" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="205" target="206" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e18" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="206" target="402" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e19" value="Đã submit" style="edgeStyle=orthogonalEdgeStyle;fontColor=#82b366;fontStyle=2;fontSize=10;" edge="1" source="204" target="303" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+  </root>
+</mxGraphModel>

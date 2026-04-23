@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="920" math="0" shadow="0">
+  <root>
+    <mxCell id="0" /><mxCell id="1" parent="0" />
+
+    <mxCell id="2" value="WF-05 v0.2: Luồng Cảnh Báo Hết Gói &amp; Tái Tục Học Viên (Package Depletion &amp; Renewal Alert)" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontStyle=1;fontSize=14;fontColor=#1e3a5f;" vertex="1" parent="1">
+      <mxGeometry x="20" y="8" width="960" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="3" value="KPI: Giảm 20% Churn Rate (G2) | Trigger: Scheduled Daily Job 00:00 | Actors: System, Academic Admin, Parent" style="text;html=1;strokeColor=#cccccc;fillColor=#f5f5f5;align=center;fontSize=10;fontColor=#666666;" vertex="1" parent="1">
+      <mxGeometry x="20" y="44" width="960" height="20" as="geometry" />
+    </mxCell>
+    <mxCell id="4" value="📋 PRE-CONDITIONS: (1) Học viên có trạng thái Active và gói học hợp lệ trong DB | (2) Threshold cảnh báo đã được cấu hình (mặc định: tương đương 2 tuần học)" style="text;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;align=left;fontSize=10;fontColor=#1e3a5f;rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="20" y="66" width="960" height="22" as="geometry" />
+    </mxCell>
+
+    <!-- Lanes -->
+    <mxCell id="10" value="System (CLS) – Automated Daily Job" style="swimlane;startSize=35;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="20" y="95" width="270" height="780" as="geometry" />
+    </mxCell>
+    <mxCell id="20" value="Academic Admin (Giáo vụ)" style="swimlane;startSize=35;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="295" y="95" width="255" height="780" as="geometry" />
+    </mxCell>
+    <mxCell id="30" value="Parent / Phụ huynh" style="swimlane;startSize=35;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="555" y="95" width="230" height="780" as="geometry" />
+    </mxCell>
+
+    <!-- System shapes -->
+    <mxCell id="101" value="⏰ Scheduled Daily Job (00:00)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e3a5f;fontColor=#ffffff;strokeColor=#1e3a5f;fontStyle=1;fontSize=10;" vertex="1" parent="10">
+      <mxGeometry x="45" y="45" width="180" height="45" as="geometry" />
+    </mxCell>
+    <mxCell id="102" value="Quét toàn bộ học viên Active&#xa;→ Tính số buổi còn lại" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="10">
+      <mxGeometry x="45" y="125" width="180" height="52" as="geometry" />
+    </mxCell>
+
+    <!-- NEW: Duplicate alert check -->
+    <mxCell id="103dup" value="Học viên đã có Renewal Alert&#xa;đang Pending chưa xử lý?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="10">
+      <mxGeometry x="55" y="205" width="170" height="65" as="geometry" />
+    </mxCell>
+    <!-- NEW: Skip if duplicate -->
+    <mxCell id="103skip" value="Bỏ qua – tránh duplicate alert&#xa;(alert cũ vẫn đang Pending)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;fontSize=11;" vertex="1" parent="10">
+      <mxGeometry x="45" y="295" width="180" height="45" as="geometry" />
+    </mxCell>
+
+    <mxCell id="103" value="Số buổi còn lại ≤ ngưỡng&#xa;(tương đương 2 tuần)?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="10">
+      <mxGeometry x="55" y="375" width="170" height="65" as="geometry" />
+    </mxCell>
+    <mxCell id="104" value="Không cần cảnh báo&#xa;→ Kết thúc lần quét" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;fontSize=11;" vertex="1" parent="10">
+      <mxGeometry x="45" y="465" width="180" height="45" as="geometry" />
+    </mxCell>
+    <mxCell id="105" value="Tạo Renewal Alert Record&#xa;Status: PENDING" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="10">
+      <mxGeometry x="45" y="535" width="180" height="50" as="geometry" />
+    </mxCell>
+    <mxCell id="106" value="📧 Gửi cảnh báo Renewal tới Admin&#xa;(Email + Dashboard notification)" style="shape=message;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="10">
+      <mxGeometry x="45" y="615" width="180" height="50" as="geometry" />
+    </mxCell>
+    <mxCell id="107" value="✅ Cập nhật gói mới trong DB:&#xa;Số buổi, Ngày hết hạn, Status: Active" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="10">
+      <mxGeometry x="45" y="700" width="180" height="52" as="geometry" />
+    </mxCell>
+    <mxCell id="108" value="⚠ Cập nhật trạng thái học viên:&#xa;Status: At-Risk / Churn" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="10">
+      <mxGeometry x="45" y="720" width="180" height="50" as="geometry" />
+    </mxCell>
+
+    <!-- Admin shapes -->
+    <mxCell id="201" value="Nhận cảnh báo Renewal trên Dashboard&#xa;(Danh sách học viên sắp hết gói)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=11;" vertex="1" parent="20">
+      <mxGeometry x="37" y="615" width="181" height="52" as="geometry" />
+    </mxCell>
+    <mxCell id="202" value="Liên hệ Phụ huynh để tư vấn&#xa;gia hạn gói học (Renewal)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=11;" vertex="1" parent="20">
+      <mxGeometry x="37" y="695" width="181" height="50" as="geometry" />
+    </mxCell>
+    <!-- NEW: Admin creates new package -->
+    <mxCell id="203" value="Phụ huynh đồng ý?&#xa;(đồng ý / từ chối / không phản hồi)" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="20">
+      <mxGeometry x="47" y="572" width="165" height="65" as="geometry" />
+    </mxCell>
+    <!-- NEW: Admin creates package in system -->
+    <mxCell id="204" value="Admin tạo gói học mới cho học viên trên hệ thống" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=11;" vertex="1" parent="20">
+      <mxGeometry x="37" y="467" width="181" height="50" as="geometry" />
+    </mxCell>
+    <!-- Alert status note -->
+    <mxCell id="205n" value="Cập nhật Renewal Alert Status:&#xa;PENDING → CONTACTED" style="text;html=1;strokeColor=#b85450;fillColor=#fff0f0;fontSize=9;fontStyle=2;align=center;rounded=1;" vertex="1" parent="20">
+      <mxGeometry x="37" y="760" width="181" height="38" as="geometry" />
+    </mxCell>
+
+    <!-- Parent shapes -->
+    <mxCell id="301" value="Xác nhận gia hạn gói học&#xa;(đồng ý thanh toán)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="30">
+      <mxGeometry x="25" y="467" width="180" height="50" as="geometry" />
+    </mxCell>
+    <mxCell id="302" value="Từ chối / Không phản hồi&#xa;→ Admin ghi nhận vào hệ thống" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="30">
+      <mxGeometry x="25" y="720" width="180" height="50" as="geometry" />
+    </mxCell>
+    <mxCell id="303" value="Kết thúc (Renewed)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e3a5f;fontColor=#ffffff;strokeColor=#1e3a5f;fontStyle=1;fontSize=10;" vertex="1" parent="30">
+      <mxGeometry x="50" y="540" width="130" height="38" as="geometry" />
+    </mxCell>
+    <mxCell id="304" value="Kết thúc (At-Risk)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#b85450;fontColor=#ffffff;strokeColor=#b85450;fontStyle=1;fontSize=10;" vertex="1" parent="30">
+      <mxGeometry x="50" y="700" width="130" height="38" as="geometry" />
+    </mxCell>
+
+    <mxCell id="5" value="✅ POST-CONDITIONS: (1) Renewal Alert Record tạo thành công, Status cập nhật | (2) Admin đã được thông báo | (3) Học viên trạng thái Active (renewed) hoặc At-Risk (declined)" style="text;html=1;strokeColor=#82b366;fillColor=#d5e8d4;align=left;fontSize=10;fontColor=#1e3a5f;rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="20" y="882" width="960" height="22" as="geometry" />
+    </mxCell>
+
+    <!-- EDGES -->
+    <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="101" target="102" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="102" target="103dup" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e2a" value="Đã có" style="edgeStyle=orthogonalEdgeStyle;exitX=1;exitY=0.5;entryX=1;entryY=0.5;fontColor=#b85450;fontStyle=2;fontSize=10;" edge="1" source="103dup" target="103skip" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e2b" value="Chưa có" style="edgeStyle=orthogonalEdgeStyle;fontColor=#82b366;fontStyle=2;fontSize=10;" edge="1" source="103dup" target="103" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e3" value="Không" style="edgeStyle=orthogonalEdgeStyle;fontColor=#82b366;fontStyle=2;fontSize=10;" edge="1" source="103" target="104" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e4" value="Có (≤ 2 tuần)" style="edgeStyle=orthogonalEdgeStyle;fontColor=#b85450;fontStyle=2;fontSize=10;" edge="1" source="103" target="105" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="105" target="106" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="106" target="201" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="201" target="202" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="202" target="203" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e9" value="Đồng ý" style="edgeStyle=orthogonalEdgeStyle;fontColor=#82b366;fontStyle=2;fontSize=10;" edge="1" source="203" target="301" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="301" target="204" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e11" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="204" target="107" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e12" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="107" target="303" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e13" value="Từ chối" style="edgeStyle=orthogonalEdgeStyle;fontColor=#b85450;fontStyle=2;fontSize=10;" edge="1" source="203" target="302" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e14" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="302" target="108" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e15" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="108" target="304" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+  </root>
+</mxGraphModel>

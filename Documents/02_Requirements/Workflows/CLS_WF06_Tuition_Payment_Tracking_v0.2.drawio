@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="960" math="0" shadow="0">
+  <root>
+    <mxCell id="0" /><mxCell id="1" parent="0" />
+
+    <mxCell id="2" value="WF-06 v0.2: Luồng Theo Dõi &amp; Ghi Nhận Học Phí (Tuition Payment Tracking)" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontStyle=1;fontSize=15;fontColor=#1e3a5f;" vertex="1" parent="1">
+      <mxGeometry x="20" y="8" width="900" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="3" value="KPI: Cash Flow Security (G2, G3) | Actors: Academic Admin, System, Parent" style="text;html=1;strokeColor=#cccccc;fillColor=#f5f5f5;align=center;fontSize=10;fontColor=#666666;" vertex="1" parent="1">
+      <mxGeometry x="20" y="44" width="900" height="20" as="geometry" />
+    </mxCell>
+    <mxCell id="4" value="📋 PRE-CONDITIONS: (1) Học viên đã nhập học, hồ sơ Active trong DB | (2) Kỳ thanh toán / Invoice đã được tạo | (3) Admin đã đăng nhập" style="text;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;align=left;fontSize=10;fontColor=#1e3a5f;rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="20" y="66" width="900" height="22" as="geometry" />
+    </mxCell>
+
+    <!-- Sub-flow A label -->
+    <mxCell id="la" value="📌 SUB-FLOW A: Ghi Nhận Thanh Toán (Payment Recording)" style="text;html=1;strokeColor=#6c8ebf;fillColor=#eff3ff;align=left;fontSize=11;fontColor=#1e3a5f;fontStyle=1;rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="20" y="90" width="900" height="20" as="geometry" />
+    </mxCell>
+
+    <!-- Lanes -->
+    <mxCell id="10" value="Academic Admin (Giáo vụ)" style="swimlane;startSize=35;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="20" y="115" width="255" height="800" as="geometry" />
+    </mxCell>
+    <mxCell id="20" value="System (CLS)" style="swimlane;startSize=35;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="280" y="115" width="265" height="800" as="geometry" />
+    </mxCell>
+    <mxCell id="30" value="Parent / Phụ huynh" style="swimlane;startSize=35;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="550" y="115" width="225" height="800" as="geometry" />
+    </mxCell>
+
+    <!-- ===== SUB-FLOW A: Payment Recording ===== -->
+    <mxCell id="101" value="Bắt đầu&#xa;(Phụ huynh nộp học phí)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e3a5f;fontColor=#ffffff;strokeColor=#1e3a5f;fontStyle=1;fontSize=10;" vertex="1" parent="10">
+      <mxGeometry x="57" y="45" width="140" height="45" as="geometry" />
+    </mxCell>
+    <mxCell id="102" value="Ghi nhận thanh toán:&#xa;Số tiền, Ngày, Phương thức" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=11;" vertex="1" parent="10">
+      <mxGeometry x="37" y="125" width="181" height="52" as="geometry" />
+    </mxCell>
+    <mxCell id="103" value="Chọn Học viên &amp; Kỳ thanh toán" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=11;" vertex="1" parent="10">
+      <mxGeometry x="37" y="210" width="181" height="48" as="geometry" />
+    </mxCell>
+    <mxCell id="104" value="Xác nhận &amp; Lưu giao dịch" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=11;" vertex="1" parent="10">
+      <mxGeometry x="37" y="292" width="181" height="45" as="geometry" />
+    </mxCell>
+    <!-- NEW: Correction option -->
+    <mxCell id="104c" value="[Ngoại lệ] Admin phát hiện nhập sai&#xa;→ Void giao dịch &amp; Nhập lại" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;dashed=1;" vertex="1" parent="10">
+      <mxGeometry x="37" y="380" width="181" height="50" as="geometry" />
+    </mxCell>
+
+    <!-- System Sub-flow A -->
+    <mxCell id="201" value="Cập nhật trạng thái thanh toán trong DB&#xa;(Paid / Partial / Unpaid)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="20">
+      <mxGeometry x="42" y="292" width="181" height="52" as="geometry" />
+    </mxCell>
+
+    <!-- NEW: Partial payment decision -->
+    <mxCell id="202" value="Thanh toán đủ số tiền&#xa;quy định không?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="20">
+      <mxGeometry x="57" y="375" width="160" height="65" as="geometry" />
+    </mxCell>
+    <!-- NEW: Partial payment handling -->
+    <mxCell id="203p" value="Ghi nhận Partial Payment&#xa;→ Tạo reminder cho số tiền còn lại&#xa;→ Gửi Email Partial Receipt" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="20">
+      <mxGeometry x="42" y="462" width="181" height="62" as="geometry" />
+    </mxCell>
+    <mxCell id="203" value="📧 Gửi Email biên nhận học phí&#xa;(Full Payment – tự động)" style="shape=message;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="20">
+      <mxGeometry x="42" y="420" width="181" height="50" as="geometry" />
+    </mxCell>
+
+    <!-- Sub-flow B separator -->
+    <mxCell id="lb" value="📌 SUB-FLOW B: Phát Hiện Học Phí Quá Hạn (Overdue Detection – Automated Daily Job)" style="text;html=1;strokeColor=#b85450;fillColor=#fff0f0;align=left;fontSize=10;fontColor=#b85450;fontStyle=1;rounded=1;" vertex="1" parent="20">
+      <mxGeometry x="42" y="550" width="181" height="22" as="geometry" />
+    </mxCell>
+
+    <mxCell id="204" value="⏰ Daily Job: Quét học phí chưa thanh toán&#xa;quá ngày đến hạn" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="20">
+      <mxGeometry x="42" y="585" width="181" height="55" as="geometry" />
+    </mxCell>
+    <mxCell id="205" value="Có học phí quá hạn?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="20">
+      <mxGeometry x="62" y="668" width="150" height="58" as="geometry" />
+    </mxCell>
+    <mxCell id="206" value="⚠ Gửi cảnh báo quá hạn tới Admin&#xa;(Email + Dashboard)" style="shape=message;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="20">
+      <mxGeometry x="42" y="748" width="181" height="50" as="geometry" />
+    </mxCell>
+
+    <!-- Admin Sub-flow B -->
+    <mxCell id="105" value="Nhận cảnh báo học phí quá hạn" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="10">
+      <mxGeometry x="37" y="748" width="181" height="45" as="geometry" />
+    </mxCell>
+    <mxCell id="106" value="Liên hệ Phụ huynh nhắc nhở thanh toán" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=11;" vertex="1" parent="10">
+      <mxGeometry x="37" y="680" width="181" height="45" as="geometry" />
+    </mxCell>
+    <mxCell id="107" value="Kết thúc (Theo dõi quá hạn)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#b85450;fontColor=#ffffff;strokeColor=#b85450;fontStyle=1;fontSize=10;" vertex="1" parent="10">
+      <mxGeometry x="57" y="628" width="140" height="40" as="geometry" />
+    </mxCell>
+
+    <!-- Parent -->
+    <mxCell id="301" value="Nhận Email biên nhận học phí&#xa;chính thức từ Trung tâm" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="30">
+      <mxGeometry x="22" y="420" width="181" height="52" as="geometry" />
+    </mxCell>
+    <mxCell id="302" value="Nhận Email Partial Payment Receipt&#xa;+ Thông báo số tiền còn nợ" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="30">
+      <mxGeometry x="22" y="462" width="181" height="52" as="geometry" />
+    </mxCell>
+    <mxCell id="303" value="Kết thúc (Paid)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e3a5f;fontColor=#ffffff;strokeColor=#1e3a5f;fontStyle=1;fontSize=10;" vertex="1" parent="30">
+      <mxGeometry x="50" y="540" width="130" height="38" as="geometry" />
+    </mxCell>
+
+    <mxCell id="5" value="✅ POST-CONDITIONS: (1) PaymentRecord tạo thành công, trạng thái Paid/Partial/Unpaid cập nhật | (2) Email biên nhận gửi tới Phụ huynh | (3) Học phí quá hạn được Admin theo dõi chủ động" style="text;html=1;strokeColor=#82b366;fillColor=#d5e8d4;align=left;fontSize=10;fontColor=#1e3a5f;rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="20" y="922" width="900" height="22" as="geometry" />
+    </mxCell>
+
+    <!-- EDGES Sub-flow A -->
+    <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="101" target="102" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="102" target="103" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="103" target="104" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="104" target="201" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <!-- Correction exception -->
+    <mxCell id="e4c" value="Sai → Void" style="edgeStyle=orthogonalEdgeStyle;dashed=1;fontColor=#b85450;fontStyle=2;fontSize=10;" edge="1" source="104" target="104c" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e4d" style="edgeStyle=orthogonalEdgeStyle;dashed=1;" edge="1" source="104c" target="102" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="201" target="202" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <!-- Partial vs Full payment -->
+    <mxCell id="e6" value="Đủ (Full)" style="edgeStyle=orthogonalEdgeStyle;fontColor=#82b366;fontStyle=2;fontSize=10;" edge="1" source="202" target="203" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e7" value="Thiếu (Partial)" style="edgeStyle=orthogonalEdgeStyle;fontColor=#d6b656;fontStyle=2;fontSize=10;" edge="1" source="202" target="203p" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="203" target="301" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="203p" target="302" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="301" target="303" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e10b" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="302" target="303" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <!-- Sub-flow B edges -->
+    <mxCell id="e11" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="204" target="205" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e12" value="Có" style="edgeStyle=orthogonalEdgeStyle;fontColor=#b85450;fontStyle=2;fontSize=10;" edge="1" source="205" target="206" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e13" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="206" target="105" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e14" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="105" target="106" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e15" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="106" target="107" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e16" value="Không" style="edgeStyle=orthogonalEdgeStyle;fontColor=#82b366;fontStyle=2;fontSize=10;" edge="1" source="205" target="303" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+  </root>
+</mxGraphModel>

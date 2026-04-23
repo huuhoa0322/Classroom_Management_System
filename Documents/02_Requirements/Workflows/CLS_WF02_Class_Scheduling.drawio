@@ -1,0 +1,140 @@
+<mxfile host="Electron">
+  <diagram id="rWk4j0OaHWfoTrdtOinU" name="Trang-1">
+    <mxGraphModel dx="1271" dy="555" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontStyle=1;fontSize=15;fontColor=#1e3a5f;" value="WF-02: Luồng Xếp Lịch Học &amp; Kiểm Tra Xung Đột (Class Scheduling &amp; Conflict Check)" vertex="1">
+          <mxGeometry height="40" width="880" x="20" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="3" parent="1" style="text;html=1;strokeColor=#cccccc;fillColor=#f5f5f5;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontColor=#666666;" value="KPI: 0 Scheduling Conflicts | Actors: Academic Admin, System, Teacher" vertex="1">
+          <mxGeometry height="22" width="880" x="20" y="52" as="geometry" />
+        </mxCell>
+        <mxCell id="10" parent="1" style="swimlane;startSize=35;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=12;" value="Academic Admin (Giáo vụ)" vertex="1">
+          <mxGeometry height="990" width="240" x="20" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="101" parent="10" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e3a5f;fontColor=#ffffff;strokeColor=#1e3a5f;fontStyle=1;" value="Bắt đầu" vertex="1">
+          <mxGeometry height="40" width="100" x="70" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="102" parent="10" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=11;" value="Tạo lớp học mới (tên lớp, môn học, khóa học)" vertex="1">
+          <mxGeometry height="55" width="180" x="30" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="103" parent="10" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=11;" value="Gán: Giáo viên, Phòng học, Khung giờ, Ngày học" vertex="1">
+          <mxGeometry height="55" width="180" x="30" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="104" parent="10" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" value="Chọn lại Giáo viên khác" vertex="1">
+          <mxGeometry height="45" width="180" x="30" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="105" parent="10" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" value="Chọn lại Phòng học khác" vertex="1">
+          <mxGeometry height="45" width="180" x="30" y="650" as="geometry" />
+        </mxCell>
+        <mxCell id="106" parent="10" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=11;" value="Xem lại &amp; Xác nhận lịch học đã lưu" vertex="1">
+          <mxGeometry height="50" width="180" x="30" y="780" as="geometry" />
+        </mxCell>
+        <mxCell id="20" parent="1" style="swimlane;startSize=35;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;" value="System (CLS)" vertex="1">
+          <mxGeometry height="990" width="260" x="265" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="201" parent="20" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="Kiểm tra lịch dạy của Giáo viên trong khung giờ" vertex="1">
+          <mxGeometry height="55" width="180" x="40" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="202" parent="20" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" value="Giáo viên bị trùng lịch?" vertex="1">
+          <mxGeometry height="60" width="150" x="55" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="204" parent="20" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="Kiểm tra tình trạng Phòng học trong khung giờ" vertex="1">
+          <mxGeometry height="55" width="95" x="15" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="205" parent="20" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" value="Phòng học bị trùng?" vertex="1">
+          <mxGeometry height="55" width="140" x="60" y="620" as="geometry" />
+        </mxCell>
+        <mxCell id="207" parent="20" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" value="✅ Lưu lịch học vào DB (không xung đột)" vertex="1">
+          <mxGeometry height="50" width="85" x="15" y="780" as="geometry" />
+        </mxCell>
+        <mxCell id="208" parent="20" style="shape=message;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" value="Gửi thông báo lịch dạy tới Giáo viên (Email)" vertex="1">
+          <mxGeometry height="40" width="180" x="40" y="867.5" as="geometry" />
+        </mxCell>
+        <mxCell id="206" parent="20" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" value="⚠ Cảnh báo: Phòng đã được đặt trong khung giờ này" vertex="1">
+          <mxGeometry height="50" width="105" x="145" y="780" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="20" source="205" style="edgeStyle=orthogonalEdgeStyle;fontColor=#b85450;fontStyle=2;" target="206" value="Có">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="203" parent="20" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" value="⚠ Cảnh báo: Giáo viên đã có lịch dạy trong khung giờ này" vertex="1">
+          <mxGeometry height="55" width="115" x="135" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="20" source="202" style="edgeStyle=orthogonalEdgeStyle;fontColor=#b85450;fontStyle=2;" target="203" value="Có">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="30" parent="1" style="swimlane;startSize=35;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=12;" value="Teacher / Giáo viên" vertex="1">
+          <mxGeometry height="990" width="220" x="530" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="301" parent="30" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" value="Nhận thông báo &amp; Xem lịch dạy đã xác nhận" vertex="1">
+          <mxGeometry height="55" width="180" x="20" y="860" as="geometry" />
+        </mxCell>
+        <mxCell id="302" parent="30" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e3a5f;fontColor=#ffffff;strokeColor=#1e3a5f;fontStyle=1;" value="Kết thúc" vertex="1">
+          <mxGeometry height="40" width="100" x="60" y="940" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="101" style="edgeStyle=orthogonalEdgeStyle;" target="102">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="102" style="edgeStyle=orthogonalEdgeStyle;" target="103">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="103" style="edgeStyle=orthogonalEdgeStyle;" target="201">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="201" style="edgeStyle=orthogonalEdgeStyle;" target="202">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5b" edge="1" parent="1" source="203" style="edgeStyle=orthogonalEdgeStyle;exitX=0.5;exitY=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitDx=0;exitDy=0;" target="104">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="458" y="620" />
+              <mxPoint x="140" y="620" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e5c" edge="1" parent="1" source="104" style="edgeStyle=orthogonalEdgeStyle;" target="103">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="202" style="edgeStyle=orthogonalEdgeStyle;fontColor=#82b366;fontStyle=2;" target="204" value="Không">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="204" style="edgeStyle=orthogonalEdgeStyle;" target="205">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8b" edge="1" parent="1" source="206" style="edgeStyle=orthogonalEdgeStyle;exitX=0;exitY=0.5;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitDx=0;exitDy=0;" target="105">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="390" y="885" />
+              <mxPoint x="390" y="830" />
+              <mxPoint x="140" y="830" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e8c" edge="1" parent="1" source="105" style="edgeStyle=orthogonalEdgeStyle;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="103">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="30" y="753" />
+              <mxPoint x="30" y="318" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="205" style="edgeStyle=orthogonalEdgeStyle;fontColor=#82b366;fontStyle=2;" target="207" value="Không">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="207" style="edgeStyle=orthogonalEdgeStyle;" target="106">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="1" source="207" style="edgeStyle=orthogonalEdgeStyle;" target="208">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="1" source="208" style="edgeStyle=orthogonalEdgeStyle;" target="301">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e13" edge="1" parent="1" source="301" style="edgeStyle=orthogonalEdgeStyle;" target="302">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

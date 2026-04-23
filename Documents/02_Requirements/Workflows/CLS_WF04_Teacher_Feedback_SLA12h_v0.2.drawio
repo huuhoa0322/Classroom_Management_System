@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+  <root>
+    <mxCell id="0" /><mxCell id="1" parent="0" />
+
+    <mxCell id="2" value="WF-04 v0.2: Luồng Giáo Viên Gửi Nhận Xét Học Viên – SLA 12 Giờ (Teacher Feedback SLA 12h)" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontStyle=1;fontSize=14;fontColor=#1e3a5f;" vertex="1" parent="1">
+      <mxGeometry x="20" y="8" width="1110" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="3" value="KPI: Academic QA | SLA: Feedback phải submit trong 12h sau buổi học | ⚡ SLA Timer chạy SONG SONG với hành động của Teacher | Actors: System, Teacher, Parent, Academic Admin" style="text;html=1;strokeColor=#cccccc;fillColor=#f5f5f5;align=center;fontSize=10;fontColor=#666666;" vertex="1" parent="1">
+      <mxGeometry x="20" y="44" width="1110" height="20" as="geometry" />
+    </mxCell>
+    <mxCell id="4" value="📋 PRE-CONDITIONS: (1) Buổi học đã kết thúc, trạng thái Completed | (2) Danh sách học viên tham gia buổi học đã có trong DB | (3) Teacher đã đăng nhập" style="text;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;align=left;fontSize=10;fontColor=#1e3a5f;rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="20" y="66" width="1110" height="22" as="geometry" />
+    </mxCell>
+
+    <!-- SLA Parallel Track Label -->
+    <mxCell id="6" value="⚡ PARALLEL SLA TIMER TRACK (chạy đồng thời, không chặn happy path)" style="text;html=1;strokeColor=#d6b656;fillColor=#fff2cc;align=center;fontSize=10;fontColor=#7d5a00;rounded=1;fontStyle=3;" vertex="1" parent="1">
+      <mxGeometry x="20" y="90" width="1110" height="18" as="geometry" />
+    </mxCell>
+
+    <!-- Lanes: System | Teacher | Parent | Academic Admin -->
+    <mxCell id="10" value="System (CLS)" style="swimlane;startSize=35;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="20" y="115" width="250" height="740" as="geometry" />
+    </mxCell>
+    <mxCell id="20" value="Teacher / Giáo viên" style="swimlane;startSize=35;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="275" y="115" width="250" height="740" as="geometry" />
+    </mxCell>
+    <mxCell id="30" value="Parent / Phụ huynh" style="swimlane;startSize=35;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="530" y="115" width="230" height="740" as="geometry" />
+    </mxCell>
+    <mxCell id="40" value="Academic Admin (Giáo vụ)" style="swimlane;startSize=35;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="765" y="115" width="250" height="740" as="geometry" />
+    </mxCell>
+
+    <!-- System: START + create pending record -->
+    <mxCell id="101" value="Buổi học kết thúc&#xa;→ System tạo Pending Feedback Record" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e3a5f;fontColor=#ffffff;strokeColor=#1e3a5f;fontStyle=1;fontSize=10;" vertex="1" parent="10">
+      <mxGeometry x="37" y="45" width="176" height="52" as="geometry" />
+    </mxCell>
+    <mxCell id="102" value="Khởi động bộ đếm SLA 12h&#xa;(Feedback Due Timer – PARALLEL)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontStyle=2;" vertex="1" parent="10">
+      <mxGeometry x="37" y="130" width="176" height="52" as="geometry" />
+    </mxCell>
+    <mxCell id="103" value="📧 Gửi thông báo cho Teacher:&#xa;Feedback cần nộp trong 12h" style="shape=message;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="10">
+      <mxGeometry x="37" y="215" width="176" height="50" as="geometry" />
+    </mxCell>
+    <!-- FIXED: Record feedback (moved up, no overlap with SLA check) -->
+    <mxCell id="106" value="✅ Ghi nhận Feedback vào DB&#xa;(liên kết học viên - buổi học)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="10">
+      <mxGeometry x="37" y="460" width="176" height="52" as="geometry" />
+    </mxCell>
+    <!-- NEW: Content validation -->
+    <mxCell id="106v" value="Validate nội dung Feedback&#xa;(không rỗng, đủ độ dài tối thiểu)" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="10">
+      <mxGeometry x="47" y="400" width="165" height="58" as="geometry" />
+    </mxCell>
+    <!-- NEW: Reject empty feedback -->
+    <mxCell id="106r" value="⚠ Từ chối: Yêu cầu Teacher điền lại nội dung" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="10">
+      <mxGeometry x="37" y="355" width="176" height="42" as="geometry" />
+    </mxCell>
+    <mxCell id="107" value="📧 Gửi Email nhận xét học thuật&#xa;tới Phụ huynh (tự động)" style="shape=message;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="10">
+      <mxGeometry x="37" y="545" width="176" height="50" as="geometry" />
+    </mxCell>
+
+    <!-- PARALLEL SLA TIMER: After 12h, System checks -->
+    <!-- FIXED: Decision 104 now clearly in parallel track section, not overlapping with 106 -->
+    <mxCell id="104" value="⏱ Sau 12h: Feedback đã được submit chưa?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontStyle=3;" vertex="1" parent="10">
+      <mxGeometry x="47" y="640" width="165" height="65" as="geometry" />
+    </mxCell>
+    <mxCell id="105" value="⚠ SLA Vi phạm: Cảnh báo Academic Admin" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="10">
+      <mxGeometry x="37" y="720" width="176" height="42" as="geometry" />
+    </mxCell>
+
+    <!-- Teacher shapes -->
+    <mxCell id="201" value="Nhận thông báo SLA&#xa;trên điện thoại / Email" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="20">
+      <mxGeometry x="37" y="215" width="175" height="50" as="geometry" />
+    </mxCell>
+    <mxCell id="202" value="Mở Form Nhận xét&#xa;(Mobile-friendly, đơn giản)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="20">
+      <mxGeometry x="37" y="300" width="175" height="50" as="geometry" />
+    </mxCell>
+    <mxCell id="203" value="Nhập nhận xét cho từng học viên&#xa;trong lớp học" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="20">
+      <mxGeometry x="37" y="385" width="175" height="52" as="geometry" />
+    </mxCell>
+    <mxCell id="204" value="Submit nhận xét&#xa;(Gửi &amp; Hoàn thành)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="20">
+      <mxGeometry x="37" y="465" width="175" height="48" as="geometry" />
+    </mxCell>
+
+    <!-- Parent shapes -->
+    <mxCell id="301" value="Nhận Email nhận xét học thuật về con&#xa;(trong vòng 12h sau buổi học)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="30">
+      <mxGeometry x="25" y="545" width="180" height="52" as="geometry" />
+    </mxCell>
+    <mxCell id="302" value="Kết thúc" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e3a5f;fontColor=#ffffff;strokeColor=#1e3a5f;fontStyle=1;" vertex="1" parent="30">
+      <mxGeometry x="65" y="625" width="100" height="38" as="geometry" />
+    </mxCell>
+
+    <!-- Admin shapes -->
+    <mxCell id="401" value="Nhận cảnh báo SLA vi phạm từ System" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="40">
+      <mxGeometry x="37" y="720" width="175" height="42" as="geometry" />
+    </mxCell>
+    <mxCell id="402" value="Chủ động nhắc nhở Giáo viên&#xa;nộp nhận xét ngay" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=11;" vertex="1" parent="40">
+      <mxGeometry x="37" y="640" width="175" height="48" as="geometry" />
+    </mxCell>
+
+    <mxCell id="5" value="✅ POST-CONDITIONS: (1) Feedback linked tới buổi học trong DB | (2) Parent nhận Email nhận xét trong vòng 12h | (3) Nếu SLA vi phạm: Admin log ghi nhận" style="text;html=1;strokeColor=#82b366;fillColor=#d5e8d4;align=left;fontSize=10;fontColor=#1e3a5f;rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="20" y="862" width="1110" height="22" as="geometry" />
+    </mxCell>
+
+    <!-- EDGES: Happy path -->
+    <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="101" target="102" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="102" target="103" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="103" target="201" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="201" target="202" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="202" target="203" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="203" target="204" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="204" target="106v" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <!-- Validation decision -->
+    <mxCell id="e7a" value="Hợp lệ" style="edgeStyle=orthogonalEdgeStyle;fontColor=#82b366;fontStyle=2;fontSize=10;" edge="1" source="106v" target="106" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e7b" value="Rỗng/Ngắn" style="edgeStyle=orthogonalEdgeStyle;fontColor=#b85450;fontStyle=2;fontSize=10;" edge="1" source="106v" target="106r" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e7c" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="106r" target="203" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="106" target="107" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="107" target="301" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="301" target="302" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <!-- SLA Parallel timer edges (dashed = async) -->
+    <mxCell id="e11" value="Chờ 12h (async)" style="edgeStyle=orthogonalEdgeStyle;dashed=1;fontColor=#d6b656;fontStyle=3;fontSize=9;" edge="1" source="102" target="104" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e12" value="Chưa submit" style="edgeStyle=orthogonalEdgeStyle;fontColor=#b85450;fontStyle=2;fontSize=10;" edge="1" source="104" target="105" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e13" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="105" target="401" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e14" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="401" target="402" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e15" value="Đã submit" style="edgeStyle=orthogonalEdgeStyle;fontColor=#82b366;fontStyle=2;fontSize=10;" edge="1" source="104" target="302" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+  </root>
+</mxGraphModel>

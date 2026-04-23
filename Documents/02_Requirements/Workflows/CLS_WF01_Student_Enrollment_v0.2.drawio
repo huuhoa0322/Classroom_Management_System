@@ -1,0 +1,147 @@
+<mxfile host="Electron">
+  <diagram id="Uh5yJ_qNm8NW_itQrW5M" name="Trang-1">
+    <mxGraphModel dx="1165" dy="509" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontStyle=1;fontSize=15;fontColor=#1e3a5f;" value="WF-01 v0.2: Luồng Nhập Học Học Viên (Student Enrollment)" vertex="1">
+          <mxGeometry height="35" width="860" x="20" y="8" as="geometry" />
+        </mxCell>
+        <mxCell id="3" parent="1" style="text;html=1;strokeColor=#cccccc;fillColor=#f5f5f5;align=center;fontSize=10;fontColor=#666666;" value="KPI: Admin Efficiency (Reclaim 15h/week) | Actors: Academic Admin, System, Parent" vertex="1">
+          <mxGeometry height="20" width="860" x="20" y="44" as="geometry" />
+        </mxCell>
+        <mxCell id="4" parent="1" style="text;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;align=left;fontSize=10;fontColor=#1e3a5f;rounded=1;" value="📋 PRE-CONDITIONS: (1) Admin đã đăng nhập hệ thống | (2) Phụ huynh đã liên hệ trung tâm | (3) Lớp học và gói học phí đã được tạo trong DB" vertex="1">
+          <mxGeometry height="22" width="860" x="20" y="66" as="geometry" />
+        </mxCell>
+        <mxCell id="10" parent="1" style="swimlane;startSize=35;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=12;" value="Academic Admin (Giáo vụ)" vertex="1">
+          <mxGeometry height="1025" width="230" x="20" y="95" as="geometry" />
+        </mxCell>
+        <mxCell id="101" parent="10" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e3a5f;fontColor=#ffffff;strokeColor=#1e3a5f;fontStyle=1;" value="Bắt đầu" vertex="1">
+          <mxGeometry height="38" width="100" x="65" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="102" parent="10" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=11;" value="Tiếp nhận yêu cầu nhập học từ Phụ huynh" vertex="1">
+          <mxGeometry height="50" width="180" x="25" y="115" as="geometry" />
+        </mxCell>
+        <mxCell id="103" parent="10" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=11;" value="Nhập thông tin học viên (họ tên, liên hệ, ngày sinh)" vertex="1">
+          <mxGeometry height="50" width="180" x="25" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="104" parent="10" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=11;" value="Chọn lớp học &amp; Gói học phí" vertex="1">
+          <mxGeometry height="50" width="180" x="25" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="105" parent="10" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=11;" value="Xác nhận hoàn tất nhập học" vertex="1">
+          <mxGeometry height="45" width="180" x="25" y="602.5" as="geometry" />
+        </mxCell>
+        <mxCell id="106" parent="10" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" value="⚠ Nhận cảnh báo Email gửi lỗi → Liên hệ thủ công với Phụ huynh" vertex="1">
+          <mxGeometry height="50" width="180" x="25" y="962.5" as="geometry" />
+        </mxCell>
+        <mxCell id="20" parent="1" style="swimlane;startSize=35;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;" value="System (CLS)" vertex="1">
+          <mxGeometry height="1025" width="255" x="255" y="95" as="geometry" />
+        </mxCell>
+        <mxCell id="201" parent="20" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="Validate dữ liệu (trùng lặp, thiếu trường bắt buộc)" vertex="1">
+          <mxGeometry height="50" width="180" x="38" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="202" parent="20" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" value="Dữ liệu hợp lệ?" vertex="1">
+          <mxGeometry height="58" width="145" x="55" y="275" as="geometry" />
+        </mxCell>
+        <mxCell id="203" parent="20" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" value="Hiển thị lỗi, yêu cầu nhập lại" vertex="1">
+          <mxGeometry height="42" width="180" x="40.5" y="355" as="geometry" />
+        </mxCell>
+        <mxCell id="204" parent="20" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="Kiểm tra xung đột lịch học &amp; phòng" vertex="1">
+          <mxGeometry height="50" width="180" x="38" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="205" parent="20" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" value="Có xung đột?" vertex="1">
+          <mxGeometry height="52" width="120" x="67.5" y="475" as="geometry" />
+        </mxCell>
+        <mxCell id="206" parent="20" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" value="Thông báo xung đột, yêu cầu chọn lại" vertex="1">
+          <mxGeometry height="42" width="180" x="40.5" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="207" parent="20" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" value="Tạo hồ sơ học viên trong DB&#xa;Ghi nhận gói học phí &amp; số buổi" vertex="1">
+          <mxGeometry height="50" width="180" x="38" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="208" parent="20" style="shape=message;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" value="📧 Gửi Email chào mừng tới Phụ huynh (tự động)" vertex="1">
+          <mxGeometry height="42" width="180" x="37.5" y="685" as="geometry" />
+        </mxCell>
+        <mxCell id="209" parent="20" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" value="Email gửi thành công?" vertex="1">
+          <mxGeometry height="55" width="145" x="55" y="785" as="geometry" />
+        </mxCell>
+        <mxCell id="210" parent="20" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" value="Log lỗi gửi Email&#xa;→ Alert Admin retry" vertex="1">
+          <mxGeometry height="45" width="180" x="37.5" y="965" as="geometry" />
+        </mxCell>
+        <mxCell id="30" parent="1" style="swimlane;startSize=35;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12;" value="Parent / Phụ huynh" vertex="1">
+          <mxGeometry height="1025" width="220" x="515" y="95" as="geometry" />
+        </mxCell>
+        <mxCell id="301" parent="30" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" value="Nhận Email xác nhận nhập học &amp; thông tin lớp học" vertex="1">
+          <mxGeometry height="50" width="180" x="20" y="895" as="geometry" />
+        </mxCell>
+        <mxCell id="302" parent="30" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e3a5f;fontColor=#ffffff;strokeColor=#1e3a5f;fontStyle=1;" value="Kết thúc" vertex="1">
+          <mxGeometry height="38" width="100" x="60" y="975" as="geometry" />
+        </mxCell>
+        <mxCell id="5" parent="1" style="text;html=1;strokeColor=#82b366;fillColor=#d5e8d4;align=left;fontSize=10;fontColor=#1e3a5f;rounded=1;" value="✅ POST-CONDITIONS: (1) Hồ sơ học viên Active trong DB | (2) Gói học phí ghi nhận đủ số buổi | (3) Email chào mừng đã gửi tới Phụ huynh" vertex="1">
+          <mxGeometry height="22" width="860" x="20" y="1130" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="101" style="edgeStyle=orthogonalEdgeStyle;" target="102">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="102" style="edgeStyle=orthogonalEdgeStyle;" target="103">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="103" style="edgeStyle=orthogonalEdgeStyle;" target="201">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="201" style="edgeStyle=orthogonalEdgeStyle;" target="202">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="202" style="edgeStyle=orthogonalEdgeStyle;exitX=1;exitY=0.5;entryX=1;entryY=0.5;fontColor=#b85450;fontStyle=2;fontSize=10;" target="203" value="Không hợp lệ">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="500" y="399" />
+              <mxPoint x="500" y="471" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e5b" edge="1" parent="1" source="203" style="edgeStyle=orthogonalEdgeStyle;exitX=0;exitY=0.5;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" target="103">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="202" style="edgeStyle=orthogonalEdgeStyle;exitX=0;exitY=1;entryX=0.5;entryY=0;fontColor=#82b366;fontStyle=2;fontSize=10;" target="104" value="Hợp lệ">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="104" style="edgeStyle=orthogonalEdgeStyle;" target="204">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="204" style="edgeStyle=orthogonalEdgeStyle;" target="205">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="205" style="edgeStyle=orthogonalEdgeStyle;exitX=1;exitY=0.5;entryX=1;entryY=0.5;fontColor=#b85450;fontStyle=2;fontSize=10;" target="206" value="Có">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9b" edge="1" parent="1" source="206" style="edgeStyle=orthogonalEdgeStyle;exitX=0;exitY=0.5;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" target="104">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="205" style="edgeStyle=orthogonalEdgeStyle;exitX=0;exitY=1;entryX=0.5;entryY=0;fontColor=#82b366;fontStyle=2;fontSize=10;" target="105" value="Không">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="1" source="105" style="edgeStyle=orthogonalEdgeStyle;" target="207">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="1" source="207" style="edgeStyle=orthogonalEdgeStyle;" target="208">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e13" edge="1" parent="1" source="209" style="edgeStyle=orthogonalEdgeStyle;fontColor=#82b366;fontStyle=2;fontSize=10;" target="301" value="OK">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e13b" edge="1" parent="1" source="209" style="edgeStyle=orthogonalEdgeStyle;fontColor=#b85450;fontStyle=2;fontSize=10;" target="210" value="Lỗi">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e13c" edge="1" parent="1" source="210" style="edgeStyle=orthogonalEdgeStyle;" target="106">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e14" edge="1" parent="1" source="301" style="edgeStyle=orthogonalEdgeStyle;" target="302">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e15" edge="1" parent="1" source="208" style="edgeStyle=orthogonalEdgeStyle;" target="209">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

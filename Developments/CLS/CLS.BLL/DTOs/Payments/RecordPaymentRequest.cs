@@ -13,7 +13,4 @@ public class RecordPaymentRequest
 
     /// <summary>Số tiền thanh toán (VNĐ).</summary>
     public decimal AmountPaid { get; set; }
-
-    /// <summary>Ghi chú tuỳ chọn (thông tin chuyển khoản...).</summary>
-    public string? Note { get; set; }
 }

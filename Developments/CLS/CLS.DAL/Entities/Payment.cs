@@ -32,8 +32,6 @@ public class Payment : BaseEntity
     /// </summary>
     public string Status { get; set; } = "pending";
 
-    /// <summary>Ghi chú tuỳ chọn (thông tin chuyển khoản, lý do...).</summary>
-    public string? Note { get; set; }
 
     // ── Navigation Properties ────────────────────────────────────────────
     /// <summary>Gói học sinh liên kết.</summary>

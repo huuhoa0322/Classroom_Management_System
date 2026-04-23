@@ -67,7 +67,6 @@ export function PaymentHistoryTable({
               <th className="text-left py-3 px-4 font-medium text-gray-500">Gói học</th>
               <th className="text-right py-3 px-4 font-medium text-gray-500">Số tiền</th>
               <th className="text-center py-3 px-4 font-medium text-gray-500">Trạng thái</th>
-              <th className="text-left py-3 px-4 font-medium text-gray-500">Ghi chú</th>
               <th className="text-left py-3 px-4 font-medium text-gray-500">Người ghi</th>
               <th className="text-center py-3 px-4 font-medium text-gray-500">Thao tác</th>
             </tr>
@@ -88,9 +87,6 @@ export function PaymentHistoryTable({
                     <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${badge.className}`}>
                       {badge.label}
                     </span>
-                  </td>
-                  <td className="py-3 px-4 max-w-[200px] truncate text-gray-500">
-                    {payment.note || '—'}
                   </td>
                   <td className="py-3 px-4 text-gray-600">{payment.recordedByName}</td>
                   <td className="py-3 px-4 text-center">

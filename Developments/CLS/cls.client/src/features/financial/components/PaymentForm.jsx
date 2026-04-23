@@ -24,7 +24,6 @@ export function PaymentForm({ studentId, onSubmit, onCancel, isSubmitting }) {
       studentId,
       tuitionPackageId: '',
       amountPaid: '',
-      note: '',
     },
   });
 
@@ -97,20 +96,6 @@ export function PaymentForm({ studentId, onSubmit, onCancel, isSubmitting }) {
           </svg>
           Chuyển khoản ngân hàng
         </div>
-      </div>
-
-      {/* Ghi chú */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Ghi chú</label>
-        <textarea
-          {...register('note')}
-          rows={3}
-          placeholder="Thông tin chuyển khoản, số tham chiếu..."
-          className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
-        />
-        {errors.note && (
-          <p className="text-red-500 text-xs mt-1">{errors.note.message}</p>
-        )}
       </div>
 
       {/* Trạng thái khởi tạo */}

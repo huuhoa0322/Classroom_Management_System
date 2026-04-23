@@ -13,7 +13,6 @@ public class PaymentResponse
     public DateTime PaymentDate { get; set; }
     public string PaymentMethod { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
-    public string? Note { get; set; }
     public string RecordedByName { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
 }

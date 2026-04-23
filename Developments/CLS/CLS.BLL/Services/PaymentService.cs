@@ -85,8 +85,7 @@ public class PaymentService : IPaymentService
             Amount           = request.AmountPaid,
             PaymentDate      = DateTime.UtcNow,
             PaymentMethod    = AppConstants.PaymentMethod.BankTransfer,
-            Status           = AppConstants.PaymentStatus.Pending,
-            Note             = request.Note
+            Status           = AppConstants.PaymentStatus.Pending
         };
         // Liên kết qua navigation property (EF Core tự resolve FK)
         payment.StudentPackage = studentPackage;

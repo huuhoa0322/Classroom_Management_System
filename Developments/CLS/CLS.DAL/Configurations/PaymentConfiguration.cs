@@ -40,8 +40,6 @@ public class PaymentConfiguration : BaseEntityConfiguration<Payment>
                .HasDefaultValue("pending")
                .IsRequired();
 
-        builder.Property(x => x.Note)
-               .HasColumnName("note");
 
         // FK: payment → student_package (RESTRICT)
         builder.HasOne(x => x.StudentPackage)

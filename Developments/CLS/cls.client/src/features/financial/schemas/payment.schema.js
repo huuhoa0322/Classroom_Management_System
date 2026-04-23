@@ -18,10 +18,4 @@ export const recordPaymentSchema = z.object({
   amountPaid: z
     .number({ required_error: 'Số tiền là bắt buộc.' })
     .min(0, 'Số tiền phải >= 0.'),
-
-  note: z
-    .string()
-    .max(500, 'Ghi chú không được quá 500 ký tự.')
-    .optional()
-    .or(z.literal('')),
 });

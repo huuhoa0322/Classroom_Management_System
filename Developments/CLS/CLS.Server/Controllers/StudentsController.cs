@@ -14,6 +14,8 @@ namespace CLS.Server.Controllers;
 [ApiController]
 [Route("api/v1/students")]
 [Authorize(Roles = "Admin")]
+[ProducesResponseType(typeof(ApiResponse<object>), 401)]   // Chưa đăng nhập
+[ProducesResponseType(typeof(ApiResponse<object>), 403)]   // Không đủ quyền (không phải Admin)
 public class StudentsController : ControllerBase
 {
     private readonly IStudentService _studentService;
@@ -62,6 +64,7 @@ public class StudentsController : ControllerBase
     /// <summary>Cập nhật thông tin cá nhân học sinh (CLS-002).</summary>
     [HttpPut("{id:int}")]
     [ProducesResponseType(typeof(ApiResponse<StudentResponse>), 200)]
+    [ProducesResponseType(typeof(ApiResponse<object>), 400)]   // Validation error
     [ProducesResponseType(typeof(ApiResponse<object>), 404)]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateStudentRequest request, CancellationToken ct = default)
     {
@@ -73,8 +76,8 @@ public class StudentsController : ControllerBase
     /// <summary>Thay đổi trạng thái vòng đời học sinh: active ↔ inactive (CLS-002 AC1).</summary>
     [HttpPatch("{id:int}/status")]
     [ProducesResponseType(typeof(ApiResponse<StudentResponse>), 200)]
+    [ProducesResponseType(typeof(ApiResponse<object>), 400)]   // Invalid status value
     [ProducesResponseType(typeof(ApiResponse<object>), 404)]
-    [ProducesResponseType(typeof(ApiResponse<object>), 400)]
     public async Task<IActionResult> UpdateStatus(
         int id, [FromBody] UpdateStudentStatusRequest request, CancellationToken ct = default)
     {

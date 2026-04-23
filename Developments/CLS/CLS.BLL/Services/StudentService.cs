@@ -75,14 +75,25 @@ public class StudentService : IStudentService
             _logger.LogInformation("Linked existing Parent {ParentId} with Email {Email}", parent.Id, request.ParentEmail);
         }
 
-        // BƯỚC 2: Tạo Student, gán navigation property Parent (Issue #4 fix)
-        // EF Core tự resolve FK khi có navigation property — chỉ cần 1 lần SaveChanges
+        // BƯỚC 2: Tạo Student và liên kết với Parent
         var student = _mapper.Map<Student>(request);
         student.EnrolledAt = DateTime.UtcNow;
-        student.Parent     = parent;   // navigation property → EF Core tự set ParentId
+
+        if (parent.Id == 0)
+        {
+            // Parent MỚI — đang tracked bởi EF Core (qua AddAsync ở trên)
+            // Dùng navigation property: EF Core không insert lại
+            student.Parent = parent;
+        }
+        else
+        {
+            // Parent ĐÃ TỒN TẠI — AsNoTracking (untracked)
+            // Chỉ set FK trực tiếp để tránh EF Core mark parent là Added → DUPLICATE KEY
+            student.ParentId = parent.Id;
+        }
 
         await _studentRepo.AddAsync(student, ct);
-        await _studentRepo.SaveChangesAsync(ct);   // Issue #2 fix — không cần _ctx trực tiếp
+        await _studentRepo.SaveChangesAsync(ct);
 
         _logger.LogInformation("Created Student {StudentId} ({Name}) linked to Parent {ParentId}",
             student.Id, student.FullName, parent.Id);
@@ -108,8 +119,13 @@ public class StudentService : IStudentService
             ?? throw new NotFoundException($"Học sinh #{id} không tồn tại.");
 
         _mapper.Map(request, student);
+
+        // Ngắt navigation Parent trước Update để EF Core không mark Parent là Modified
+        var parentRef   = student.Parent;
+        student.Parent  = null!;
         _studentRepo.Update(student);
-        await _studentRepo.SaveChangesAsync(ct);   // Issue #2 fix
+        await _studentRepo.SaveChangesAsync(ct);
+        student.Parent = parentRef;   // Khôi phục để AutoMapper map được Parent fields
 
         _logger.LogInformation("Updated Student {StudentId}", id);
         return _mapper.Map<StudentResponse>(student);
@@ -126,7 +142,7 @@ public class StudentService : IStudentService
         var student = await _studentRepo.GetWithParentAsync(id, ct)
             ?? throw new NotFoundException($"Học sinh #{id} không tồn tại.");
 
-        var oldStatus = student.Status;
+        var oldStatus  = student.Status;
         student.Status = request.Status;
 
         if (request.Status == AppConstants.StudentStatus.Inactive)
@@ -137,8 +153,12 @@ public class StudentService : IStudentService
                 id, student.FullName);
         }
 
+        // Ngắt navigation Parent trước Update để EF Core không mark Parent là Modified
+        var parentRef   = student.Parent;
+        student.Parent  = null!;
         _studentRepo.Update(student);
-        await _studentRepo.SaveChangesAsync(ct);   // Issue #2 fix
+        await _studentRepo.SaveChangesAsync(ct);
+        student.Parent = parentRef;   // Khôi phục để AutoMapper map được Parent fields
 
         _logger.LogInformation("Student {StudentId} status changed: {Old} → {New}", id, oldStatus, request.Status);
         return _mapper.Map<StudentResponse>(student);

@@ -17,10 +17,11 @@ public class StudentMappingProfile : Profile
             .ForMember(d => d.ParentRelationship,  o => o.MapFrom(s => s.Parent.Relationship));
 
         // CreateStudentRequest → Student (chỉ fields của Student)
+        // EnrolledAt được set trong Service (nguồn duy nhất của truth — không set ở Mapper)
         CreateMap<CreateStudentRequest, Student>()
-            .ForMember(d => d.EnrolledAt, o => o.MapFrom(_ => DateTime.UtcNow))
+            .ForMember(d => d.EnrolledAt, o => o.Ignore())    // set trong Service.CreateAsync
             .ForMember(d => d.Status,     o => o.MapFrom(_ => "active"))
-            .ForMember(d => d.ParentId,   o => o.Ignore())   // set qua navigation property
+            .ForMember(d => d.ParentId,   o => o.Ignore())    // set qua FK hoặc navigation property
             .ForMember(d => d.Parent,     o => o.Ignore());   // service gán thủ công sau upsert
 
         // CreateStudentRequest → Parent (chỉ fields của Parent)

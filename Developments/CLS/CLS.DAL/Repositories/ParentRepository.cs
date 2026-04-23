@@ -11,7 +11,8 @@ public class ParentRepository : IParentRepository
     public ParentRepository(AppDbContext ctx) => _ctx = ctx;
 
     public async Task<Parent?> GetByIdAsync(int id, CancellationToken ct = default)
-        => await _ctx.Parents.FindAsync([id], ct);
+        // FindAsync bỏ qua HasQueryFilter (soft-delete) — dùng FirstOrDefaultAsync thay thế
+        => await _ctx.Parents.FirstOrDefaultAsync(p => p.Id == id, ct);
 
     public async Task<IEnumerable<Parent>> GetAllAsync(CancellationToken ct = default)
         => await _ctx.Parents.AsNoTracking().ToListAsync(ct);

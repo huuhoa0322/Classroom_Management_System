@@ -11,7 +11,8 @@ public class StudentRepository : IStudentRepository
     public StudentRepository(AppDbContext ctx) => _ctx = ctx;
 
     public async Task<Student?> GetByIdAsync(int id, CancellationToken ct = default)
-        => await _ctx.Students.FindAsync([id], ct);
+        // FindAsync bỏ qua HasQueryFilter (soft-delete) — dùng FirstOrDefaultAsync thay thế
+        => await _ctx.Students.FirstOrDefaultAsync(s => s.Id == id, ct);
 
     public async Task<IEnumerable<Student>> GetAllAsync(CancellationToken ct = default)
         => await _ctx.Students.AsNoTracking().ToListAsync(ct);

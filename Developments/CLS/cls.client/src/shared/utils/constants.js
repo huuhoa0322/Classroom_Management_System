@@ -15,6 +15,7 @@ export const ROUTE_PATHS = {
   DASHBOARD: '/',
   STUDENTS: '/students',
   STUDENT_DETAIL: '/students/:id',
+  STUDENT_FINANCIALS: '/students/:id/financials',
   CLASSES: '/classes',
   SESSIONS: '/sessions',
   ATTENDANCE: '/attendance',
@@ -42,9 +43,20 @@ export const SESSION_STATUS = {
  * Trạng thái gói học (Student Package).
  */
 export const PACKAGE_STATUS = {
+  PENDING_PAYMENT: 'pending_payment',
   ACTIVE: 'active',
-  EXPIRED: 'expired',
   DEPLETED: 'depleted',
+  ARCHIVED: 'archived',
+};
+
+/**
+ * Trạng thái thanh toán (Payment — CLS-003).
+ */
+export const PAYMENT_STATUS = {
+  PENDING: 'pending',
+  CONFIRMED: 'confirmed',
+  FAILED: 'failed',
+  REFUNDED: 'refunded',
 };
 
 /**

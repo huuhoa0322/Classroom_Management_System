@@ -52,14 +52,22 @@ export function formatCurrency(amount) {
  */
 export function getStatusBadge(status) {
   const map = {
-    active:    { label: 'Hoạt động',    className: 'bg-green-100 text-green-700' },
-    inactive:  { label: 'Ngừng hoạt động', className: 'bg-gray-100 text-gray-600' },
-    suspended: { label: 'Tạm dừng',     className: 'bg-yellow-100 text-yellow-700' },
-    expired:   { label: 'Hết hạn',      className: 'bg-red-100 text-red-600' },
-    depleted:  { label: 'Hết buổi',     className: 'bg-orange-100 text-orange-600' },
-    scheduled: { label: 'Đã lên lịch',  className: 'bg-blue-100 text-blue-600' },
-    completed: { label: 'Đã hoàn thành', className: 'bg-green-100 text-green-700' },
-    cancelled: { label: 'Đã hủy',       className: 'bg-red-100 text-red-600' },
+    active:          { label: 'Hoạt động',       className: 'bg-green-100 text-green-700' },
+    inactive:        { label: 'Ngừng hoạt động',  className: 'bg-gray-100 text-gray-600' },
+    suspended:       { label: 'Tạm dừng',        className: 'bg-yellow-100 text-yellow-700' },
+    expired:         { label: 'Hết hạn',         className: 'bg-red-100 text-red-600' },
+    depleted:        { label: 'Hết buổi',        className: 'bg-orange-100 text-orange-600' },
+    scheduled:       { label: 'Đã lên lịch',     className: 'bg-blue-100 text-blue-600' },
+    completed:       { label: 'Đã hoàn thành',   className: 'bg-green-100 text-green-700' },
+    cancelled:       { label: 'Đã hủy',          className: 'bg-red-100 text-red-600' },
+    // Payment statuses (CLS-003)
+    pending:         { label: 'Chờ xác nhận',    className: 'bg-yellow-100 text-yellow-700' },
+    confirmed:       { label: 'Đã xác nhận',     className: 'bg-green-100 text-green-700' },
+    failed:          { label: 'Thất bại',        className: 'bg-red-100 text-red-600' },
+    refunded:        { label: 'Đã hoàn tiền',    className: 'bg-purple-100 text-purple-600' },
+    // StudentPackage statuses (CLS-003)
+    pending_payment: { label: 'Chờ thanh toán',  className: 'bg-yellow-100 text-yellow-700' },
+    archived:        { label: 'Đã lưu trữ',     className: 'bg-gray-100 text-gray-500' },
   };
   return map[status] || { label: status, className: 'bg-gray-100 text-gray-500' };
 }

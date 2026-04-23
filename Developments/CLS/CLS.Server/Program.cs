@@ -129,8 +129,16 @@ try
     builder.Services.AddScoped<IStudentRepository, StudentRepository>();
     builder.Services.AddScoped<IParentRepository, ParentRepository>();
 
+    // ── Repositories (P7/P8 — Financial Administration / CLS-003) ─────────────
+    builder.Services.AddScoped<ITuitionPackageRepository, TuitionPackageRepository>();
+    builder.Services.AddScoped<IStudentPackageRepository, StudentPackageRepository>();
+    builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+
     // ── Services (P9 — Student Slice) ─────────────────────────────────────────
     builder.Services.AddScoped<IStudentService, StudentService>();
+
+    // ── Services (P9 — Financial Administration / CLS-003) ────────────────────
+    builder.Services.AddScoped<IPaymentService, PaymentService>();
 
     // (AutoMapper đã đăng ký ở trên — không cần đăng ký lại)
 

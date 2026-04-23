@@ -56,4 +56,28 @@ public static class AppConstants
         public const string Active   = "active";
         public const string Inactive = "inactive";
     }
+
+    // ── Payment Status (CLS-003) ──────────────────────────────────────────────
+    public static class PaymentStatus
+    {
+        public const string Pending   = "pending";
+        public const string Confirmed = "confirmed";
+        public const string Failed    = "failed";
+        public const string Refunded  = "refunded";
+    }
+
+    // ── Student Package Status (CLS-003) ──────────────────────────────────────
+    public static class StudentPackageStatus
+    {
+        public const string PendingPayment = "pending_payment";
+        public const string Active         = "active";
+        public const string Depleted       = "depleted";
+        public const string Archived       = "archived";
+    }
+
+    // ── Payment Method (CLS-003 — giả lập) ───────────────────────────────────
+    public static class PaymentMethod
+    {
+        public const string BankTransfer = "bank_transfer";
+    }
 }

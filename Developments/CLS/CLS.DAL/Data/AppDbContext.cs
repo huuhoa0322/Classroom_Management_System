@@ -21,6 +21,11 @@ public class AppDbContext : DbContext
     public DbSet<Parent> Parents => Set<Parent>();
     public DbSet<Student> Students => Set<Student>();
 
+    // ── Financial Administration (CLS-003) ────────────────────────────────────
+    public DbSet<TuitionPackage> TuitionPackages => Set<TuitionPackage>();
+    public DbSet<StudentPackage> StudentPackages => Set<StudentPackage>();
+    public DbSet<Payment> Payments => Set<Payment>();
+
     // ─────────────────────────────────────────────────────────────────────────
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

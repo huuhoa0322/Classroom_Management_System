@@ -1,4 +1,5 @@
 using CLS.BLL.Common;
+using CLS.BLL.DTOs.Payments;
 using CLS.BLL.DTOs.Students;
 using CLS.BLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -19,9 +20,13 @@ namespace CLS.Server.Controllers;
 public class StudentsController : ControllerBase
 {
     private readonly IStudentService _studentService;
+    private readonly IPaymentService _paymentService;
 
-    public StudentsController(IStudentService studentService)
-        => _studentService = studentService;
+    public StudentsController(IStudentService studentService, IPaymentService paymentService)
+    {
+        _studentService = studentService;
+        _paymentService = paymentService;
+    }
 
     // ── GET /api/v1/students ──────────────────────────────────────────────────
     /// <summary>Lấy danh sách học sinh có phân trang và lọc theo trạng thái.</summary>
@@ -84,4 +89,17 @@ public class StudentsController : ControllerBase
         var result = await _studentService.UpdateStatusAsync(id, request, ct);
         return Ok(ApiResponse<StudentResponse>.Success(result, $"Cập nhật trạng thái học sinh thành '{request.Status}' thành công."));
     }
+
+    // ── GET /api/v1/students/{id}/packages ───────────────────────────────────
+    /// <summary>Lấy danh sách gói học của học sinh (financial dashboard — CLS-003).</summary>
+    [HttpGet("{id:int}/packages")]
+    [ProducesResponseType(typeof(ApiResponse<IEnumerable<StudentPackageResponse>>), 200)]
+    [ProducesResponseType(typeof(ApiResponse<object>), 404)]
+    public async Task<IActionResult> GetStudentPackages(int id, CancellationToken ct = default)
+    {
+        var result = await _paymentService.GetStudentPackagesAsync(id, ct);
+        return Ok(ApiResponse<IEnumerable<StudentPackageResponse>>.Success(result,
+            "Lấy danh sách gói học của học sinh thành công."));
+    }
 }
+

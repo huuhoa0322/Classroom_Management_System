@@ -28,4 +28,7 @@ public class Student : BaseEntity
     // ── Navigation Properties ────────────────────────────────────────────
     /// <summary>Phụ huynh phụ trách học sinh này.</summary>
     public Parent Parent { get; set; } = null!;
+
+    /// <summary>Danh sách gói học của học sinh.</summary>
+    public ICollection<StudentPackage> StudentPackages { get; set; } = new List<StudentPackage>();
 }

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useStudentList, useUpdateStudentStatus } from '../hooks/useStudents';
 import { StatusBadge } from './StatusBadge';
 import { formatDate } from '@/shared/utils/formatters';
+import { toast } from '@/shared/stores/toastStore';
 
 /**
  * Bảng danh sách học sinh có phân trang và đổi trạng thái.
@@ -25,7 +26,17 @@ export const StudentList = ({ onEdit }) => {
 
   const handleToggleStatus = (student) => {
     const newStatus = student.status === 'active' ? 'inactive' : 'active';
-    updateStatus({ id: student.id, status: newStatus });
+    updateStatus(
+      { id: student.id, status: newStatus },
+      {
+        onSuccess: () => {
+          toast.success(`Đã ${newStatus === 'active' ? 'kích hoạt' : 'cho nghỉ'} học sinh "${student.fullName}".`);
+        },
+        onError: (err) => {
+          toast.error(err.message || 'Không thể đổi trạng thái. Vui lòng thử lại.');
+        },
+      }
+    );
   };
 
   // ── Skeleton loading ──────────────────────────────────────────────────────

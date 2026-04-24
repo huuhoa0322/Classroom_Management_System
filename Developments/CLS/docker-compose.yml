@@ -1,0 +1,83 @@
+# =============================================================================
+# CLS — Docker Compose
+# =============================================================================
+# Hỗ trợ 2 mode:
+#
+# ── Mode 1: Supabase (Production / Default) ─────────────────────────────────
+#   Chỉ chạy cls-api, kết nối đến Supabase PostgreSQL.
+#   → docker compose up -d cls-api
+#
+# ── Mode 2: Local DB (Full-stack local) ─────────────────────────────────────
+#   Chạy cả cls-api + cls-db (PostgreSQL container).
+#   → docker compose --profile local-db up -d
+#
+# Cả hai mode đều đọc biến từ file .env
+# =============================================================================
+
+services:
+  # ── PostgreSQL Database (chỉ dùng khi cần local DB) ──────────────────────
+  # Kích hoạt bằng: docker compose --profile local-db up -d
+  cls-db:
+    image: postgres:16-alpine
+    container_name: cls-db
+    profiles: ["local-db"]
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-cls_dev}
+      POSTGRES_USER: ${POSTGRES_USER:-cls_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-localpass123}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - cls-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-cls_admin} -d ${POSTGRES_DB:-cls_dev}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - cls-network
+
+  # ── CLS Backend API ──────────────────────────────────────────────────────
+  cls-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cls-api
+    restart: unless-stopped
+    ports:
+      - "${API_PORT:-8080}:8080"
+    environment:
+      # ── ASP.NET Core ────────────────────────────────────────────────────
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
+      ASPNETCORE_URLS: http://+:8080
+
+      # ── Database Connection ─────────────────────────────────────────────
+      # Supabase: đặt DATABASE_URL đầy đủ trong .env
+      # Local DB: dùng Host=cls-db (Docker internal DNS)
+      ConnectionStrings__DefaultConnection: ${DATABASE_URL}
+
+      # ── JWT Authentication ──────────────────────────────────────────────
+      JwtSettings__SecretKey: ${JWT_SECRET_KEY:?JWT_SECRET_KEY is required}
+      JwtSettings__Issuer: ${JWT_ISSUER:-cls-api}
+      JwtSettings__Audience: ${JWT_AUDIENCE:-cls-client}
+      JwtSettings__AccessTokenExpiryMinutes: ${JWT_ACCESS_EXPIRY:-60}
+      JwtSettings__RefreshTokenExpiryDays: ${JWT_REFRESH_EXPIRY:-7}
+
+      # ── CORS ────────────────────────────────────────────────────────────
+      AllowedOrigins: ${ALLOWED_ORIGINS:-http://localhost:5173}
+    networks:
+      - cls-network
+
+# ── Volumes ─────────────────────────────────────────────────────────────────
+volumes:
+  cls-pgdata:
+    driver: local
+    name: cls-pgdata
+
+# ── Networks ────────────────────────────────────────────────────────────────
+networks:
+  cls-network:
+    driver: bridge
+    name: cls-network

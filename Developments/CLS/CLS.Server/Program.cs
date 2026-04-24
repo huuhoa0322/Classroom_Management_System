@@ -6,6 +6,7 @@ using CLS.BLL.Services;
 using CLS.DAL.Data;
 using CLS.DAL.Repositories;
 using CLS.Server.Middlewares;
+using CLS.Server.Filters;
 using Microsoft.EntityFrameworkCore;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -47,8 +48,11 @@ try
                   .AllowAnyMethod());
     });
 
-    // ── Controllers + JSON camelCase ──────────────────────────────────────────
-    builder.Services.AddControllers()
+    // ── Controllers + JSON camelCase + Global Exception Filter ─────────────────
+    builder.Services.AddControllers(opts =>
+        {
+            opts.Filters.Add<ApiExceptionFilter>();   // ← User-code exception handler
+        })
         .AddJsonOptions(opts =>
             opts.JsonSerializerOptions.PropertyNamingPolicy =
                 System.Text.Json.JsonNamingPolicy.CamelCase);
@@ -112,8 +116,12 @@ try
         });
     });
 
-    // ── ExceptionHandlingMiddleware (P4) ────────────────────────────────────────
-    builder.Services.AddTransient<ExceptionHandlingMiddleware>();
+    // ── Global Exception Handler (P4) ────────────────────────────────────────
+    builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+    builder.Services.AddProblemDetails();
+
+    // ── Health Checks — Docker HEALTHCHECK + Uptime Robot (ADR-001 §DevOps) ──
+    builder.Services.AddHealthChecks();
 
     // ── JWT Service (P5) ────────────────────────────────────────────────────
     builder.Services.AddScoped<IJwtService, JwtService>();
@@ -182,10 +190,13 @@ try
     var corsPolicy = app.Environment.IsDevelopment() ? "DevCors" : "ProductionCors";
     app.UseCors(corsPolicy);
 
-    app.UseMiddleware<ExceptionHandlingMiddleware>();  // ← phải trước Authentication
+    app.UseExceptionHandler();  // ← Framework-level handler, không bị VS break
 
     app.UseAuthentication();           // ← PHẢI trước UseAuthorization
     app.UseAuthorization();
+
+    // ── Health check endpoint (no auth required) ────────────────────────────
+    app.MapHealthChecks("/health");
 
     app.MapControllers();
     app.MapFallbackToFile("/index.html");

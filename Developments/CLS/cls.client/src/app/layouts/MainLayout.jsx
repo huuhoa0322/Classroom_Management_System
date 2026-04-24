@@ -1,6 +1,7 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/app/provider/authStore';
 import { ROUTE_PATHS } from '@/shared/utils/constants';
+import { Toast } from '@/shared/components/Toast';
 import { useState } from 'react';
 
 const navItems = [
@@ -113,6 +114,9 @@ export function MainLayout() {
           <Outlet />
         </main>
       </div>
+
+      {/* Global Toast Notifications */}
+      <Toast />
     </div>
   );
 }

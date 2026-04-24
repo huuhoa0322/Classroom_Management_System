@@ -9,6 +9,7 @@ import {
 import { StudentPackageList } from '../components/StudentPackageList';
 import { PaymentHistoryTable } from '../components/PaymentHistoryTable';
 import { PaymentForm } from '../components/PaymentForm';
+import { toast } from '@/shared/stores/toastStore';
 
 /**
  * StudentFinancialPage — Trang tài chính của học sinh (CLS-003).
@@ -33,12 +34,26 @@ export default function StudentFinancialPage() {
     recordPayment.mutate(data, {
       onSuccess: () => {
         setShowPaymentForm(false);
+        toast.success('Ghi thanh toán thành công!');
+      },
+      onError: (err) => {
+        toast.error(err.message || 'Không thể ghi thanh toán. Vui lòng thử lại.');
       },
     });
   };
 
   const handleUpdateStatus = ({ paymentId, newStatus }) => {
-    updatePaymentStatus.mutate({ id: paymentId, status: newStatus });
+    updatePaymentStatus.mutate(
+      { id: paymentId, status: newStatus },
+      {
+        onSuccess: () => {
+          toast.success('Cập nhật trạng thái thanh toán thành công!');
+        },
+        onError: (err) => {
+          toast.error(err.message || 'Không thể cập nhật trạng thái. Vui lòng thử lại.');
+        },
+      }
+    );
   };
 
   return (

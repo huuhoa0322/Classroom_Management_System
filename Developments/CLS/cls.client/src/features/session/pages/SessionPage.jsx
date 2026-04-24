@@ -8,6 +8,7 @@ import {
 } from '../../schedule/hooks/useSession';
 import { SessionTable } from '../../schedule/components/SessionTable';
 import { SessionForm } from '../../schedule/components/SessionForm';
+import { toast } from '@/shared/stores/toastStore';
 
 /**
  * SessionPage — Trang quản lý lịch dạy (CLS-004 + CLS-005).
@@ -31,6 +32,7 @@ export default function SessionPage() {
       onSuccess: () => {
         setShowForm(false);
         createSession.reset();
+        toast.success('Tạo buổi học thành công!');
       },
     });
   };
@@ -44,6 +46,7 @@ export default function SessionPage() {
           setEditingSession(null);
           setShowForm(false);
           updateSession.reset();
+          toast.success('Cập nhật buổi học thành công!');
         },
       }
     );
@@ -56,7 +59,14 @@ export default function SessionPage() {
 
   const handleDelete = (id) => {
     if (window.confirm('Bạn có chắc chắn muốn xóa buổi học này?')) {
-      deleteSession.mutate(id);
+      deleteSession.mutate(id, {
+        onSuccess: () => {
+          toast.success('Đã xóa buổi học thành công!');
+        },
+        onError: (err) => {
+          toast.error(err.message || 'Không thể xóa buổi học. Vui lòng thử lại.');
+        },
+      });
     }
   };
 

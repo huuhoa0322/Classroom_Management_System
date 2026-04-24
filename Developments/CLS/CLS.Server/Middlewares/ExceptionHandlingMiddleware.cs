@@ -1,61 +1,62 @@
 using System.Text.Json;
-using CLS.BLL.Common;
 using CLS.BLL.Common.Exceptions;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Diagnostics;
 
 namespace CLS.Server.Middlewares;
 
 /// <summary>
-/// Global exception handling middleware — bắt tất cả unhandled exceptions
-/// và map về ApiResponse.Fail(...) thống nhất.
+/// Global exception handler — bắt tất cả unhandled exceptions
+/// và map về ApiResponse format thống nhất.
+///
+/// Sử dụng IExceptionHandler (.NET 8+) thay vì IMiddleware để:
+/// - Framework xử lý exception ở tầng infrastructure (không bị VS break)
+/// - Tích hợp tốt hơn với ASP.NET Core pipeline
+/// - VS debugger không đánh dấu "User-Unhandled" gây gián đoạn
 ///
 /// Thứ tự ưu tiên:
 ///   1. ValidationException  → 400 + errors field
 ///   2. ClsException (domain) → StatusCode từ exception
 ///   3. Exception (bất kỳ)   → 500 (không leak stack trace ra Production)
-///
-/// Implement IMiddleware (DI-based) thay vì convention-based để dễ test
-/// và inject dependencies qua constructor.
 /// </summary>
-public class ExceptionHandlingMiddleware : IMiddleware
+public class GlobalExceptionHandler : IExceptionHandler
 {
-    private readonly ILogger<ExceptionHandlingMiddleware> _logger;
+    private readonly ILogger<GlobalExceptionHandler> _logger;
+    private readonly IHostEnvironment _env;
 
-    public ExceptionHandlingMiddleware(ILogger<ExceptionHandlingMiddleware> logger)
+    public GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger, IHostEnvironment env)
     {
         _logger = logger;
+        _env = env;
     }
 
-    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+    public async ValueTask<bool> TryHandleAsync(
+        HttpContext context, Exception exception, CancellationToken ct)
     {
-        try
+        switch (exception)
         {
-            await next(context);
-        }
-        catch (ValidationException ex)
-        {
-            _logger.LogWarning("Validation failed for {Path}: {Message}", context.Request.Path, ex.Message);
-            await WriteErrorResponse(context, 400, ex.Message, new { errors = ex.Errors });
-        }
-        catch (ClsException ex)
-        {
-            // Bắt tất cả domain exceptions (NotFoundException, ConflictException, v.v.)
-            _logger.LogWarning("Domain exception [{StatusCode}] at {Path}: {Message}",
-                ex.StatusCode, context.Request.Path, ex.Message);
-            await WriteErrorResponse(context, ex.StatusCode, ex.Message);
-        }
-        catch (Exception ex)
-        {
-            // Unexpected server error — log đầy đủ nhưng KHÔNG trả về chi tiết cho client
-            _logger.LogError(ex, "Unexpected error at {Method} {Path}",
-                context.Request.Method, context.Request.Path);
+            case ValidationException validationEx:
+                _logger.LogWarning("Validation failed for {Path}: {Message}",
+                    context.Request.Path, validationEx.Message);
+                await WriteErrorResponse(context, 400, validationEx.Message,
+                    new { errors = validationEx.Errors }, ct);
+                return true;
 
-            var message = IsDevEnvironment(context)
-                ? ex.Message           // Dev: thêm thông tin để debug
-                : "An unexpected error occurred. Please try again later.";
+            case ClsException clsEx:
+                _logger.LogWarning("Domain exception [{StatusCode}] at {Path}: {Message}",
+                    clsEx.StatusCode, context.Request.Path, clsEx.Message);
+                await WriteErrorResponse(context, clsEx.StatusCode, clsEx.Message, ct: ct);
+                return true;
 
-            await WriteErrorResponse(context, 500, message);
+            default:
+                _logger.LogError(exception, "Unexpected error at {Method} {Path}",
+                    context.Request.Method, context.Request.Path);
+
+                var message = _env.IsDevelopment()
+                    ? exception.Message
+                    : "An unexpected error occurred. Please try again later.";
+
+                await WriteErrorResponse(context, 500, message, ct: ct);
+                return true;
         }
     }
 
@@ -65,7 +66,8 @@ public class ExceptionHandlingMiddleware : IMiddleware
         HttpContext context,
         int statusCode,
         string message,
-        object? data = null)
+        object? data = null,
+        CancellationToken ct = default)
     {
         context.Response.StatusCode  = statusCode;
         context.Response.ContentType = "application/json";
@@ -82,11 +84,6 @@ public class ExceptionHandlingMiddleware : IMiddleware
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         });
 
-        await context.Response.WriteAsync(json);
+        await context.Response.WriteAsync(json, ct);
     }
-
-    private static bool IsDevEnvironment(HttpContext context)
-        => context.RequestServices
-               .GetService<IWebHostEnvironment>()
-               ?.IsDevelopment() ?? false;
 }

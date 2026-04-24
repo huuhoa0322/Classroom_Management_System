@@ -1,0 +1,38 @@
+# =============================================================================
+# .dockerignore — Exclude unnecessary files from Docker build context
+# =============================================================================
+
+# ── IDE / OS artifacts ──────────────────────────────────────────────────────
+**/.vs/
+**/.vscode/
+**/.idea/
+**/Thumbs.db
+**/.DS_Store
+
+# ── Build output (will be regenerated inside the container) ─────────────────
+**/bin/
+**/obj/
+
+# ── Frontend (built and deployed separately) ────────────────────────────────
+cls.client/
+node_modules/
+package.json
+package-lock.json
+
+# ── Git ─────────────────────────────────────────────────────────────────────
+.git/
+.gitignore
+
+# ── Docker (prevent recursive context) ──────────────────────────────────────
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# ── Logs and local data ────────────────────────────────────────────────────
+**/logs/
+*.log
+
+# ── User secrets and local env files ────────────────────────────────────────
+**/*.user
+.env
+.env.*

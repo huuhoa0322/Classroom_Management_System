@@ -46,11 +46,29 @@ axiosInstance.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    const status  = error.response?.status;
-    const message = error.response?.data?.message;
+    // ── Timeout — request không nhận được response ────────────────────────
+    if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
+      return Promise.reject(
+        new Error('Yêu cầu quá thời gian chờ. Vui lòng kiểm tra kết nối và thử lại.')
+      );
+    }
+
+    // ── Network error — không kết nối được tới server ────────────────────
+    if (!error.response) {
+      return Promise.reject(
+        new Error('Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối mạng.')
+      );
+    }
+
+    const status  = error.response.status;
+    const message = error.response.data?.message;
+
+    if (status === 400) {
+      // Validation error từ backend
+      return Promise.reject(new Error(message || 'Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.'));
+    }
 
     if (status === 401) {
-      // Token hết hạn hoặc không hợp lệ → Logout và redirect về trang đăng nhập
       useAuthStore.getState().logout();
       window.location.href = '/login';
       return Promise.reject(new Error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.'));
@@ -64,10 +82,16 @@ axiosInstance.interceptors.response.use(
       return Promise.reject(new Error(message || 'Không tìm thấy dữ liệu yêu cầu.'));
     }
 
+    if (status === 409) {
+      // Conflict — scheduling conflict, duplicate, state transition error
+      return Promise.reject(new Error(message || 'Xung đột dữ liệu. Vui lòng thử lại.'));
+    }
+
     if (status >= 500) {
       return Promise.reject(new Error('Lỗi máy chủ. Vui lòng thử lại sau.'));
     }
 
+    // Fallback
     return Promise.reject(new Error(message || error.message || 'Có lỗi không xác định xảy ra.'));
   }
 );

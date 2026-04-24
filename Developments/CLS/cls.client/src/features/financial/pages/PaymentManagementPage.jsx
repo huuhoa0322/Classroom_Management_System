@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAllPayments, useUpdatePaymentStatus } from '../hooks/usePayment';
 import { PaymentHistoryTable } from '../components/PaymentHistoryTable';
+import { toast } from '@/shared/stores/toastStore';
 
 /**
  * PaymentManagementPage — Trang quản lý toàn bộ thanh toán (CLS-003).
@@ -14,7 +15,17 @@ export default function PaymentManagementPage() {
   const updatePaymentStatus = useUpdatePaymentStatus();
 
   const handleUpdateStatus = ({ paymentId, newStatus }) => {
-    updatePaymentStatus.mutate({ id: paymentId, status: newStatus });
+    updatePaymentStatus.mutate(
+      { id: paymentId, status: newStatus },
+      {
+        onSuccess: () => {
+          toast.success('Cập nhật trạng thái thanh toán thành công!');
+        },
+        onError: (err) => {
+          toast.error(err.message || 'Không thể cập nhật trạng thái. Vui lòng thử lại.');
+        },
+      }
+    );
   };
 
   return (

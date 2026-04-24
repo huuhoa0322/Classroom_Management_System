@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { StudentList } from '../components/StudentList';
 import { StudentForm } from '../components/StudentForm';
 import { useCreateStudent, useUpdateStudent } from '../hooks/useStudents';
+import { toast } from '@/shared/stores/toastStore';
 
 /**
  * Trang quản lý học sinh — CLS-001 & CLS-002.
@@ -30,10 +31,20 @@ const StudentPage = () => {
   };
 
   const handleSubmit = (data) => {
-    const action = selectedStudent
-      ? (d) => updateStudent(d, { onSuccess: handleClose })
-      : (d) => createStudent(d, { onSuccess: handleClose });
-    action(data);
+    const callbacks = {
+      onSuccess: () => {
+        handleClose();
+        toast.success(selectedStudent ? 'Cập nhật học sinh thành công!' : 'Tạo học sinh thành công!');
+      },
+      onError: (err) => {
+        toast.error(err.message || 'Có lỗi xảy ra. Vui lòng thử lại.');
+      },
+    };
+    if (selectedStudent) {
+      updateStudent(data, callbacks);
+    } else {
+      createStudent(data, callbacks);
+    }
   };
 
   return (

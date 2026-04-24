@@ -13,8 +13,8 @@ export default function LoginPage() {
     login({ email, password });
   };
 
-  // Trích error message từ ApiResponse hoặc network error
-  const errorMsg = error?.response?.data?.message ?? error?.message ?? null;
+  // Trích error message — apiClient interceptor đã unwrap thành Error(message)
+  const errorMsg = error?.message ?? null;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50">

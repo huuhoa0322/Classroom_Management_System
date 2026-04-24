@@ -70,8 +70,11 @@ try
 
     // ── JWT Authentication ────────────────────────────────────────────────────
     var jwtSection = builder.Configuration.GetSection("JwtSettings");
-    var secretKey  = jwtSection["SecretKey"]
-        ?? throw new InvalidOperationException("JwtSettings:SecretKey is missing in configuration.");
+    var secretKey  = jwtSection["SecretKey"];
+    if (string.IsNullOrWhiteSpace(secretKey))
+        throw new InvalidOperationException(
+            "JwtSettings:SecretKey is missing or empty. " +
+            "Set environment variable JwtSettings__SecretKey with a value >= 32 characters.");
 
     builder.Services.AddAuthentication(options =>
     {
@@ -182,9 +185,10 @@ try
     // ── Middleware pipeline (thứ tự quan trọng) ───────────────────────────────
     app.UseSerilogRequestLogging();
 
-    // HTTPS redirect chỉ bật ở Production — dev dùng http để tránh 307 redirect phá POST request
-    if (!app.Environment.IsDevelopment())
-        app.UseHttpsRedirection();
+    // HTTPS redirect TẮT khi chạy behind reverse proxy (Render, Nginx)
+    // Render handles TLS termination at edge → app chỉ cần listen HTTP
+    // Nếu self-host không qua proxy, bật lại dòng dưới:
+    // app.UseHttpsRedirection();
 
     // CORS phải đứng TRƯỚC Authentication/Authorization
     var corsPolicy = app.Environment.IsDevelopment() ? "DevCors" : "ProductionCors";

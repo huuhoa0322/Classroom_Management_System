@@ -18,7 +18,7 @@ public class CreateStudentRequestValidator : AbstractValidator<CreateStudentRequ
 
         // ── Thông tin phụ huynh ──────────────────────────────────────────
         RuleFor(x => x.ParentEmail)
-            .NotEmpty().WithMessage("Parent Email is strictly required to enable zero-touch automated notifications.")
+            .NotEmpty().WithMessage("Email phụ huynh là bắt buộc để hệ thống gửi thông báo tự động.")
             .EmailAddress().WithMessage("Email phụ huynh không đúng định dạng.");
 
         RuleFor(x => x.ParentFullName)

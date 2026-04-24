@@ -59,6 +59,26 @@ public class SessionRepository : ISessionRepository
         return await query.AnyAsync(ct);
     }
 
+    public async Task<Session?> GetTeacherConflictAsync(
+        int teacherId, DateTime startTime, DateTime endTime,
+        int? excludeSessionId = null, CancellationToken ct = default)
+    {
+        var query = _ctx.Sessions
+            .AsNoTracking()
+            .Include(s => s.Class)
+            .Include(s => s.Teacher)
+            .Include(s => s.Room)
+            .Where(s => s.TeacherId == teacherId
+                     && s.Status != "cancelled"
+                     && s.StartTime < endTime
+                     && s.EndTime > startTime);
+
+        if (excludeSessionId.HasValue)
+            query = query.Where(s => s.Id != excludeSessionId.Value);
+
+        return await query.OrderBy(s => s.StartTime).FirstOrDefaultAsync(ct);
+    }
+
     // ── CLS-005 AC2: Conflict Detection — Room ──────────────────────────────
     public async Task<bool> HasRoomConflictAsync(
         int roomId, DateTime startTime, DateTime endTime,
@@ -74,6 +94,26 @@ public class SessionRepository : ISessionRepository
             query = query.Where(s => s.Id != excludeSessionId.Value);
 
         return await query.AnyAsync(ct);
+    }
+
+    public async Task<Session?> GetRoomConflictAsync(
+        int roomId, DateTime startTime, DateTime endTime,
+        int? excludeSessionId = null, CancellationToken ct = default)
+    {
+        var query = _ctx.Sessions
+            .AsNoTracking()
+            .Include(s => s.Class)
+            .Include(s => s.Teacher)
+            .Include(s => s.Room)
+            .Where(s => s.RoomId == roomId
+                     && s.Status != "cancelled"
+                     && s.StartTime < endTime
+                     && s.EndTime > startTime);
+
+        if (excludeSessionId.HasValue)
+            query = query.Where(s => s.Id != excludeSessionId.Value);
+
+        return await query.OrderBy(s => s.StartTime).FirstOrDefaultAsync(ct);
     }
 
     public async Task AddAsync(Session entity, CancellationToken ct = default)

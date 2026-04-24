@@ -9,13 +9,13 @@ namespace CLS.BLL.Interfaces;
 public interface ISessionService
 {
     /// <summary>Tạo buổi học mới (AC1: conflict check tự động).</summary>
-    Task<SessionResponse> CreateSessionAsync(CreateSessionRequest request, CancellationToken ct = default);
+    Task<ServiceResult<SessionResponse>> CreateSessionAsync(CreateSessionRequest request, CancellationToken ct = default);
 
     /// <summary>Cập nhật buổi học (conflict check khi đổi teacher/room/time).</summary>
-    Task<SessionResponse> UpdateSessionAsync(int id, UpdateSessionRequest request, CancellationToken ct = default);
+    Task<ServiceResult<SessionResponse>> UpdateSessionAsync(int id, UpdateSessionRequest request, CancellationToken ct = default);
 
     /// <summary>Xóa buổi học (soft-delete).</summary>
-    Task DeleteSessionAsync(int id, CancellationToken ct = default);
+    Task<ServiceResult<object?>> DeleteSessionAsync(int id, CancellationToken ct = default);
 
     /// <summary>Lấy tất cả sessions (phân trang).</summary>
     Task<PagedResult<SessionResponse>> GetAllSessionsAsync(int page, int pageSize, CancellationToken ct = default);

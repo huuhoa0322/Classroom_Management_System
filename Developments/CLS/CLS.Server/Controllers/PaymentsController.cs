@@ -33,8 +33,11 @@ public class PaymentsController : ControllerBase
     {
         var adminUserId = GetCurrentUserId();
         var result = await _paymentService.RecordPaymentAsync(request, adminUserId, ct);
-        return CreatedAtAction(nameof(RecordPayment), new { id = result.Id },
-            ApiResponse<PaymentResponse>.Created(result, "Ghi nhận thanh toán thành công. Trạng thái: Chờ xác nhận."));
+        return this.ToCreatedAtActionResponse(
+            result,
+            nameof(RecordPayment),
+            payment => new { id = payment.Id },
+            "Ghi nhận thanh toán thành công. Trạng thái: Chờ xác nhận.");
     }
 
     // ── PATCH /api/v1/payments/{id}/status ────────────────────────────────────
@@ -48,8 +51,8 @@ public class PaymentsController : ControllerBase
         int id, [FromBody] UpdatePaymentStatusRequest request, CancellationToken ct = default)
     {
         var result = await _paymentService.UpdatePaymentStatusAsync(id, request, ct);
-        return Ok(ApiResponse<PaymentResponse>.Success(result,
-            $"Cập nhật trạng thái thanh toán thành '{request.Status}' thành công."));
+        return this.ToOkResponse(result,
+            $"Cập nhật trạng thái thanh toán thành '{request.Status}' thành công.");
     }
 
     // ── GET /api/v1/payments?studentId={id} ───────────────────────────────────

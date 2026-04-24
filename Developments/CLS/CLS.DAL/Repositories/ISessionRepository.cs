@@ -19,8 +19,18 @@ public interface ISessionRepository : IRepository<Session>
         int teacherId, DateTime startTime, DateTime endTime,
         int? excludeSessionId = null, CancellationToken ct = default);
 
+    /// <summary>Lấy buổi học đang xung đột với Teacher để trả chi tiết cho UI.</summary>
+    Task<Session?> GetTeacherConflictAsync(
+        int teacherId, DateTime startTime, DateTime endTime,
+        int? excludeSessionId = null, CancellationToken ct = default);
+
     /// <summary>Kiểm tra xung đột Room (CLS-005 AC2).</summary>
     Task<bool> HasRoomConflictAsync(
+        int roomId, DateTime startTime, DateTime endTime,
+        int? excludeSessionId = null, CancellationToken ct = default);
+
+    /// <summary>Lấy buổi học đang xung đột với Room để trả chi tiết cho UI.</summary>
+    Task<Session?> GetRoomConflictAsync(
         int roomId, DateTime startTime, DateTime endTime,
         int? excludeSessionId = null, CancellationToken ct = default);
 }

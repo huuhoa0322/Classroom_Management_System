@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { sessionSchema } from '../schemas/session.schema';
 import { useClasses, useRooms, useTeachers } from '../hooks/useSession';
+import { formatDateTime } from '@/shared/utils/formatters';
 
 /**
  * SessionForm — Form tạo/sửa buổi học (CLS-004).
@@ -11,10 +12,11 @@ import { useClasses, useRooms, useTeachers } from '../hooks/useSession';
  *   onCancel: function,
  *   isSubmitting: boolean,
  *   defaultValues?: object,
- *   apiError?: string
+ *   apiError?: string,
+ *   apiErrorData?: object
  * }} props
  */
-export function SessionForm({ onSubmit, onCancel, isSubmitting, defaultValues, apiError }) {
+export function SessionForm({ onSubmit, onCancel, isSubmitting, defaultValues, apiError, apiErrorData }) {
   const { data: classes, isLoading: loadingClasses } = useClasses();
   const { data: rooms, isLoading: loadingRooms } = useRooms();
   const { data: teachers, isLoading: loadingTeachers } = useTeachers();
@@ -155,11 +157,27 @@ export function SessionForm({ onSubmit, onCancel, isSubmitting, defaultValues, a
 
       {/* API Error (409 Conflict) */}
       {apiError && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm text-red-700 flex items-center gap-2">
-          <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
-          </svg>
-          {apiError}
+        <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm text-red-700">
+          <div className="flex items-start gap-2">
+            <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+            <div className="min-w-0">
+              <p>{apiError}</p>
+              {apiErrorData?.conflictingSession && (
+                <div className="mt-2 grid grid-cols-1 gap-1 text-xs text-red-800">
+                  <p>Lớp: {apiErrorData.conflictingSession.className || `#${apiErrorData.conflictingSession.classId}`}</p>
+                  <p>Giáo viên: {apiErrorData.conflictingSession.teacherName || `#${apiErrorData.conflictingSession.teacherId}`}</p>
+                  <p>Phòng: {apiErrorData.conflictingSession.roomName || `#${apiErrorData.conflictingSession.roomId}`}</p>
+                  <p>
+                    Thời gian: {formatDateTime(apiErrorData.conflictingSession.startTime)}
+                    {' - '}
+                    {formatDateTime(apiErrorData.conflictingSession.endTime)}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
 

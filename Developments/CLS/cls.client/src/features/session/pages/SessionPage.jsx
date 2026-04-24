@@ -34,6 +34,9 @@ export default function SessionPage() {
         createSession.reset();
         toast.success('Tạo buổi học thành công!');
       },
+      onError: (err) => {
+        toast.error(err.message || 'Không thể tạo buổi học. Vui lòng kiểm tra lại.');
+      },
     });
   };
 
@@ -47,6 +50,9 @@ export default function SessionPage() {
           setShowForm(false);
           updateSession.reset();
           toast.success('Cập nhật buổi học thành công!');
+        },
+        onError: (err) => {
+          toast.error(err.message || 'Không thể cập nhật buổi học. Vui lòng kiểm tra lại.');
         },
       }
     );
@@ -80,6 +86,8 @@ export default function SessionPage() {
   const isSubmitting = createSession.isPending || updateSession.isPending;
   const apiError =
     createSession.error?.message || updateSession.error?.message || null;
+  const apiErrorData =
+    createSession.error?.data || updateSession.error?.data || null;
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -157,6 +165,7 @@ export default function SessionPage() {
                   : undefined
               }
               apiError={apiError}
+              apiErrorData={apiErrorData}
             />
           </div>
         </div>

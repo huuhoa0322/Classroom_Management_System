@@ -1,6 +1,5 @@
 using AutoMapper;
 using CLS.BLL.Common;
-using CLS.BLL.Common.Exceptions;
 using CLS.BLL.DTOs.Payments;
 using CLS.BLL.Interfaces;
 using CLS.DAL.Entities;
@@ -42,26 +41,28 @@ public class PaymentService : IPaymentService
     }
 
     // ── RECORD PAYMENT (CLS-003 AC1) ─────────────────────────────────────────
-    public async Task<PaymentResponse> RecordPaymentAsync(
+    public async Task<ServiceResult<PaymentResponse>> RecordPaymentAsync(
         RecordPaymentRequest request, int adminUserId, CancellationToken ct = default)
     {
         // BƯỚC 0: Validate
         var validation = await _recordValidator.ValidateAsync(request, ct);
         if (!validation.IsValid)
-            throw new CLS.BLL.Common.Exceptions.ValidationException(
-                string.Join("; ", validation.Errors.Select(e => e.ErrorMessage)));
+            return ServiceResult<PaymentResponse>.Validation(validation.Errors);
 
         // BƯỚC 1: Check Student tồn tại
-        var student = await _studentRepo.GetByIdAsync(request.StudentId, ct)
-            ?? throw new NotFoundException($"Học sinh #{request.StudentId} không tồn tại.");
+        var student = await _studentRepo.GetByIdAsync(request.StudentId, ct);
+        if (student is null)
+            return ServiceResult<PaymentResponse>.Fail($"Học sinh #{request.StudentId} không tồn tại.", 404);
 
         // BƯỚC 2: Check TuitionPackage tồn tại
-        var package = await _tuitionPackageRepo.GetByIdAsync(request.TuitionPackageId, ct)
-            ?? throw new NotFoundException($"Gói học #{request.TuitionPackageId} không tồn tại.");
+        var package = await _tuitionPackageRepo.GetByIdAsync(request.TuitionPackageId, ct);
+        if (package is null)
+            return ServiceResult<PaymentResponse>.Fail($"Gói học #{request.TuitionPackageId} không tồn tại.", 404);
 
         if (package.Status != "active")
-            throw new CLS.BLL.Common.Exceptions.ValidationException(
-                $"Gói học '{package.Name}' đã ngừng bán (inactive).");
+            return ServiceResult<PaymentResponse>.Fail(
+                $"Gói học '{package.Name}' đã ngừng bán (inactive).",
+                400);
 
         // BƯỚC 3: Tạo StudentPackage (pending_payment — chưa credit sessions)
         var startDate = DateOnly.FromDateTime(DateTime.UtcNow);
@@ -99,30 +100,33 @@ public class PaymentService : IPaymentService
             payment.Id, request.StudentId, package.Name);
 
         // Reload với full details để map response
-        var created = await _paymentRepo.GetByIdWithDetailsAsync(payment.Id, ct)
-            ?? throw new InvalidOperationException($"Không thể reload Payment {payment.Id} sau khi tạo.");
+        var created = await _paymentRepo.GetByIdWithDetailsAsync(payment.Id, ct);
+        if (created is null)
+            return ServiceResult<PaymentResponse>.Fail($"Không thể reload Payment {payment.Id} sau khi tạo.", 500);
 
-        return _mapper.Map<PaymentResponse>(created);
+        return ServiceResult<PaymentResponse>.Success(_mapper.Map<PaymentResponse>(created));
     }
 
     // ── UPDATE PAYMENT STATUS ────────────────────────────────────────────────
-    public async Task<PaymentResponse> UpdatePaymentStatusAsync(
+    public async Task<ServiceResult<PaymentResponse>> UpdatePaymentStatusAsync(
         int paymentId, UpdatePaymentStatusRequest request, CancellationToken ct = default)
     {
         // Validate input trước khi query DB
         var validation = await _updateStatusValidator.ValidateAsync(request, ct);
         if (!validation.IsValid)
-            throw new CLS.BLL.Common.Exceptions.ValidationException(
-                string.Join("; ", validation.Errors.Select(e => e.ErrorMessage)));
+            return ServiceResult<PaymentResponse>.Validation(validation.Errors);
 
-        var payment = await _paymentRepo.GetByIdWithDetailsAsync(paymentId, ct)
-            ?? throw new NotFoundException($"Thanh toán #{paymentId} không tồn tại.");
+        var payment = await _paymentRepo.GetByIdWithDetailsAsync(paymentId, ct);
+        if (payment is null)
+            return ServiceResult<PaymentResponse>.Fail($"Thanh toán #{paymentId} không tồn tại.", 404);
 
         var oldStatus = payment.Status;
         var newStatus = request.Status;
 
         // Validate transition
-        ValidateStatusTransition(oldStatus, newStatus);
+        var transitionError = GetStatusTransitionError(oldStatus, newStatus);
+        if (transitionError is not null)
+            return ServiceResult<PaymentResponse>.Fail(transitionError, 409);
 
         var studentPackage = payment.StudentPackage;
 
@@ -158,7 +162,10 @@ public class PaymentService : IPaymentService
 
         // Reload to get fresh data
         var updated = await _paymentRepo.GetByIdWithDetailsAsync(paymentId, ct);
-        return _mapper.Map<PaymentResponse>(updated!);
+        if (updated is null)
+            return ServiceResult<PaymentResponse>.Fail($"Không thể reload Payment {paymentId} sau khi cập nhật.", 500);
+
+        return ServiceResult<PaymentResponse>.Success(_mapper.Map<PaymentResponse>(updated));
     }
 
     // ── GET PAYMENTS BY STUDENT (phân trang) ─────────────────────────────────
@@ -196,7 +203,7 @@ public class PaymentService : IPaymentService
     }
 
     // ── HELPER: Validate payment status transitions ──────────────────────────
-    private static void ValidateStatusTransition(string currentStatus, string newStatus)
+    private static string? GetStatusTransitionError(string currentStatus, string newStatus)
     {
         var validTransitions = new Dictionary<string, string[]>
         {
@@ -208,8 +215,9 @@ public class PaymentService : IPaymentService
 
         if (!validTransitions.TryGetValue(currentStatus, out var allowed) || !allowed.Contains(newStatus))
         {
-            throw new ConflictException(
-                $"Không thể chuyển trạng thái thanh toán từ '{currentStatus}' sang '{newStatus}'.");
+            return $"Không thể chuyển trạng thái thanh toán từ '{currentStatus}' sang '{newStatus}'.";
         }
+
+        return null;
     }
 }

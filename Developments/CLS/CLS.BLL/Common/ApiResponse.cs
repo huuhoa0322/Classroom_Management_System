@@ -49,8 +49,8 @@ public class ApiResponse<T>
     /// Các error code thường dùng: 400 (Validation), 401 (Unauthorized),
     /// 403 (Forbidden), 404 (NotFound), 409 (Conflict), 422 (Business rule), 500 (Server).
     /// </summary>
-    public static ApiResponse<T> Fail(string message, int code = 400)
-        => new() { Code = code, Message = message, Data = default };
+    public static ApiResponse<T> Fail(string message, int code = 400, T? data = default)
+        => new() { Code = code, Message = message, Data = data };
 }
 
 /// <summary>
@@ -62,8 +62,8 @@ public class ApiResponse<T>
 /// </summary>
 public static class ApiResponse
 {
-    public static ApiResponse<object?> Fail(string message, int code = 400)
-        => ApiResponse<object?>.Fail(message, code);
+    public static ApiResponse<object?> Fail(string message, int code = 400, object? data = null)
+        => ApiResponse<object?>.Fail(message, code, data);
 
     public static ApiResponse<object?> NoContent(string message = "Operation completed successfully")
         => ApiResponse<object?>.NoContent(message);

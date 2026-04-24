@@ -1,6 +1,5 @@
 using AutoMapper;
 using CLS.BLL.Common;
-using CLS.BLL.Common.Exceptions;
 using CLS.BLL.DTOs.Students;
 using CLS.BLL.Interfaces;
 using CLS.DAL.Entities;
@@ -45,22 +44,22 @@ public class StudentService : IStudentService
     }
 
     // ── GET BY ID ─────────────────────────────────────────────────────────────
-    public async Task<StudentResponse> GetByIdAsync(int id, CancellationToken ct = default)
+    public async Task<ServiceResult<StudentResponse>> GetByIdAsync(int id, CancellationToken ct = default)
     {
-        var student = await _studentRepo.GetWithParentAsync(id, ct)
-            ?? throw new NotFoundException($"Học sinh #{id} không tồn tại.");
+        var student = await _studentRepo.GetWithParentAsync(id, ct);
+        if (student is null)
+            return ServiceResult<StudentResponse>.Fail($"Học sinh #{id} không tồn tại.", 404);
 
-        return _mapper.Map<StudentResponse>(student);
+        return ServiceResult<StudentResponse>.Success(_mapper.Map<StudentResponse>(student));
     }
 
     // ── CREATE (CLS-001: Onboard New Student Profiles) ────────────────────────
-    public async Task<StudentResponse> CreateAsync(CreateStudentRequest request, CancellationToken ct = default)
+    public async Task<ServiceResult<StudentResponse>> CreateAsync(CreateStudentRequest request, CancellationToken ct = default)
     {
-        // BƯỚC 0: Validate — throw ValidationException nếu có lỗi (Issue #1 fix)
+        // BƯỚC 0: Validate — trả lỗi có kiểm soát nếu dữ liệu không hợp lệ
         var validation = await _createValidator.ValidateAsync(request, ct);
         if (!validation.IsValid)
-            throw new CLS.BLL.Common.Exceptions.ValidationException(
-                string.Join("; ", validation.Errors.Select(e => e.ErrorMessage)));
+            return ServiceResult<StudentResponse>.Validation(validation.Errors);
 
         // BƯỚC 1: Upsert Parent — tìm theo email, tạo mới nếu chưa tồn tại
         var parent = await _parentRepo.GetByEmailAsync(request.ParentEmail, ct);
@@ -100,23 +99,24 @@ public class StudentService : IStudentService
 
         // BƯỚC 3: Reload với Parent để map response
         // Issue #3 fix — (await ...)! thay vì await ...!
-        var created = (await _studentRepo.GetWithParentAsync(student.Id, ct))
-            ?? throw new InvalidOperationException($"Không thể reload Student {student.Id} sau khi tạo.");
+        var created = await _studentRepo.GetWithParentAsync(student.Id, ct);
+        if (created is null)
+            return ServiceResult<StudentResponse>.Fail($"Không thể reload Student {student.Id} sau khi tạo.", 500);
 
-        return _mapper.Map<StudentResponse>(created);
+        return ServiceResult<StudentResponse>.Success(_mapper.Map<StudentResponse>(created));
     }
 
     // ── UPDATE (CLS-002: Sửa thông tin) ──────────────────────────────────────
-    public async Task<StudentResponse> UpdateAsync(int id, UpdateStudentRequest request, CancellationToken ct = default)
+    public async Task<ServiceResult<StudentResponse>> UpdateAsync(int id, UpdateStudentRequest request, CancellationToken ct = default)
     {
-        // Validate — throw ValidationException nếu có lỗi (Issue #1 fix — cũng áp dụng cho Update)
+        // Validate — trả lỗi có kiểm soát nếu dữ liệu không hợp lệ
         var validation = await _updateValidator.ValidateAsync(request, ct);
         if (!validation.IsValid)
-            throw new CLS.BLL.Common.Exceptions.ValidationException(
-                string.Join("; ", validation.Errors.Select(e => e.ErrorMessage)));
+            return ServiceResult<StudentResponse>.Validation(validation.Errors);
 
-        var student = await _studentRepo.GetWithParentAsync(id, ct)
-            ?? throw new NotFoundException($"Học sinh #{id} không tồn tại.");
+        var student = await _studentRepo.GetWithParentAsync(id, ct);
+        if (student is null)
+            return ServiceResult<StudentResponse>.Fail($"Học sinh #{id} không tồn tại.", 404);
 
         _mapper.Map(request, student);
 
@@ -128,19 +128,22 @@ public class StudentService : IStudentService
         student.Parent = parentRef;   // Khôi phục để AutoMapper map được Parent fields
 
         _logger.LogInformation("Updated Student {StudentId}", id);
-        return _mapper.Map<StudentResponse>(student);
+        return ServiceResult<StudentResponse>.Success(_mapper.Map<StudentResponse>(student));
     }
 
     // ── UPDATE STATUS (CLS-002 AC1: Lifecycle change) ─────────────────────────
-    public async Task<StudentResponse> UpdateStatusAsync(
+    public async Task<ServiceResult<StudentResponse>> UpdateStatusAsync(
         int id, UpdateStudentStatusRequest request, CancellationToken ct = default)
     {
         var validStatuses = new[] { AppConstants.StudentStatus.Active, AppConstants.StudentStatus.Inactive };
         if (!validStatuses.Contains(request.Status))
-            throw new CLS.BLL.Common.Exceptions.ValidationException($"Trạng thái không hợp lệ: '{request.Status}'. Chỉ chấp nhận: active, inactive.");
+            return ServiceResult<StudentResponse>.Fail(
+                $"Trạng thái không hợp lệ: '{request.Status}'. Chỉ chấp nhận: active, inactive.",
+                400);
 
-        var student = await _studentRepo.GetWithParentAsync(id, ct)
-            ?? throw new NotFoundException($"Học sinh #{id} không tồn tại.");
+        var student = await _studentRepo.GetWithParentAsync(id, ct);
+        if (student is null)
+            return ServiceResult<StudentResponse>.Fail($"Học sinh #{id} không tồn tại.", 404);
 
         var oldStatus  = student.Status;
         student.Status = request.Status;
@@ -161,6 +164,6 @@ public class StudentService : IStudentService
         student.Parent = parentRef;   // Khôi phục để AutoMapper map được Parent fields
 
         _logger.LogInformation("Student {StudentId} status changed: {Old} → {New}", id, oldStatus, request.Status);
-        return _mapper.Map<StudentResponse>(student);
+        return ServiceResult<StudentResponse>.Success(_mapper.Map<StudentResponse>(student));
     }
 }

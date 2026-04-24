@@ -50,7 +50,7 @@ public class StudentsController : ControllerBase
     public async Task<IActionResult> GetById(int id, CancellationToken ct = default)
     {
         var result = await _studentService.GetByIdAsync(id, ct);
-        return Ok(ApiResponse<StudentResponse>.Success(result, "Lấy thông tin học sinh thành công."));
+        return this.ToOkResponse(result, "Lấy thông tin học sinh thành công.");
     }
 
     // ── POST /api/v1/students ─────────────────────────────────────────────────
@@ -61,8 +61,11 @@ public class StudentsController : ControllerBase
     public async Task<IActionResult> Create([FromBody] CreateStudentRequest request, CancellationToken ct = default)
     {
         var result = await _studentService.CreateAsync(request, ct);
-        return CreatedAtAction(nameof(GetById), new { id = result.Id },
-            ApiResponse<StudentResponse>.Created(result, "Tạo hồ sơ học sinh thành công."));
+        return this.ToCreatedAtActionResponse(
+            result,
+            nameof(GetById),
+            student => new { id = student.Id },
+            "Tạo hồ sơ học sinh thành công.");
     }
 
     // ── PUT /api/v1/students/{id} ─────────────────────────────────────────────
@@ -74,7 +77,7 @@ public class StudentsController : ControllerBase
     public async Task<IActionResult> Update(int id, [FromBody] UpdateStudentRequest request, CancellationToken ct = default)
     {
         var result = await _studentService.UpdateAsync(id, request, ct);
-        return Ok(ApiResponse<StudentResponse>.Success(result, "Cập nhật học sinh thành công."));
+        return this.ToOkResponse(result, "Cập nhật học sinh thành công.");
     }
 
     // ── PATCH /api/v1/students/{id}/status ───────────────────────────────────
@@ -87,7 +90,7 @@ public class StudentsController : ControllerBase
         int id, [FromBody] UpdateStudentStatusRequest request, CancellationToken ct = default)
     {
         var result = await _studentService.UpdateStatusAsync(id, request, ct);
-        return Ok(ApiResponse<StudentResponse>.Success(result, $"Cập nhật trạng thái học sinh thành '{request.Status}' thành công."));
+        return this.ToOkResponse(result, $"Cập nhật trạng thái học sinh thành '{request.Status}' thành công.");
     }
 
     // ── GET /api/v1/students/{id}/packages ───────────────────────────────────
@@ -102,4 +105,3 @@ public class StudentsController : ControllerBase
             "Lấy danh sách gói học của học sinh thành công."));
     }
 }
-

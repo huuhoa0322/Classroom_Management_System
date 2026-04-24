@@ -22,9 +22,17 @@ public class AuthController : ControllerBase
     //[AllowAnonymous]
     [ProducesResponseType(typeof(ApiResponse<LoginResponse>), 200)]
     [ProducesResponseType(typeof(ApiResponse<object>), 401)]
-    public async Task<IActionResult> Login([FromBody] LoginRequest request, CancellationToken ct = default)
+    public async Task<IActionResult> Login([FromBody] LoginRequest? request, CancellationToken ct = default)
     {
+        if (request is null)
+        {
+            return StatusCode(400, ApiResponse.Fail(
+                "Thông tin đăng nhập là bắt buộc.",
+                400,
+                new { errorCode = "LOGIN_REQUEST_REQUIRED" }));
+        }
+
         var result = await _authService.LoginAsync(request, ct);
-        return Ok(ApiResponse<LoginResponse>.Success(result, "Đăng nhập thành công."));
+        return this.ToOkResponse(result, "Đăng nhập thành công.");
     }
 }

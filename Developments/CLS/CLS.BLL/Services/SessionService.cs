@@ -1,6 +1,5 @@
 using AutoMapper;
 using CLS.BLL.Common;
-using CLS.BLL.Common.Exceptions;
 using CLS.BLL.DTOs.Sessions;
 using CLS.BLL.Interfaces;
 using CLS.DAL.Entities;
@@ -12,14 +11,14 @@ namespace CLS.BLL.Services;
 
 public class SessionService : ISessionService
 {
-    private readonly ISessionRepository                   _sessionRepo;
-    private readonly IClassRepository                     _classRepo;
-    private readonly IRoomRepository                      _roomRepo;
-    private readonly IUserRepository                      _userRepo;
-    private readonly IMapper                              _mapper;
-    private readonly ILogger<SessionService>              _logger;
-    private readonly IValidator<CreateSessionRequest>     _createValidator;
-    private readonly IValidator<UpdateSessionRequest>     _updateValidator;
+    private readonly ISessionRepository               _sessionRepo;
+    private readonly IClassRepository                 _classRepo;
+    private readonly IRoomRepository                  _roomRepo;
+    private readonly IUserRepository                  _userRepo;
+    private readonly IMapper                          _mapper;
+    private readonly ILogger<SessionService>          _logger;
+    private readonly IValidator<CreateSessionRequest> _createValidator;
+    private readonly IValidator<UpdateSessionRequest> _updateValidator;
 
     public SessionService(
         ISessionRepository sessionRepo,
@@ -41,36 +40,44 @@ public class SessionService : ISessionService
         _updateValidator = updateValidator;
     }
 
-    // ── CREATE SESSION (CLS-004 AC1) ─────────────────────────────────────────
-    public async Task<SessionResponse> CreateSessionAsync(
+    public async Task<ServiceResult<SessionResponse>> CreateSessionAsync(
         CreateSessionRequest request, CancellationToken ct = default)
     {
-        // BƯỚC 0: Validate input
         var validation = await _createValidator.ValidateAsync(request, ct);
         if (!validation.IsValid)
-            throw new Common.Exceptions.ValidationException(
-                string.Join("; ", validation.Errors.Select(e => e.ErrorMessage)));
+            return ServiceResult<SessionResponse>.Validation(validation.Errors);
 
-        // BƯỚC 1: Check Class tồn tại
-        _ = await _classRepo.GetByIdAsync(request.ClassId, ct)
-            ?? throw new NotFoundException($"Lớp học #{request.ClassId} không tồn tại.");
+        var classEntity = await _classRepo.GetByIdAsync(request.ClassId, ct);
+        if (classEntity is null)
+            return ServiceResult<SessionResponse>.Fail($"Lớp học #{request.ClassId} không tồn tại.", 404);
 
-        // BƯỚC 2: Check Teacher tồn tại
-        var teacher = await _userRepo.GetByIdAsync(request.TeacherId, ct)
-            ?? throw new NotFoundException($"Giáo viên #{request.TeacherId} không tồn tại.");
+        var teacher = await _userRepo.GetByIdAsync(request.TeacherId, ct);
+        if (teacher is null)
+            return ServiceResult<SessionResponse>.Fail($"Giáo viên #{request.TeacherId} không tồn tại.", 404);
+
         if (teacher.Role != AppConstants.AppRoles.Teacher)
-            throw new Common.Exceptions.ValidationException(
-                $"User #{request.TeacherId} không phải là giáo viên.");
+            return ServiceResult<SessionResponse>.Fail(
+                $"User #{request.TeacherId} không phải là giáo viên.",
+                400);
 
-        // BƯỚC 3: Check Room tồn tại
-        _ = await _roomRepo.GetByIdAsync(request.RoomId, ct)
-            ?? throw new NotFoundException($"Phòng học #{request.RoomId} không tồn tại.");
+        var room = await _roomRepo.GetByIdAsync(request.RoomId, ct);
+        if (room is null)
+            return ServiceResult<SessionResponse>.Fail($"Phòng học #{request.RoomId} không tồn tại.", 404);
 
-        // BƯỚC 4: Conflict Detection (CLS-005)
-        await CheckConflictsAsync(request.TeacherId, request.RoomId,
-            request.StartTime, request.EndTime, excludeSessionId: null, ct);
+        var conflict = await FindConflictAsync(
+            request.TeacherId,
+            request.RoomId,
+            request.StartTime,
+            request.EndTime,
+            excludeSessionId: null,
+            ct);
 
-        // BƯỚC 5: Tạo Session
+        if (conflict is not null)
+            return ServiceResult<SessionResponse>.Fail(
+                conflict.Message,
+                conflict.StatusCode,
+                conflict.ErrorData);
+
         var session = new Session
         {
             ClassId   = request.ClassId,
@@ -85,51 +92,62 @@ public class SessionService : ISessionService
         await _sessionRepo.SaveChangesAsync(ct);
 
         _logger.LogInformation(
-            "Created Session {SessionId}: Class={ClassId}, Teacher={TeacherId}, Room={RoomId}, Time={Start}–{End}",
+            "Created Session {SessionId}: Class={ClassId}, Teacher={TeacherId}, Room={RoomId}, Time={Start}-{End}",
             session.Id, request.ClassId, request.TeacherId, request.RoomId,
             request.StartTime, request.EndTime);
 
-        // Reload with details
-        var created = await _sessionRepo.GetByIdWithDetailsAsync(session.Id, ct)
-            ?? throw new InvalidOperationException($"Không thể reload Session {session.Id} sau khi tạo.");
+        var created = await _sessionRepo.GetByIdWithDetailsAsync(session.Id, ct);
+        if (created is null)
+            return ServiceResult<SessionResponse>.Fail($"Không thể reload Session {session.Id} sau khi tạo.", 500);
 
-        return _mapper.Map<SessionResponse>(created);
+        return ServiceResult<SessionResponse>.Success(_mapper.Map<SessionResponse>(created));
     }
 
-    // ── UPDATE SESSION ───────────────────────────────────────────────────────
-    public async Task<SessionResponse> UpdateSessionAsync(
+    public async Task<ServiceResult<SessionResponse>> UpdateSessionAsync(
         int id, UpdateSessionRequest request, CancellationToken ct = default)
     {
-        // Validate
         var validation = await _updateValidator.ValidateAsync(request, ct);
         if (!validation.IsValid)
-            throw new Common.Exceptions.ValidationException(
-                string.Join("; ", validation.Errors.Select(e => e.ErrorMessage)));
+            return ServiceResult<SessionResponse>.Validation(validation.Errors);
 
-        var session = await _sessionRepo.GetByIdWithDetailsAsync(id, ct)
-            ?? throw new NotFoundException($"Buổi học #{id} không tồn tại.");
+        var session = await _sessionRepo.GetByIdWithDetailsAsync(id, ct);
+        if (session is null)
+            return ServiceResult<SessionResponse>.Fail($"Buổi học #{id} không tồn tại.", 404);
 
         if (session.Status == AppConstants.SessionStatus.Cancelled)
-            throw new ConflictException("Không thể chỉnh sửa buổi học đã bị hủy.");
+            return ServiceResult<SessionResponse>.Fail("Không thể chỉnh sửa buổi học đã bị hủy.", 409);
 
-        // Check entities
-        _ = await _classRepo.GetByIdAsync(request.ClassId, ct)
-            ?? throw new NotFoundException($"Lớp học #{request.ClassId} không tồn tại.");
+        var classEntity = await _classRepo.GetByIdAsync(request.ClassId, ct);
+        if (classEntity is null)
+            return ServiceResult<SessionResponse>.Fail($"Lớp học #{request.ClassId} không tồn tại.", 404);
 
-        var teacher = await _userRepo.GetByIdAsync(request.TeacherId, ct)
-            ?? throw new NotFoundException($"Giáo viên #{request.TeacherId} không tồn tại.");
+        var teacher = await _userRepo.GetByIdAsync(request.TeacherId, ct);
+        if (teacher is null)
+            return ServiceResult<SessionResponse>.Fail($"Giáo viên #{request.TeacherId} không tồn tại.", 404);
+
         if (teacher.Role != AppConstants.AppRoles.Teacher)
-            throw new Common.Exceptions.ValidationException(
-                $"User #{request.TeacherId} không phải là giáo viên.");
+            return ServiceResult<SessionResponse>.Fail(
+                $"User #{request.TeacherId} không phải là giáo viên.",
+                400);
 
-        _ = await _roomRepo.GetByIdAsync(request.RoomId, ct)
-            ?? throw new NotFoundException($"Phòng học #{request.RoomId} không tồn tại.");
+        var room = await _roomRepo.GetByIdAsync(request.RoomId, ct);
+        if (room is null)
+            return ServiceResult<SessionResponse>.Fail($"Phòng học #{request.RoomId} không tồn tại.", 404);
 
-        // Conflict Detection — exclude current session
-        await CheckConflictsAsync(request.TeacherId, request.RoomId,
-            request.StartTime, request.EndTime, excludeSessionId: id, ct);
+        var conflict = await FindConflictAsync(
+            request.TeacherId,
+            request.RoomId,
+            request.StartTime,
+            request.EndTime,
+            excludeSessionId: id,
+            ct);
 
-        // Update
+        if (conflict is not null)
+            return ServiceResult<SessionResponse>.Fail(
+                conflict.Message,
+                conflict.StatusCode,
+                conflict.ErrorData);
+
         session.ClassId   = request.ClassId;
         session.TeacherId = request.TeacherId;
         session.RoomId    = request.RoomId;
@@ -142,22 +160,25 @@ public class SessionService : ISessionService
         _logger.LogInformation("Updated Session {SessionId}", id);
 
         var updated = await _sessionRepo.GetByIdWithDetailsAsync(id, ct);
-        return _mapper.Map<SessionResponse>(updated!);
+        if (updated is null)
+            return ServiceResult<SessionResponse>.Fail($"Không thể reload Session {id} sau khi cập nhật.", 500);
+
+        return ServiceResult<SessionResponse>.Success(_mapper.Map<SessionResponse>(updated));
     }
 
-    // ── DELETE SESSION (soft-delete) ─────────────────────────────────────────
-    public async Task DeleteSessionAsync(int id, CancellationToken ct = default)
+    public async Task<ServiceResult<object?>> DeleteSessionAsync(int id, CancellationToken ct = default)
     {
-        var session = await _sessionRepo.GetByIdAsync(id, ct)
-            ?? throw new NotFoundException($"Buổi học #{id} không tồn tại.");
+        var session = await _sessionRepo.GetByIdAsync(id, ct);
+        if (session is null)
+            return ServiceResult<object?>.Fail($"Buổi học #{id} không tồn tại.", 404);
 
         _sessionRepo.Delete(session);
         await _sessionRepo.SaveChangesAsync(ct);
 
         _logger.LogInformation("Soft-deleted Session {SessionId}", id);
+        return ServiceResult<object?>.Success(null);
     }
 
-    // ── GET ALL SESSIONS (paged) ─────────────────────────────────────────────
     public async Task<PagedResult<SessionResponse>> GetAllSessionsAsync(
         int page, int pageSize, CancellationToken ct = default)
     {
@@ -166,7 +187,6 @@ public class SessionService : ISessionService
         return PagedResult<SessionResponse>.Create(items, total, page, pageSize);
     }
 
-    // ── DROPDOWN DATA ────────────────────────────────────────────────────────
     public async Task<IEnumerable<ClassDto>> GetClassesAsync(CancellationToken ct = default)
     {
         var classes = await _classRepo.GetAllActiveAsync(ct);
@@ -185,19 +205,47 @@ public class SessionService : ISessionService
         return _mapper.Map<IEnumerable<TeacherDto>>(teachers);
     }
 
-    // ── HELPER: Conflict Detection (CLS-005) ─────────────────────────────────
-    private async Task CheckConflictsAsync(
+    private async Task<ServiceResult<object?>?> FindConflictAsync(
         int teacherId, int roomId, DateTime startTime, DateTime endTime,
         int? excludeSessionId, CancellationToken ct)
     {
-        // AC1: Teacher double-booking
-        if (await _sessionRepo.HasTeacherConflictAsync(teacherId, startTime, endTime, excludeSessionId, ct))
-            throw new ConflictException(
-                "Scheduling Conflict: This Teacher is already assigned to a session in the selected time range.");
+        var teacherConflict = await _sessionRepo.GetTeacherConflictAsync(
+            teacherId, startTime, endTime, excludeSessionId, ct);
 
-        // AC2: Room overlap
-        if (await _sessionRepo.HasRoomConflictAsync(roomId, startTime, endTime, excludeSessionId, ct))
-            throw new ConflictException(
-                "Scheduling Conflict: This Room is occupied during the selected time window.");
+        if (teacherConflict is not null)
+            return ServiceResult<object?>.Fail(
+                "Xung đột lịch học: Giáo viên đã được phân công cho một buổi học khác trong khoảng thời gian đã chọn.",
+                409,
+                BuildConflictData("teacher", teacherConflict));
+
+        var roomConflict = await _sessionRepo.GetRoomConflictAsync(
+            roomId, startTime, endTime, excludeSessionId, ct);
+
+        if (roomConflict is not null)
+            return ServiceResult<object?>.Fail(
+                "Xung đột lịch học: Phòng học đã được sử dụng trong khoảng thời gian đã chọn.",
+                409,
+                BuildConflictData("room", roomConflict));
+
+        return null;
     }
+
+    private static object BuildConflictData(string resourceType, Session conflict)
+        => new
+        {
+            errorCode = "SCHEDULE_CONFLICT",
+            resourceType,
+            conflictingSession = new
+            {
+                id = conflict.Id,
+                classId = conflict.ClassId,
+                className = conflict.Class?.Name ?? string.Empty,
+                teacherId = conflict.TeacherId,
+                teacherName = conflict.Teacher?.FullName ?? string.Empty,
+                roomId = conflict.RoomId,
+                roomName = conflict.Room?.Name ?? string.Empty,
+                startTime = conflict.StartTime,
+                endTime = conflict.EndTime
+            }
+        };
 }

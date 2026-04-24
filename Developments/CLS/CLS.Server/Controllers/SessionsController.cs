@@ -32,8 +32,11 @@ public class SessionsController : ControllerBase
         [FromBody] CreateSessionRequest request, CancellationToken ct = default)
     {
         var result = await _sessionService.CreateSessionAsync(request, ct);
-        return CreatedAtAction(nameof(CreateSession), new { id = result.Id },
-            ApiResponse<SessionResponse>.Created(result, "Tạo buổi học thành công."));
+        return this.ToCreatedAtActionResponse(
+            result,
+            nameof(CreateSession),
+            session => new { id = session.Id },
+            "Tạo buổi học thành công.");
     }
 
     // ── PUT /api/v1/sessions/{id} ─────────────────────────────────────────────
@@ -47,7 +50,7 @@ public class SessionsController : ControllerBase
         int id, [FromBody] UpdateSessionRequest request, CancellationToken ct = default)
     {
         var result = await _sessionService.UpdateSessionAsync(id, request, ct);
-        return Ok(ApiResponse<SessionResponse>.Success(result, "Cập nhật buổi học thành công."));
+        return this.ToOkResponse(result, "Cập nhật buổi học thành công.");
     }
 
     // ── DELETE /api/v1/sessions/{id} ──────────────────────────────────────────
@@ -57,8 +60,8 @@ public class SessionsController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<object>), 404)]
     public async Task<IActionResult> DeleteSession(int id, CancellationToken ct = default)
     {
-        await _sessionService.DeleteSessionAsync(id, ct);
-        return Ok(ApiResponse<object>.Success(null!, "Đã xóa buổi học thành công."));
+        var result = await _sessionService.DeleteSessionAsync(id, ct);
+        return this.ToOkResponse(result, "Đã xóa buổi học thành công.");
     }
 
     // ── GET /api/v1/sessions?page&pageSize ────────────────────────────────────

@@ -1,6 +1,16 @@
 import axios from 'axios';
 import { useAuthStore } from '@/app/provider/authStore';
 
+export class ApiError extends Error {
+  constructor(message, { status, code, data } = {}) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+    this.code = code;
+    this.data = data;
+  }
+}
+
 /**
  * Axios instance cốt lõi của CLS Frontend.
  * - Tự động đính JWT Bearer Token vào mọi request.
@@ -36,7 +46,13 @@ axiosInstance.interceptors.response.use(
     if (apiResponse && typeof apiResponse === 'object' && 'code' in apiResponse) {
       // Nếu code không phải 2xx → reject với message từ backend
       if (apiResponse.code < 200 || apiResponse.code >= 300) {
-        return Promise.reject(new Error(apiResponse.message || 'Có lỗi xảy ra từ máy chủ.'));
+        return Promise.reject(
+          new ApiError(apiResponse.message || 'Có lỗi xảy ra từ máy chủ.', {
+            status: apiResponse.code,
+            code: apiResponse.code,
+            data: apiResponse.data,
+          })
+        );
       }
       // Unwrap: trả về phần data (LoginResponse, PagedResult, entity object, v.v.)
       return apiResponse.data;
@@ -49,50 +65,71 @@ axiosInstance.interceptors.response.use(
     // ── Timeout — request không nhận được response ────────────────────────
     if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
       return Promise.reject(
-        new Error('Yêu cầu quá thời gian chờ. Vui lòng kiểm tra kết nối và thử lại.')
+        new ApiError('Yêu cầu quá thời gian chờ. Vui lòng kiểm tra kết nối và thử lại.', {
+          code: 'TIMEOUT',
+        })
       );
     }
 
     // ── Network error — không kết nối được tới server ────────────────────
     if (!error.response) {
       return Promise.reject(
-        new Error('Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối mạng.')
+        new ApiError('Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối mạng.', {
+          code: 'NETWORK_ERROR',
+        })
       );
     }
 
     const status  = error.response.status;
-    const message = error.response.data?.message;
+    const body = error.response.data;
+    const message = body?.message;
+    const errorMeta = {
+      status,
+      code: body?.code ?? status,
+      data: body?.data,
+    };
 
     if (status === 400) {
       // Validation error từ backend
-      return Promise.reject(new Error(message || 'Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.'));
+      return Promise.reject(new ApiError(message || 'Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.', errorMeta));
     }
 
     if (status === 401) {
-      useAuthStore.getState().logout();
-      window.location.href = '/login';
-      return Promise.reject(new Error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.'));
+      const requestUrl = error.config?.url || '';
+      const isLoginRequest = requestUrl.includes('/auth/login');
+      if (!isLoginRequest) {
+        useAuthStore.getState().logout();
+        window.location.href = '/login';
+      }
+      return Promise.reject(
+        new ApiError(
+          isLoginRequest
+            ? message || 'Email hoặc mật khẩu không chính xác.'
+            : 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.',
+          errorMeta
+        )
+      );
     }
 
     if (status === 403) {
-      return Promise.reject(new Error('Bạn không có quyền thực hiện thao tác này.'));
+      return Promise.reject(new ApiError('Bạn không có quyền thực hiện thao tác này.', errorMeta));
     }
 
     if (status === 404) {
-      return Promise.reject(new Error(message || 'Không tìm thấy dữ liệu yêu cầu.'));
+      return Promise.reject(new ApiError(message || 'Không tìm thấy dữ liệu yêu cầu.', errorMeta));
     }
 
     if (status === 409) {
       // Conflict — scheduling conflict, duplicate, state transition error
-      return Promise.reject(new Error(message || 'Xung đột dữ liệu. Vui lòng thử lại.'));
+      return Promise.reject(new ApiError(message || 'Xung đột dữ liệu. Vui lòng thử lại.', errorMeta));
     }
 
     if (status >= 500) {
-      return Promise.reject(new Error('Lỗi máy chủ. Vui lòng thử lại sau.'));
+      return Promise.reject(new ApiError('Lỗi máy chủ. Vui lòng thử lại sau.', errorMeta));
     }
 
     // Fallback
-    return Promise.reject(new Error(message || error.message || 'Có lỗi không xác định xảy ra.'));
+    return Promise.reject(new ApiError(message || error.message || 'Có lỗi không xác định xảy ra.', errorMeta));
   }
 );
 

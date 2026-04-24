@@ -22,7 +22,7 @@ export const createStudentSchema = z.object({
   // Phụ huynh
   parentEmail: z
     .string()
-    .min(1, 'Parent Email is strictly required to enable zero-touch automated notifications.')
+    .min(1, 'Email phụ huynh là bắt buộc để hệ thống gửi thông báo tự động.')
     .email('Email phụ huynh không đúng định dạng.'),
   parentFullName: z
     .string()

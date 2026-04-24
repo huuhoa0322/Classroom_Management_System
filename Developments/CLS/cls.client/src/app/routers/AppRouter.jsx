@@ -11,6 +11,7 @@ import ClassPage from '@/features/class/pages/ClassPage';
 import SessionPage from '@/features/session/pages/SessionPage';
 import AttendancePage from '@/features/attendance/pages/AttendancePage';
 import StudentFinancialPage from '@/features/financial/pages/StudentFinancialPage';
+import PaymentManagementPage from '@/features/financial/pages/PaymentManagementPage';
 
 /**
  * AppRouter — Định nghĩa toàn bộ cấu trúc route của ứng dụng CLS.
@@ -35,6 +36,7 @@ export default function AppRouter() {
         <Route index element={<DashboardPage />} />
         <Route path="students" element={<StudentPage />} />
         <Route path="students/:id/financials" element={<StudentFinancialPage />} />
+        <Route path="payments" element={<PaymentManagementPage />} />
         <Route path="classes" element={<ClassPage />} />
         <Route path="sessions" element={<SessionPage />} />
         <Route path="attendance" element={<AttendancePage />} />

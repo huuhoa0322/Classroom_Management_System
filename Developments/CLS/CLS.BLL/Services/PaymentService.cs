@@ -170,6 +170,15 @@ public class PaymentService : IPaymentService
         return PagedResult<PaymentResponse>.Create(items, total, page, pageSize);
     }
 
+    // ── GET ALL PAYMENTS (phân trang — global) ───────────────────────────────
+    public async Task<PagedResult<PaymentResponse>> GetAllPaymentsAsync(
+        int page, int pageSize, CancellationToken ct = default)
+    {
+        var (payments, total) = await _paymentRepo.GetPagedAllAsync(page, pageSize, ct);
+        var items = _mapper.Map<List<PaymentResponse>>(payments);
+        return PagedResult<PaymentResponse>.Create(items, total, page, pageSize);
+    }
+
     // ── GET STUDENT PACKAGES ─────────────────────────────────────────────────
     public async Task<IEnumerable<StudentPackageResponse>> GetStudentPackagesAsync(
         int studentId, CancellationToken ct = default)

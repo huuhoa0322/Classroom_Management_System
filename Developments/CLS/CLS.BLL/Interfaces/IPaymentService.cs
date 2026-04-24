@@ -14,6 +14,9 @@ public interface IPaymentService
     /// <summary>Lấy lịch sử thanh toán của học sinh (phân trang).</summary>
     Task<PagedResult<PaymentResponse>> GetPaymentsByStudentAsync(int studentId, int page, int pageSize, CancellationToken ct = default);
 
+    /// <summary>Lấy toàn bộ lịch sử thanh toán (phân trang, không lọc student).</summary>
+    Task<PagedResult<PaymentResponse>> GetAllPaymentsAsync(int page, int pageSize, CancellationToken ct = default);
+
     /// <summary>Lấy danh sách gói học của học sinh.</summary>
     Task<IEnumerable<StudentPackageResponse>> GetStudentPackagesAsync(int studentId, CancellationToken ct = default);
 

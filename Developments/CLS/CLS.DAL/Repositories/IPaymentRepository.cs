@@ -11,6 +11,10 @@ public interface IPaymentRepository : IRepository<Payment>
     Task<(List<Payment> Items, int TotalCount)> GetPagedByStudentIdAsync(
         int studentId, int page, int pageSize, CancellationToken ct = default);
 
+    /// <summary>Lấy tất cả payments (phân trang), eager-load details.</summary>
+    Task<(List<Payment> Items, int TotalCount)> GetPagedAllAsync(
+        int page, int pageSize, CancellationToken ct = default);
+
     /// <summary>Lấy payment theo ID kèm đầy đủ navigation (tracking — cho update status).</summary>
     Task<Payment?> GetByIdWithDetailsAsync(int id, CancellationToken ct = default);
 }

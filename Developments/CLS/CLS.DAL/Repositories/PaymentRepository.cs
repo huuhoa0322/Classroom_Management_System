@@ -47,6 +47,27 @@ public class PaymentRepository : IPaymentRepository
             .Include(p => p.RecordedBy)
             .FirstOrDefaultAsync(p => p.Id == id, ct);
 
+    public async Task<(List<Payment> Items, int TotalCount)> GetPagedAllAsync(
+        int page, int pageSize, CancellationToken ct = default)
+    {
+        var query = _ctx.Payments
+            .AsNoTracking()
+            .Include(p => p.StudentPackage)
+                .ThenInclude(sp => sp.Package)
+            .Include(p => p.StudentPackage)
+                .ThenInclude(sp => sp.Student)
+            .Include(p => p.RecordedBy);
+
+        var total = await query.CountAsync(ct);
+        var items = await query
+            .OrderByDescending(p => p.PaymentDate)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(ct);
+
+        return (items, total);
+    }
+
     public async Task AddAsync(Payment entity, CancellationToken ct = default)
         => await _ctx.Payments.AddAsync(entity, ct);
 

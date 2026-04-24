@@ -3,9 +3,20 @@ import {
   recordPayment,
   updatePaymentStatus,
   getStudentPayments,
+  getAllPayments,
   getStudentPackages,
   getAvailablePackages,
 } from '../services/paymentService';
+
+/**
+ * Hook: Lấy toàn bộ payments (phân trang, không lọc student).
+ */
+export function useAllPayments(page = 1, pageSize = 10) {
+  return useQuery({
+    queryKey: ['allPayments', page, pageSize],
+    queryFn: () => getAllPayments({ page, pageSize }),
+  });
+}
 
 /**
  * Hook: Lấy danh sách gói học của học sinh.
@@ -54,6 +65,7 @@ export function useRecordPayment() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['studentPayments'] });
       queryClient.invalidateQueries({ queryKey: ['studentPackages'] });
+      queryClient.invalidateQueries({ queryKey: ['allPayments'] });
     },
   });
 }
@@ -68,6 +80,7 @@ export function useUpdatePaymentStatus() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['studentPayments'] });
       queryClient.invalidateQueries({ queryKey: ['studentPackages'] });
+      queryClient.invalidateQueries({ queryKey: ['allPayments'] });
     },
   });
 }

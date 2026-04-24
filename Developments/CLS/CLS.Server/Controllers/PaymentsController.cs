@@ -67,6 +67,20 @@ public class PaymentsController : ControllerBase
             "Lấy lịch sử thanh toán thành công."));
     }
 
+    // ── GET /api/v1/payments/all ──────────────────────────────────────────────
+    /// <summary>Lấy toàn bộ lịch sử thanh toán (phân trang, không lọc student).</summary>
+    [HttpGet("all")]
+    [ProducesResponseType(typeof(ApiResponse<PagedResult<PaymentResponse>>), 200)]
+    public async Task<IActionResult> GetAllPayments(
+        [FromQuery] int page = AppConstants.Pagination.DefaultPage,
+        [FromQuery] int pageSize = AppConstants.Pagination.DefaultPageSize,
+        CancellationToken ct = default)
+    {
+        var result = await _paymentService.GetAllPaymentsAsync(page, pageSize, ct);
+        return Ok(ApiResponse<PagedResult<PaymentResponse>>.Success(result,
+            "Lấy toàn bộ lịch sử thanh toán thành công."));
+    }
+
     // ── Helper: lấy userId từ JWT claims ──────────────────────────────────────
     private int GetCurrentUserId()
     {

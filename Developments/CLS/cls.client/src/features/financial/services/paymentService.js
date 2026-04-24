@@ -17,6 +17,10 @@ export const updatePaymentStatus = (id, payload) =>
 export const getStudentPayments = (studentId, { page = 1, pageSize = 10 } = {}) =>
   apiClient.get('/payments', { params: { studentId, page, pageSize } });
 
+/** GET /api/v1/payments/all?page=...&pageSize=... — Toàn bộ payments */
+export const getAllPayments = ({ page = 1, pageSize = 10 } = {}) =>
+  apiClient.get('/payments/all', { params: { page, pageSize } });
+
 /** GET /api/v1/students/:id/packages — Danh sách gói học của học sinh */
 export const getStudentPackages = (studentId) =>
   apiClient.get(`/students/${studentId}/packages`);

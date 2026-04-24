@@ -140,6 +140,15 @@ try
     // ── Services (P9 — Financial Administration / CLS-003) ────────────────────
     builder.Services.AddScoped<IPaymentService, PaymentService>();
 
+    // ── Repositories (P7/P8 — Schedule Management / CLS-004+005) ──────────────
+    builder.Services.AddScoped<ISessionRepository, SessionRepository>();
+    builder.Services.AddScoped<IClassRepository, ClassRepository>();
+    builder.Services.AddScoped<IRoomRepository, RoomRepository>();
+    builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+    // ── Services (P9 — Schedule Management / CLS-004+005) ─────────────────────
+    builder.Services.AddScoped<ISessionService, SessionService>();
+
     // (AutoMapper đã đăng ký ở trên — không cần đăng ký lại)
 
     // ═════════════════════════════════════════════════════════════════════════

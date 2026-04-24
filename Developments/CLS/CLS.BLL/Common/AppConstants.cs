@@ -50,6 +50,13 @@ public static class AppConstants
         public const string UserId = "sub";
     }
 
+    // ── User Roles ────────────────────────────────────────────────────────────
+    public static class AppRoles
+    {
+        public const string Admin   = "Admin";
+        public const string Teacher = "Teacher";
+    }
+
     // ── Student Status ────────────────────────────────────────────────────────
     public static class StudentStatus
     {
@@ -79,5 +86,23 @@ public static class AppConstants
     public static class PaymentMethod
     {
         public const string BankTransfer = "bank_transfer";
+    }
+
+    // ── Session Status (CLS-004 + CLS-005) ────────────────────────────────────
+    public static class SessionStatus
+    {
+        public const string Scheduled  = "scheduled";
+        public const string InProgress = "in_progress";
+        public const string Completed  = "completed";
+        public const string Cancelled  = "cancelled";
+    }
+
+    // ── Operating Hours (CLS-004 — giờ hoạt động trung tâm) ───────────────────
+    public static class OperatingHours
+    {
+        /// <summary>Giờ mở cửa (08:00).</summary>
+        public const int OpenHour  = 8;
+        /// <summary>Giờ đóng cửa (21:00).</summary>
+        public const int CloseHour = 21;
     }
 }

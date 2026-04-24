@@ -58,6 +58,7 @@ export function getStatusBadge(status) {
     expired:         { label: 'Hết hạn',         className: 'bg-red-100 text-red-600' },
     depleted:        { label: 'Hết buổi',        className: 'bg-orange-100 text-orange-600' },
     scheduled:       { label: 'Đã lên lịch',     className: 'bg-blue-100 text-blue-600' },
+    in_progress:     { label: 'Đang diễn ra',    className: 'bg-indigo-100 text-indigo-700' },
     completed:       { label: 'Đã hoàn thành',   className: 'bg-green-100 text-green-700' },
     cancelled:       { label: 'Đã hủy',          className: 'bg-red-100 text-red-600' },
     // Payment statuses (CLS-003)

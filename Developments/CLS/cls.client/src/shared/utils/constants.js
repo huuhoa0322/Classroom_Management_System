@@ -16,6 +16,7 @@ export const ROUTE_PATHS = {
   STUDENTS: '/students',
   STUDENT_DETAIL: '/students/:id',
   STUDENT_FINANCIALS: '/students/:id/financials',
+  PAYMENTS: '/payments',
   CLASSES: '/classes',
   SESSIONS: '/sessions',
   ATTENDANCE: '/attendance',
@@ -35,6 +36,7 @@ export const STATUS = {
  */
 export const SESSION_STATUS = {
   SCHEDULED: 'scheduled',
+  IN_PROGRESS: 'in_progress',
   COMPLETED: 'completed',
   CANCELLED: 'cancelled',
 };

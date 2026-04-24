@@ -26,6 +26,11 @@ public class AppDbContext : DbContext
     public DbSet<StudentPackage> StudentPackages => Set<StudentPackage>();
     public DbSet<Payment> Payments => Set<Payment>();
 
+    // ── Schedule Management (CLS-004 + CLS-005) ──────────────────────────────
+    public DbSet<Room> Rooms => Set<Room>();
+    public DbSet<Class> Classes => Set<Class>();
+    public DbSet<Session> Sessions => Set<Session>();
+
     // ─────────────────────────────────────────────────────────────────────────
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

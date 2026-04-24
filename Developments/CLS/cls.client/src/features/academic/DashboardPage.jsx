@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { ROUTE_PATHS } from '@/shared/utils/constants';
 
 /** Dashboard placeholder -- se hoan thien sau */
 export default function DashboardPage() {
@@ -9,9 +10,9 @@ export default function DashboardPage() {
 
       <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'Học sinh', value: '—', icon: '👨‍🎓', color: 'bg-indigo-50 text-indigo-600', to: '/students' },
-          { label: 'Tài chính', value: '—', icon: '💰', color: 'bg-blue-50 text-blue-600', to: '/payments' },
-          { label: 'Buổi học hôm nay', value: '—', icon: '📅', color: 'bg-amber-50 text-amber-600' },
+          { label: 'Học sinh', value: '—', icon: '👨‍🎓', color: 'bg-indigo-50 text-indigo-600', to: ROUTE_PATHS.STUDENTS },
+          { label: 'Tài chính', value: '—', icon: '💰', color: 'bg-blue-50 text-blue-600', to: ROUTE_PATHS.PAYMENTS },
+          { label: 'Lịch dạy', value: '—', icon: '📅', color: 'bg-amber-50 text-amber-600', to: ROUTE_PATHS.SESSIONS },
           { label: 'Cần gia hạn', value: '—', icon: '⚠️', color: 'bg-red-50 text-red-600' },
         ].map((card) =>
           card.to ? (

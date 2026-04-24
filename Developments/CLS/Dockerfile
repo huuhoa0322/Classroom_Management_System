@@ -45,8 +45,10 @@ RUN dotnet publish CLS.Server/CLS.Server.csproj \
 # ---------------------------------------------------------------------------
 FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine AS runtime
 
-# ── 2a. Install wget for Docker HEALTHCHECK (curl not included in Alpine) ──
-RUN apk add --no-cache wget
+# ── 2a. Install runtime dependencies (not included in Alpine) ──────────────
+# icu-libs: Unicode/globalization support (date, number, locale formatting)
+# wget:     Docker HEALTHCHECK probe
+RUN apk add --no-cache icu-libs wget
 
 # ── 2b. Create non-root user and group for security ────────────────────────
 # Running as root inside containers is a security anti-pattern.

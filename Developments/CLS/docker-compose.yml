@@ -1,22 +1,18 @@
 # =============================================================================
 # CLS — Docker Compose
 # =============================================================================
-# Hỗ trợ 2 mode:
+# Env vars dùng chung format ASP.NET Core (Section__Key)
+# → Cùng tên biến hoạt động cho cả Docker Compose + Render.com
 #
-# ── Mode 1: Supabase (Production / Default) ─────────────────────────────────
-#   Chỉ chạy cls-api, kết nối đến Supabase PostgreSQL.
-#   → docker compose up -d cls-api
+# ── Mode 1: Supabase (default) ──────────────────────────────────────────────
+#   docker compose up -d cls-api
 #
-# ── Mode 2: Local DB (Full-stack local) ─────────────────────────────────────
-#   Chạy cả cls-api + cls-db (PostgreSQL container).
-#   → docker compose --profile local-db up -d
-#
-# Cả hai mode đều đọc biến từ file .env
+# ── Mode 2: Local DB ────────────────────────────────────────────────────────
+#   docker compose --profile local-db up -d
 # =============================================================================
 
 services:
-  # ── PostgreSQL Database (chỉ dùng khi cần local DB) ──────────────────────
-  # Kích hoạt bằng: docker compose --profile local-db up -d
+  # ── PostgreSQL (chỉ dùng khi cần local DB) ───────────────────────────────
   cls-db:
     image: postgres:16-alpine
     container_name: cls-db
@@ -49,34 +45,24 @@ services:
     ports:
       - "${API_PORT:-8080}:8080"
     environment:
-      # ── ASP.NET Core ────────────────────────────────────────────────────
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
       ASPNETCORE_URLS: http://+:8080
-
-      # ── Database Connection ─────────────────────────────────────────────
-      # Supabase: đặt DATABASE_URL đầy đủ trong .env
-      # Local DB: dùng Host=cls-db (Docker internal DNS)
-      ConnectionStrings__DefaultConnection: ${DATABASE_URL}
-
-      # ── JWT Authentication ──────────────────────────────────────────────
-      JwtSettings__SecretKey: ${JWT_SECRET_KEY:?JWT_SECRET_KEY is required}
-      JwtSettings__Issuer: ${JWT_ISSUER:-cls-api}
-      JwtSettings__Audience: ${JWT_AUDIENCE:-cls-client}
-      JwtSettings__AccessTokenExpiryMinutes: ${JWT_ACCESS_EXPIRY:-60}
-      JwtSettings__RefreshTokenExpiryDays: ${JWT_REFRESH_EXPIRY:-7}
-
-      # ── CORS ────────────────────────────────────────────────────────────
-      AllowedOrigins: ${ALLOWED_ORIGINS:-http://localhost:5173}
+      # Tên biến = format ASP.NET Core → dùng chung với Render
+      ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
+      JwtSettings__SecretKey: ${JwtSettings__SecretKey:?JwtSettings__SecretKey is required}
+      JwtSettings__Issuer: ${JwtSettings__Issuer:-cls-api}
+      JwtSettings__Audience: ${JwtSettings__Audience:-cls-client}
+      JwtSettings__AccessTokenExpiryMinutes: ${JwtSettings__AccessTokenExpiryMinutes:-60}
+      JwtSettings__RefreshTokenExpiryDays: ${JwtSettings__RefreshTokenExpiryDays:-7}
+      AllowedOrigins: ${AllowedOrigins:-http://localhost:5173}
     networks:
       - cls-network
 
-# ── Volumes ─────────────────────────────────────────────────────────────────
 volumes:
   cls-pgdata:
     driver: local
     name: cls-pgdata
 
-# ── Networks ────────────────────────────────────────────────────────────────
 networks:
   cls-network:
     driver: bridge

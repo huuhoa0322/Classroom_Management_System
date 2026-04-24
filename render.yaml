@@ -13,10 +13,11 @@ services:
     region: singapore                    # Gần Việt Nam nhất
     plan: free                           # Free tier (upgrade khi cần)
     branch: master                      # Auto-deploy từ branch master
+    rootDir: Developments/CLS            # Build context = thư mục backend
 
     # ── Docker build config ────────────────────────────────────────────────
-    dockerfilePath: ./Developments/CLS/Dockerfile
-    dockerContext: ./Developments/CLS
+    dockerfilePath: ./Dockerfile          # Relative to rootDir
+    dockerContext: .                      # Relative to rootDir
 
     # ── Health check ───────────────────────────────────────────────────────
     healthCheckPath: /health

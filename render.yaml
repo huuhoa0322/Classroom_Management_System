@@ -12,7 +12,7 @@ services:
     runtime: docker
     region: singapore                    # Gần Việt Nam nhất
     plan: free                           # Free tier (upgrade khi cần)
-    branch: main                         # Auto-deploy từ branch main
+    branch: master                      # Auto-deploy từ branch master
 
     # ── Docker build config ────────────────────────────────────────────────
     dockerfilePath: ./Developments/CLS/Dockerfile

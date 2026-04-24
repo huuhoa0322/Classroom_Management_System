@@ -59,22 +59,26 @@ WORKDIR /app
 COPY --from=build --chown=clsuser:clsgroup /app/publish .
 
 # ── 2d. Environment variables — ASP.NET Core production defaults ───────────
+# PORT: Render.com sets this to 10000; docker-compose uses 8080 (default)
 ENV ASPNETCORE_ENVIRONMENT=Production \
-    ASPNETCORE_URLS=http://+:8080 \
+    PORT=8080 \
     # Disable .NET telemetry and invariant globalization for Alpine
     DOTNET_CLI_TELEMETRY_OPTOUT=1 \
     DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 
 # ── 2e. Expose application port ────────────────────────────────────────────
-EXPOSE 8080
+EXPOSE 8080 10000
 
 # ── 2f. Switch to non-root user ────────────────────────────────────────────
 USER clsuser
 
 # ── 2g. Docker health check — lightweight HTTP probe ───────────────────────
-# Checks /health every 30s, 5s timeout, 3 retries, 10s startup grace period.
+# Shell form allows $PORT variable interpolation at runtime.
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 --start-period=10s \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1
+    CMD wget --no-verbose --tries=1 --spider http://localhost:$PORT/health || exit 1
 
 # ── 2h. Start the application ──────────────────────────────────────────────
-ENTRYPOINT ["dotnet", "CLS.Server.dll"]
+# Shell form: dynamically sets ASPNETCORE_URLS from PORT env var at runtime.
+# Render.com overrides PORT=10000; docker-compose keeps PORT=8080 (default).
+CMD ASPNETCORE_URLS=http://+:$PORT dotnet CLS.Server.dll
+

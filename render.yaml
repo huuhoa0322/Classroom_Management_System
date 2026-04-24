@@ -1,0 +1,47 @@
+# =============================================================================
+# CLS — Render.com Blueprint (Infrastructure as Code)
+# =============================================================================
+# Render tự động detect file này ở repo root và đề xuất tạo services.
+# Docs: https://docs.render.com/blueprint-spec
+# =============================================================================
+
+services:
+  # ── CLS Backend API ──────────────────────────────────────────────────────
+  - type: web
+    name: cls-api
+    runtime: docker
+    region: singapore                    # Gần Việt Nam nhất
+    plan: free                           # Free tier (upgrade khi cần)
+    branch: main                         # Auto-deploy từ branch main
+
+    # ── Docker build config ────────────────────────────────────────────────
+    dockerfilePath: ./Developments/CLS/Dockerfile
+    dockerContext: ./Developments/CLS
+
+    # ── Health check ───────────────────────────────────────────────────────
+    healthCheckPath: /health
+
+    # ── Environment variables ──────────────────────────────────────────────
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+
+      # Database — Supabase PostgreSQL (secret, set in Render dashboard)
+      - key: ConnectionStrings__DefaultConnection
+        sync: false                      # Must be set manually in dashboard
+
+      # JWT Authentication (secret)
+      - key: JwtSettings__SecretKey
+        sync: false                      # Must be set manually in dashboard
+      - key: JwtSettings__Issuer
+        value: cls-api
+      - key: JwtSettings__Audience
+        value: cls-client
+      - key: JwtSettings__AccessTokenExpiryMinutes
+        value: "60"
+      - key: JwtSettings__RefreshTokenExpiryDays
+        value: "7"
+
+      # CORS — Frontend URL (update when frontend is deployed)
+      - key: AllowedOrigins
+        value: http://localhost:5173

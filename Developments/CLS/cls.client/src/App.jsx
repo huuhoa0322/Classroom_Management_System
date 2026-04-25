@@ -1,6 +1,7 @@
 import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import AppRouter from '@/app/routers/AppRouter';
 import { ErrorBoundary } from '@/shared/components/ErrorBoundary';
 
@@ -29,6 +30,7 @@ function App() {
         </ErrorBoundary>
       </BrowserRouter>
       <Analytics />
+      <SpeedInsights />
     </QueryClientProvider>
   );
 }

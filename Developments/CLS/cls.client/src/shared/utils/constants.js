@@ -20,6 +20,7 @@ export const ROUTE_PATHS = {
   CLASSES: '/classes',
   SESSIONS: '/sessions',
   ATTENDANCE: '/attendance',
+  RENEWAL_ALERTS: '/renewal-alerts',
 };
 
 /**
@@ -67,4 +68,12 @@ export const PAYMENT_STATUS = {
 export const DEFAULT_PAGINATION = {
   PAGE: 1,
   PAGE_SIZE: 10,
+};
+
+/**
+ * Trạng thái cảnh báo gia hạn (Alert Notification — CLS-006).
+ */
+export const ALERT_STATUS = {
+  PENDING: 'pending',
+  CONSULTED: 'consulted',
 };

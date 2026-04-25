@@ -105,4 +105,27 @@ public static class AppConstants
         /// <summary>Giờ đóng cửa (21:00).</summary>
         public const int CloseHour = 21;
     }
+
+    // ── Alert Notification Status (CLS-006) ───────────────────────────────────
+    public static class AlertNotificationStatus
+    {
+        public const string Pending   = "pending";
+        public const string Consulted = "consulted";
+    }
+
+    // ── Alert Notification Type (CLS-006 + CLS-010) ───────────────────────────
+    public static class AlertNotificationType
+    {
+        public const string RenewalAlert = "renewal_alert";
+    }
+
+    // ── Depletion Scan Thresholds (CLS-010) ───────────────────────────────────
+    /// <summary>Ngưỡng cảnh báo gia hạn gói học — dùng bởi DepletionScanService.</summary>
+    public static class DepletionThresholds
+    {
+        /// <summary>Số buổi còn lại tối thiểu để trigger alert.</summary>
+        public const int MinSessions = 4;
+        /// <summary>Số ngày còn lại tối thiểu trước end_date để trigger alert.</summary>
+        public const int MinDays = 14;
+    }
 }

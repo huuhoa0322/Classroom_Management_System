@@ -72,6 +72,33 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  build: {
+    // Tách vendor libraries nặng ra chunk riêng → giảm kích thước main bundle
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            // React core — hiếm khi thay đổi → cache lâu dài
+            if (id.includes('react-dom') || id.includes('react-router-dom') || id.includes('/react/')) {
+              return 'vendor-react';
+            }
+            // Data fetching & state management
+            if (id.includes('@tanstack/react-query') || id.includes('axios') || id.includes('zustand')) {
+              return 'vendor-data';
+            }
+            // Form & validation
+            if (id.includes('react-hook-form') || id.includes('@hookform') || id.includes('zod')) {
+              return 'vendor-form';
+            }
+            // SignalR — chỉ load khi cần real-time
+            if (id.includes('@microsoft/signalr')) {
+              return 'vendor-signalr';
+            }
+          }
+        },
+      },
+    },
+  },
   server: {
     proxy: {
       '^/weatherforecast': {

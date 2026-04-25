@@ -7,6 +7,8 @@ using CLS.DAL.Data;
 using CLS.DAL.Repositories;
 using CLS.Server.Middlewares;
 using CLS.Server.Filters;
+using CLS.Server.Hubs;
+using CLS.Server.BackgroundServices;
 using Microsoft.EntityFrameworkCore;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -167,6 +169,18 @@ try
     // ── Services (P9 — Schedule Management / CLS-004+005) ─────────────────────
     builder.Services.AddScoped<ISessionService, SessionService>();
 
+    // ── Repositories (P7/P8 — Retention Management / CLS-006+010) ─────────────
+    builder.Services.AddScoped<IRenewalAlertRepository, RenewalAlertRepository>();
+
+    // ── Services (P9 — Retention Management / CLS-006+010) ────────────────────
+    builder.Services.AddScoped<IRenewalAlertService, RenewalAlertService>();
+
+    // ── SignalR — Real-time notifications ─────────────────────────────────────
+    builder.Services.AddSignalR();
+
+    // ── Background Service — UC-10: Daily Depletion Scan ──────────────────────
+    builder.Services.AddHostedService<DepletionScanService>();
+
     // (AutoMapper đã đăng ký ở trên — không cần đăng ký lại)
 
     // ═════════════════════════════════════════════════════════════════════════
@@ -210,6 +224,10 @@ try
     app.MapHealthChecks("/health");
 
     app.MapControllers();
+
+    // ── SignalR Hub endpoint ──────────────────────────────────────────────────
+    app.MapHub<NotificationHub>("/hubs/notifications");
+
     app.MapFallbackToFile("/index.html");
 
     Log.Information("CLS API is starting up...");

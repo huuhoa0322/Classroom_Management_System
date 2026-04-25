@@ -69,6 +69,8 @@ export function getStatusBadge(status) {
     // StudentPackage statuses (CLS-003)
     pending_payment: { label: 'Chờ thanh toán',  className: 'bg-yellow-100 text-yellow-700' },
     archived:        { label: 'Đã lưu trữ',     className: 'bg-gray-100 text-gray-500' },
+    // Alert Notification statuses (CLS-006)
+    consulted:       { label: 'Đã tư vấn',      className: 'bg-emerald-100 text-emerald-700' },
   };
   return map[status] || { label: status, className: 'bg-gray-100 text-gray-500' };
 }

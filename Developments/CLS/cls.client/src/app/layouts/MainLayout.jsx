@@ -2,6 +2,8 @@ import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/app/provider/authStore';
 import { ROUTE_PATHS } from '@/shared/utils/constants';
 import { Toast } from '@/shared/components/Toast';
+import { useNotificationHub } from '@/shared/hooks/useNotificationHub';
+import { useNotificationStore } from '@/shared/stores/notificationStore';
 import { useState } from 'react';
 
 const navItems = [
@@ -10,6 +12,7 @@ const navItems = [
   { label: 'Lớp học',    path: ROUTE_PATHS.CLASSES,    icon: '🏫' },
   { label: 'Lịch học',   path: ROUTE_PATHS.SESSIONS,   icon: '📅' },
   { label: 'Điểm danh',  path: ROUTE_PATHS.ATTENDANCE, icon: '✅' },
+  { label: 'Cảnh báo gia hạn', path: ROUTE_PATHS.RENEWAL_ALERTS, icon: '🔔', showBadge: true },
 ];
 
 /**
@@ -20,6 +23,10 @@ export function MainLayout() {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const unreadCount = useNotificationStore((s) => s.unreadCount);
+
+  // Connect to SignalR NotificationHub
+  useNotificationHub();
 
   const handleLogout = () => {
     logout();
@@ -61,7 +68,12 @@ export function MainLayout() {
               }
             >
               <span>{item.icon}</span>
-              <span>{item.label}</span>
+              <span className="flex-1">{item.label}</span>
+              {item.showBadge && unreadCount > 0 && (
+                <span className="ml-auto inline-flex items-center justify-center w-5 h-5 text-[10px] font-bold text-white bg-red-500 rounded-full">
+                  {unreadCount > 99 ? '99+' : unreadCount}
+                </span>
+              )}
             </NavLink>
           ))}
         </nav>
@@ -93,6 +105,23 @@ export function MainLayout() {
 
           {/* User Info + Logout */}
           <div className="flex items-center gap-3">
+            {/* 🔔 Notification Bell */}
+            <button
+              onClick={() => navigate(ROUTE_PATHS.RENEWAL_ALERTS)}
+              className="relative p-2 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors"
+              title="Cảnh báo gia hạn"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+              </svg>
+              {unreadCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold text-white bg-red-500 rounded-full animate-pulse">
+                  {unreadCount > 99 ? '99+' : unreadCount}
+                </span>
+              )}
+            </button>
+
             <div className="hidden sm:block text-right">
               <div className="text-sm font-medium text-gray-800">{user?.fullName ?? 'Người dùng'}</div>
               <div className="text-xs text-gray-400">{user?.role}</div>

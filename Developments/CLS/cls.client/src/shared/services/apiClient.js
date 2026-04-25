@@ -19,7 +19,8 @@ export class ApiError extends Error {
  */
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || '/api/v1',
-  timeout: 15000,
+  // Render free tier cold start có thể mất 30-60s → timeout 60s để tránh false timeout
+  timeout: 60000,
   headers: {
     'Content-Type': 'application/json',
   },

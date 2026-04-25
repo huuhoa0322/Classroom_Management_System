@@ -31,6 +31,9 @@ public class AppDbContext : DbContext
     public DbSet<Class> Classes => Set<Class>();
     public DbSet<Session> Sessions => Set<Session>();
 
+    // ── Retention Management (CLS-006 + CLS-010) ────────────────────────────
+    public DbSet<AlertNotification> AlertNotifications => Set<AlertNotification>();
+
     // ─────────────────────────────────────────────────────────────────────────
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

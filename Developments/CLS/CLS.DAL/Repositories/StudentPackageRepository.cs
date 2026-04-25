@@ -42,6 +42,15 @@ public class StudentPackageRepository : IStudentPackageRepository
         _ctx.StudentPackages.Update(entity);
     }
 
+    public async Task<List<StudentPackage>> GetActiveWithDetailsAsync(CancellationToken ct = default)
+        => await _ctx.StudentPackages
+            .AsNoTracking()
+            .Include(sp => sp.Package)
+            .Include(sp => sp.Student)
+                .ThenInclude(s => s.Parent)
+            .Where(sp => sp.Status == "active")
+            .ToListAsync(ct);
+
     public Task<int> SaveChangesAsync(CancellationToken ct = default)
         => _ctx.SaveChangesAsync(ct);
 }

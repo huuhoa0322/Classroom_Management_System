@@ -59,7 +59,14 @@ try
 
     // ── AutoMapper 16.x — scan Mapping Profiles trong CLS.BLL ────────────────
     builder.Services.AddAutoMapper(cfg =>
-        cfg.AddMaps(Assembly.Load("CLS.BLL")));
+    {
+        // License key từ env var: AutoMapper__LicenseKey
+        var licenseKey = builder.Configuration["AutoMapper:LicenseKey"];
+        if (!string.IsNullOrWhiteSpace(licenseKey))
+            cfg.LicenseKey = licenseKey;
+
+        cfg.AddMaps(Assembly.Load("CLS.BLL"));
+    });
 
     // ── FluentValidation (manual pattern — không dùng auto-pipeline) ─────────
     // Validators được inject qua IValidator<T> vào Service và gọi ValidateAsync()

@@ -46,9 +46,10 @@ RUN dotnet publish CLS.Server/CLS.Server.csproj \
 FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine AS runtime
 
 # ── 2a. Install runtime dependencies (not included in Alpine) ──────────────
-# icu-libs: Unicode/globalization support (date, number, locale formatting)
-# wget:     Docker HEALTHCHECK probe
-RUN apk add --no-cache icu-libs wget
+# icu-libs:  Unicode/globalization support (date, number, locale formatting)
+# krb5-libs: Kerberos/GSSAPI — required by Npgsql for PostgreSQL connections
+# wget:      Docker HEALTHCHECK probe
+RUN apk add --no-cache icu-libs krb5-libs wget
 
 # ── 2b. Create non-root user and group for security ────────────────────────
 # Running as root inside containers is a security anti-pattern.

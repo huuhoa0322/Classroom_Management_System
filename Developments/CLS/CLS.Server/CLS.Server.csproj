@@ -35,9 +35,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CLS.BLL\CLS.BLL.csproj" />
-    <ProjectReference Include="..\cls.client\cls.client.esproj">
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
   </ItemGroup>
 
   <ItemGroup>

@@ -1,5 +1,6 @@
 using CLS.BLL.Common;
 using CLS.BLL.DTOs.Attendance;
+using CLS.BLL.DTOs.Feedback;
 using CLS.BLL.DTOs.Sessions;
 using CLS.BLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CLS.Server.Controllers;
 
 /// <summary>
-/// API dành cho Teacher — UC-07: Lịch dạy, UC-08: Điểm danh.
+/// API dành cho Teacher — UC-07: Lịch dạy, UC-08: Điểm danh, UC-09: Đánh giá.
 /// </summary>
 [ApiController]
 [Route("api/v1/teacher")]
@@ -18,9 +19,15 @@ namespace CLS.Server.Controllers;
 public class TeacherController : ControllerBase
 {
     private readonly IAttendanceService _attendanceService;
+    private readonly IFeedbackService   _feedbackService;
 
-    public TeacherController(IAttendanceService attendanceService)
-        => _attendanceService = attendanceService;
+    public TeacherController(
+        IAttendanceService attendanceService,
+        IFeedbackService feedbackService)
+    {
+        _attendanceService = attendanceService;
+        _feedbackService   = feedbackService;
+    }
 
     /// <summary>
     /// Lấy Teacher ID từ JWT Claims (sub).
@@ -89,5 +96,60 @@ public class TeacherController : ControllerBase
 
         var result = await _attendanceService.SubmitAttendanceAsync(id, teacherId, request, ct);
         return this.ToOkResponse(result, "Điểm danh thành công.");
+    }
+
+    // ══════════════════════════════════════════════════════════════════════════
+    // UC-09: Academic Performance Feedback
+    // ══════════════════════════════════════════════════════════════════════════
+
+    // ── GET /api/v1/teacher/sessions/{id}/feedbacks ──────────────────────────
+    /// <summary>UC-09: Lấy danh sách HS + trạng thái đánh giá cho 1 session.</summary>
+    [HttpGet("sessions/{id:int}/feedbacks")]
+    [ProducesResponseType(typeof(ApiResponse<FeedbackListDto>), 200)]
+    [ProducesResponseType(typeof(ApiResponse<object>), 404)]
+    public async Task<IActionResult> GetFeedbackList(int id, CancellationToken ct = default)
+    {
+        var teacherId = GetTeacherId();
+        if (teacherId == 0)
+            return Unauthorized(ApiResponse<object>.Fail("Không xác định được Teacher từ token.", 401));
+
+        var result = await _feedbackService.GetFeedbackListAsync(id, teacherId, ct);
+        return this.ToOkResponse(result, "Lấy danh sách đánh giá thành công.");
+    }
+
+    // ── GET /api/v1/teacher/sessions/{id}/feedbacks/{studentId} ──────────────
+    /// <summary>UC-09: Lấy feedback detail cho 1 student.</summary>
+    [HttpGet("sessions/{id:int}/feedbacks/{studentId:int}")]
+    [ProducesResponseType(typeof(ApiResponse<StudentFeedbackDto>), 200)]
+    [ProducesResponseType(typeof(ApiResponse<object>), 404)]
+    public async Task<IActionResult> GetStudentFeedback(
+        int id, int studentId, CancellationToken ct = default)
+    {
+        var teacherId = GetTeacherId();
+        if (teacherId == 0)
+            return Unauthorized(ApiResponse<object>.Fail("Không xác định được Teacher từ token.", 401));
+
+        var result = await _feedbackService.GetStudentFeedbackAsync(id, studentId, teacherId, ct);
+        return this.ToOkResponse(result, "Lấy thông tin đánh giá thành công.");
+    }
+
+    // ── POST /api/v1/teacher/sessions/{id}/feedbacks ─────────────────────────
+    /// <summary>UC-09: Submit feedback cho 1 student.</summary>
+    [HttpPost("sessions/{id:int}/feedbacks")]
+    [ProducesResponseType(typeof(ApiResponse<object>), 200)]
+    [ProducesResponseType(typeof(ApiResponse<object>), 400)]
+    [ProducesResponseType(typeof(ApiResponse<object>), 404)]
+    [ProducesResponseType(typeof(ApiResponse<object>), 409)]
+    public async Task<IActionResult> SubmitFeedback(
+        int id,
+        [FromBody] SubmitFeedbackRequest request,
+        CancellationToken ct = default)
+    {
+        var teacherId = GetTeacherId();
+        if (teacherId == 0)
+            return Unauthorized(ApiResponse<object>.Fail("Không xác định được Teacher từ token.", 401));
+
+        var result = await _feedbackService.SubmitFeedbackAsync(id, teacherId, request, ct);
+        return this.ToOkResponse(result, "Gửi đánh giá thành công.");
     }
 }

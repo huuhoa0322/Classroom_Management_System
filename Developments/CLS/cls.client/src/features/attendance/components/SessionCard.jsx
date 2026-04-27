@@ -76,12 +76,20 @@ export default function SessionCard({ session, isFuture = false }) {
       )}
 
       {!isFuture && session.status === SESSION_STATUS.COMPLETED && (
-        <button
-          onClick={() => navigate(`/timetable/${session.id}/attendance`)}
-          className="w-full text-xs font-medium text-indigo-600 bg-white border border-indigo-200 hover:bg-indigo-50 rounded-md py-1.5 transition-colors"
-        >
-          📋 Xem điểm danh
-        </button>
+        <div className="space-y-1.5">
+          <button
+            onClick={() => navigate(`/timetable/${session.id}/attendance`)}
+            className="w-full text-xs font-medium text-indigo-600 bg-white border border-indigo-200 hover:bg-indigo-50 rounded-md py-1.5 transition-colors"
+          >
+            📋 Xem điểm danh
+          </button>
+          <button
+            onClick={() => navigate(`/timetable/${session.id}/feedback`)}
+            className="w-full text-xs font-medium text-purple-600 bg-white border border-purple-200 hover:bg-purple-50 rounded-md py-1.5 transition-colors"
+          >
+            📝 Đánh giá
+          </button>
+        </div>
       )}
     </div>
   );

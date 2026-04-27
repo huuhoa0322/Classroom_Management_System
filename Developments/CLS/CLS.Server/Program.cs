@@ -181,6 +181,12 @@ try
     // ── Services (Academic Operations / UC-07+08) ─────────────────────────────
     builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 
+    // ── Repositories (Academic Quality Assurance / UC-09) ──────────────────────
+    builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+
+    // ── Services (Academic Quality Assurance / UC-09) ──────────────────────────
+    builder.Services.AddScoped<IFeedbackService, FeedbackService>();
+
     // ── SignalR — Real-time notifications ─────────────────────────────────────
     builder.Services.AddSignalR();
 

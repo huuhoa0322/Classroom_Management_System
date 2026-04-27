@@ -38,6 +38,9 @@ public class AppDbContext : DbContext
     public DbSet<ClassStudent> ClassStudents => Set<ClassStudent>();
     public DbSet<Attendance> Attendances => Set<Attendance>();
 
+    // ── Academic Quality Assurance (UC-09) ──────────────────────────────────
+    public DbSet<Feedback> Feedbacks => Set<Feedback>();
+
     // ─────────────────────────────────────────────────────────────────────────
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

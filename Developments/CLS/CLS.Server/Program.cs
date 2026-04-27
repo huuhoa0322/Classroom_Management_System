@@ -193,6 +193,12 @@ try
     // ── Background Service — UC-10: Daily Depletion Scan ──────────────────────
     builder.Services.AddHostedService<DepletionScanService>();
 
+    // ── Email Service (UC-11: Zero-Touch Parent Notifications) ─────────────────
+    builder.Services.AddScoped<IEmailService, SmtpEmailService>();
+
+    // ── Background Service — UC-11: Email Dispatch ────────────────────────────
+    builder.Services.AddHostedService<EmailDispatchService>();
+
     // (AutoMapper đã đăng ký ở trên — không cần đăng ký lại)
 
     // ═════════════════════════════════════════════════════════════════════════

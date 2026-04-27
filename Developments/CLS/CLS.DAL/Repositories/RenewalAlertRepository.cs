@@ -82,16 +82,28 @@ public class RenewalAlertRepository : IRenewalAlertRepository
             .AnyAsync(a => a.StudentPackageId == studentPackageId
                         && a.Status == status, ct);
 
-    public async Task<HashSet<int>> GetExistingPendingPackageIdsAsync(string pendingStatus, CancellationToken ct = default)
+    public async Task<HashSet<int>> GetExistingAlertPackageIdsAsync(CancellationToken ct = default)
     {
         var ids = await _ctx.AlertNotifications
-            .Where(a => a.Status == pendingStatus && a.StudentPackageId != null)
+            .Where(a => a.StudentPackageId != null)
             .Select(a => a.StudentPackageId!.Value)
             .Distinct()
             .ToListAsync(ct);
 
         return ids.ToHashSet();
     }
+
+    public async Task<List<AlertNotification>> GetUnsentForDispatchAsync(int batchSize, CancellationToken ct = default)
+        => await _ctx.AlertNotifications
+            .Where(a => a.EmailSentAt == null)
+            .Include(a => a.StudentPackage!)
+                .ThenInclude(sp => sp.Student)
+                    .ThenInclude(s => s.Parent)
+            .Include(a => a.StudentPackage!)
+                .ThenInclude(sp => sp.Package)
+            .OrderBy(a => a.CreatedAt)
+            .Take(batchSize)
+            .ToListAsync(ct);
 
     public async Task AddAsync(AlertNotification entity, CancellationToken ct = default)
         => await _ctx.AlertNotifications.AddAsync(entity, ct);

@@ -17,8 +17,8 @@ public class FeedbackService : IFeedbackService
     private readonly ILogger<FeedbackService>               _logger;
     private readonly IValidator<SubmitFeedbackRequest>      _submitValidator;
 
-    /// <summary>SLA window: 12 hours after session end.</summary>
-    private static readonly TimeSpan SlaWindow = TimeSpan.FromHours(12);
+    /// <summary>SLA window: configured via AppConstants.</summary>
+    private static readonly TimeSpan SlaWindow = TimeSpan.FromHours(AppConstants.Sla.FeedbackWindowHours);
 
     public FeedbackService(
         ISessionRepository sessionRepo,
@@ -38,6 +38,8 @@ public class FeedbackService : IFeedbackService
     public async Task<ServiceResult<FeedbackListDto>> GetFeedbackListAsync(
         int sessionId, int teacherId, CancellationToken ct = default)
     {
+        // TODO: Consider adding a read-only variant of GetByIdWithClassStudentsAsync (AsNoTracking)
+        //       to avoid unnecessary EF change tracker overhead in read-only methods.
         var session = await _sessionRepo.GetByIdWithClassStudentsAsync(sessionId, ct);
         if (session is null)
             return ServiceResult<FeedbackListDto>.Fail($"Buổi học #{sessionId} không tồn tại.", 404);
@@ -92,6 +94,7 @@ public class FeedbackService : IFeedbackService
     public async Task<ServiceResult<StudentFeedbackDto>> GetStudentFeedbackAsync(
         int sessionId, int studentId, int teacherId, CancellationToken ct = default)
     {
+        // TODO: Same as GetFeedbackListAsync — consider read-only variant
         var session = await _sessionRepo.GetByIdWithClassStudentsAsync(sessionId, ct);
         if (session is null)
             return ServiceResult<StudentFeedbackDto>.Fail($"Buổi học #{sessionId} không tồn tại.", 404);

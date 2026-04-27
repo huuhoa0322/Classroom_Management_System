@@ -94,9 +94,8 @@ public class RenewalAlertService : IRenewalAlertService
         // Query 1: Lấy tất cả active packages kèm Student → Parent (single query)
         var activePackages = await _spRepo.GetActiveWithDetailsAsync(ct);
 
-        // Query 2: Lấy tất cả package IDs đã có pending alert (single query — tránh N+1)
-        var existingAlertPackageIds = await _alertRepo.GetExistingPendingPackageIdsAsync(
-            AppConstants.AlertNotificationStatus.Pending, ct);
+        // Query 2: Lấy tất cả package IDs đã có alert BẤT KỲ status (single query — tránh duplicate)
+        var existingAlertPackageIds = await _alertRepo.GetExistingAlertPackageIdsAsync(ct);
 
         var newAlerts = new List<AlertNotification>();
 

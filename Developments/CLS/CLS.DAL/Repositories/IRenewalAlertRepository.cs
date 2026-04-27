@@ -25,13 +25,17 @@ public interface IRenewalAlertRepository
     Task<bool> ExistsForPackageAsync(int studentPackageId, string status, CancellationToken ct = default);
 
     /// <summary>
-    /// Lấy tất cả StudentPackageId đã có pending alert (batch query — tránh N+1).
+    /// Lấy tất cả StudentPackageId đã có alert BẤT KỲ status (batch query — tránh N+1).
+    /// Đảm bảo mỗi gói chỉ tạo 1 alert duy nhất.
     /// Dùng bởi ScanAndCreateAlertsAsync.
     /// </summary>
-    Task<HashSet<int>> GetExistingPendingPackageIdsAsync(string pendingStatus, CancellationToken ct = default);
+    Task<HashSet<int>> GetExistingAlertPackageIdsAsync(CancellationToken ct = default);
 
     /// <summary>Thêm alert mới.</summary>
     Task AddAsync(AlertNotification entity, CancellationToken ct = default);
+
+    /// <summary>Lấy alerts chưa gửi email (email_sent_at IS NULL) — batch cho EmailDispatchService.</summary>
+    Task<List<AlertNotification>> GetUnsentForDispatchAsync(int batchSize, CancellationToken ct = default);
 
     /// <summary>Thêm nhiều alerts cùng lúc (batch insert từ depletion scan).</summary>
     Task AddRangeAsync(IEnumerable<AlertNotification> entities, CancellationToken ct = default);

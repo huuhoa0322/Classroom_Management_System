@@ -136,4 +136,11 @@ public static class AppConstants
         public const string Absent  = "absent";
         public const string Late    = "late";
     }
+
+    // ── SLA Configuration (UC-09) ─────────────────────────────────────────────
+    public static class Sla
+    {
+        /// <summary>Thời hạn submit feedback sau khi buổi học kết thúc (12 giờ).</summary>
+        public const int FeedbackWindowHours = 12;
+    }
 }

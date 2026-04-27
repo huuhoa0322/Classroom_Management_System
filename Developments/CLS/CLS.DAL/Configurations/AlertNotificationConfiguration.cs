@@ -53,6 +53,9 @@ public class AlertNotificationConfiguration : IEntityTypeConfiguration<AlertNoti
         builder.Property(a => a.ConsultedAt)
             .HasColumnName("consulted_at");
 
+        builder.Property(a => a.EmailSentAt)
+            .HasColumnName("email_sent_at");
+
         // ── Relationships ────────────────────────────────────────────────────
         builder.HasOne(a => a.StudentPackage)
             .WithMany()

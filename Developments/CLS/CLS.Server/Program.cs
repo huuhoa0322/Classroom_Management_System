@@ -175,6 +175,12 @@ try
     // ── Services (P9 — Retention Management / CLS-006+010) ────────────────────
     builder.Services.AddScoped<IRenewalAlertService, RenewalAlertService>();
 
+    // ── Repositories (Academic Operations / UC-07+08) ─────────────────────────
+    builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
+
+    // ── Services (Academic Operations / UC-07+08) ─────────────────────────────
+    builder.Services.AddScoped<IAttendanceService, AttendanceService>();
+
     // ── SignalR — Real-time notifications ─────────────────────────────────────
     builder.Services.AddSignalR();
 

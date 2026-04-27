@@ -18,4 +18,7 @@ public class Class : BaseEntity
 
     /// <summary>Danh sách buổi học thuộc lớp.</summary>
     public ICollection<Session> Sessions { get; set; } = [];
+
+    /// <summary>Danh sách học sinh thuộc lớp (qua bảng class_students).</summary>
+    public ICollection<ClassStudent> ClassStudents { get; set; } = [];
 }

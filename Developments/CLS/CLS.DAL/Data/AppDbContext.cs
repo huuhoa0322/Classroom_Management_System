@@ -34,6 +34,10 @@ public class AppDbContext : DbContext
     // ── Retention Management (CLS-006 + CLS-010) ────────────────────────────
     public DbSet<AlertNotification> AlertNotifications => Set<AlertNotification>();
 
+    // ── Academic Operations (UC-07 + UC-08) ────────────────────────────────
+    public DbSet<ClassStudent> ClassStudents => Set<ClassStudent>();
+    public DbSet<Attendance> Attendances => Set<Attendance>();
+
     // ─────────────────────────────────────────────────────────────────────────
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

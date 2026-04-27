@@ -20,6 +20,7 @@ export const ROUTE_PATHS = {
   CLASSES: '/classes',
   SESSIONS: '/sessions',
   ATTENDANCE: '/attendance',
+  TIMETABLE: '/timetable',
   RENEWAL_ALERTS: '/renewal-alerts',
 };
 
@@ -76,4 +77,13 @@ export const DEFAULT_PAGINATION = {
 export const ALERT_STATUS = {
   PENDING: 'pending',
   CONSULTED: 'consulted',
+};
+
+/**
+ * Trạng thái điểm danh (Attendance — UC-08).
+ */
+export const ATTENDANCE_STATUS = {
+  PRESENT: 'present',
+  ABSENT: 'absent',
+  LATE: 'late',
 };

@@ -116,6 +116,31 @@ public class SessionRepository : ISessionRepository
         return await query.OrderBy(s => s.StartTime).FirstOrDefaultAsync(ct);
     }
 
+    // ── UC-07: Teacher Timetable ──────────────────────────────────────────────
+    public async Task<List<Session>> GetTeacherScheduleAsync(
+        int teacherId, DateTime from, DateTime to, CancellationToken ct = default)
+        => await _ctx.Sessions
+            .AsNoTracking()
+            .Include(s => s.Class)
+            .Include(s => s.Room)
+            .Where(s => s.TeacherId == teacherId
+                     && s.StartTime >= from
+                     && s.StartTime < to
+                     && s.Status != "cancelled") // TODO: consider DAL constants
+            .OrderBy(s => s.StartTime)
+            .ToListAsync(ct);
+
+    // ── UC-08: Attendance Sheet — Session + Class Students ────────────────────
+    public async Task<Session?> GetByIdWithClassStudentsAsync(
+        int sessionId, CancellationToken ct = default)
+        => await _ctx.Sessions
+            .Include(s => s.Class)
+                .ThenInclude(c => c.ClassStudents.Where(cs => cs.Status == "active" && !cs.IsDeleted)) // TODO: consider DAL constants
+                    .ThenInclude(cs => cs.Student)
+            .Include(s => s.Room)
+            .Include(s => s.Teacher)
+            .FirstOrDefaultAsync(s => s.Id == sessionId, ct);
+
     public async Task AddAsync(Session entity, CancellationToken ct = default)
         => await _ctx.Sessions.AddAsync(entity, ct);
 

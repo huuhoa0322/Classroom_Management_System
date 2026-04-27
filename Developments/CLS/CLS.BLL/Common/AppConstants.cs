@@ -128,4 +128,12 @@ public static class AppConstants
         /// <summary>Số ngày còn lại tối thiểu trước end_date để trigger alert.</summary>
         public const int MinDays = 14;
     }
+
+    // ── Attendance Status (UC-08) ─────────────────────────────────────────────
+    public static class AttendanceStatus
+    {
+        public const string Present = "present";
+        public const string Absent  = "absent";
+        public const string Late    = "late";
+    }
 }

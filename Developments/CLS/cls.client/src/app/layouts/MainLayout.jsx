@@ -1,18 +1,22 @@
+import { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/app/provider/authStore';
 import { ROUTE_PATHS } from '@/shared/utils/constants';
 import { Toast } from '@/shared/components/Toast';
 import { useNotificationHub } from '@/shared/hooks/useNotificationHub';
 import { useNotificationStore } from '@/shared/stores/notificationStore';
-import { useState } from 'react';
+import { USER_ROLES } from '@/shared/utils/constants';
 
-const navItems = [
+const adminNavItems = [
   { label: 'Dashboard',  path: ROUTE_PATHS.DASHBOARD,  icon: '📊' },
   { label: 'Học sinh',   path: ROUTE_PATHS.STUDENTS,   icon: '👨‍🎓' },
   { label: 'Lớp học',    path: ROUTE_PATHS.CLASSES,    icon: '🏫' },
   { label: 'Lịch học',   path: ROUTE_PATHS.SESSIONS,   icon: '📅' },
-  { label: 'Điểm danh',  path: ROUTE_PATHS.ATTENDANCE, icon: '✅' },
   { label: 'Cảnh báo gia hạn', path: ROUTE_PATHS.RENEWAL_ALERTS, icon: '🔔', showBadge: true },
+];
+
+const teacherNavItems = [
+  { label: 'Lịch dạy',   path: ROUTE_PATHS.TIMETABLE,  icon: '📅' },
 ];
 
 /**
@@ -24,6 +28,9 @@ export function MainLayout() {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const unreadCount = useNotificationStore((s) => s.unreadCount);
+
+  // Role-based navigation
+  const navItems = user?.role === USER_ROLES.TEACHER ? teacherNavItems : adminNavItems;
 
   // Connect to SignalR NotificationHub
   useNotificationHub();

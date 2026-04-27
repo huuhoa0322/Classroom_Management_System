@@ -33,4 +33,13 @@ public interface ISessionRepository : IRepository<Session>
     Task<Session?> GetRoomConflictAsync(
         int roomId, DateTime startTime, DateTime endTime,
         int? excludeSessionId = null, CancellationToken ct = default);
+
+    // ── UC-07: Teacher Timetable ──────────────────────────────────────────
+
+    /// <summary>Lấy lịch dạy của Teacher trong khoảng thời gian (tuần).</summary>
+    Task<List<Session>> GetTeacherScheduleAsync(
+        int teacherId, DateTime from, DateTime to, CancellationToken ct = default);
+
+    /// <summary>Lấy session kèm danh sách học sinh thuộc Class (qua class_students) để điểm danh.</summary>
+    Task<Session?> GetByIdWithClassStudentsAsync(int sessionId, CancellationToken ct = default);
 }

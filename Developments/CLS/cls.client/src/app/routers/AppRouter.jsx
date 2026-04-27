@@ -10,6 +10,7 @@ import StudentPage from '@/features/student/pages/StudentPage';
 import ClassPage from '@/features/class/pages/ClassPage';
 import SessionPage from '@/features/session/pages/SessionPage';
 import AttendancePage from '@/features/attendance/pages/AttendancePage';
+import TimetablePage from '@/features/attendance/pages/TimetablePage';
 import StudentFinancialPage from '@/features/financial/pages/StudentFinancialPage';
 import PaymentManagementPage from '@/features/financial/pages/PaymentManagementPage';
 import RenewalAlertsPage from '@/features/retention/pages/RenewalAlertsPage';
@@ -41,6 +42,8 @@ export default function AppRouter() {
         <Route path="classes" element={<ClassPage />} />
         <Route path="sessions" element={<SessionPage />} />
         <Route path="attendance" element={<AttendancePage />} />
+        <Route path="timetable" element={<TimetablePage />} />
+        <Route path="timetable/:sessionId/attendance" element={<AttendancePage />} />
         <Route path="renewal-alerts" element={<RenewalAlertsPage />} />
       </Route>
 

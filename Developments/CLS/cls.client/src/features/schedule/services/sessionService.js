@@ -20,9 +20,9 @@ export const deleteSession = (id) =>
 export const getAllSessions = ({ page = 1, pageSize = 10 } = {}) =>
   apiClient.get('/sessions', { params: { page, pageSize } });
 
-/** GET /api/v1/classes — Danh sách lớp (dropdown) */
+/** GET /api/v1/classes/dropdown — Danh sách lớp active (dropdown) */
 export const getClasses = () =>
-  apiClient.get('/classes');
+  apiClient.get('/classes/dropdown');
 
 /** GET /api/v1/rooms — Danh sách phòng (dropdown) */
 export const getRooms = () =>

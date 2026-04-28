@@ -23,6 +23,40 @@ public class ClassRepository : IClassRepository
             .OrderBy(c => c.Name)
             .ToListAsync(ct);
 
+    public async Task<(List<Class> Items, int Total)> GetPagedAsync(
+        int page, int pageSize, CancellationToken ct = default)
+    {
+        var query = _ctx.Classes
+            .AsNoTracking()
+            .Include(c => c.ClassStudents)
+            .Include(c => c.Sessions)
+            .OrderBy(c => c.Name);
+
+        var total = await query.CountAsync(ct);
+        var items = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(ct);
+
+        return (items, total);
+    }
+
+    public async Task<Class?> GetByIdWithDetailsAsync(int id, CancellationToken ct = default)
+        => await _ctx.Classes
+            .Include(c => c.ClassStudents)
+                .ThenInclude(cs => cs.Student)
+            .Include(c => c.Sessions)
+            .FirstOrDefaultAsync(c => c.Id == id, ct);
+
+    public async Task<bool> ExistsByNameAsync(string name, int? excludeId = null, CancellationToken ct = default)
+    {
+        var query = _ctx.Classes.Where(c => c.Name == name);
+        if (excludeId.HasValue)
+            query = query.Where(c => c.Id != excludeId.Value);
+        return await query.AnyAsync(ct);
+    }
+
+
     public async Task AddAsync(Class entity, CancellationToken ct = default)
         => await _ctx.Classes.AddAsync(entity, ct);
 

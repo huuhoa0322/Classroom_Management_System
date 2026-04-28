@@ -157,6 +157,9 @@ try
     // ── Services (P9 — Student Slice) ─────────────────────────────────────────
     builder.Services.AddScoped<IStudentService, StudentService>();
 
+    // ── Services (Class Management) ───────────────────────────────────────────
+    builder.Services.AddScoped<IClassService, ClassService>();
+
     // ── Services (P9 — Financial Administration / CLS-003) ────────────────────
     builder.Services.AddScoped<IPaymentService, PaymentService>();
 

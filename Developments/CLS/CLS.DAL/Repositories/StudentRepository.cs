@@ -44,6 +44,14 @@ public class StudentRepository : IStudentRepository
             .Include(s => s.Parent)
             .FirstOrDefaultAsync(s => s.Id == id, ct);
 
+    /// <summary>
+    /// Lấy student kèm Parent CÓ tracking — dùng cho Update flow.
+    /// </summary>
+    public async Task<Student?> GetWithParentForUpdateAsync(int id, CancellationToken ct = default)
+        => await _ctx.Students
+            .Include(s => s.Parent)
+            .FirstOrDefaultAsync(s => s.Id == id, ct);
+
     public async Task AddAsync(Student entity, CancellationToken ct = default)
         => await _ctx.Students.AddAsync(entity, ct);
 

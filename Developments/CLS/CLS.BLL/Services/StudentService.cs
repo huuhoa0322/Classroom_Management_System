@@ -114,20 +114,26 @@ public class StudentService : IStudentService
         if (!validation.IsValid)
             return ServiceResult<StudentResponse>.Validation(validation.Errors);
 
-        var student = await _studentRepo.GetWithParentAsync(id, ct);
+        var student = await _studentRepo.GetWithParentForUpdateAsync(id, ct);
         if (student is null)
             return ServiceResult<StudentResponse>.Fail($"Học sinh #{id} không tồn tại.", 404);
 
-        _mapper.Map(request, student);
+        // Cập nhật thông tin học sinh
+        student.FullName    = request.FullName;
+        student.DateOfBirth = request.DateOfBirth;
 
-        // Ngắt navigation Parent trước Update để EF Core không mark Parent là Modified
-        var parentRef   = student.Parent;
-        student.Parent  = null!;
-        _studentRepo.Update(student);
+        // Cập nhật thông tin phụ huynh
+        if (student.Parent is not null)
+        {
+            student.Parent.FullName     = request.ParentFullName;
+            student.Parent.Email        = request.ParentEmail;
+            student.Parent.Phone        = request.ParentPhone;
+            student.Parent.Relationship = request.ParentRelationship;
+        }
+
         await _studentRepo.SaveChangesAsync(ct);
-        student.Parent = parentRef;   // Khôi phục để AutoMapper map được Parent fields
 
-        _logger.LogInformation("Updated Student {StudentId}", id);
+        _logger.LogInformation("Updated Student {StudentId} and Parent info", id);
         return ServiceResult<StudentResponse>.Success(_mapper.Map<StudentResponse>(student));
     }
 
@@ -141,7 +147,7 @@ public class StudentService : IStudentService
                 $"Trạng thái không hợp lệ: '{request.Status}'. Chỉ chấp nhận: active, inactive.",
                 400);
 
-        var student = await _studentRepo.GetWithParentAsync(id, ct);
+        var student = await _studentRepo.GetWithParentForUpdateAsync(id, ct);
         if (student is null)
             return ServiceResult<StudentResponse>.Fail($"Học sinh #{id} không tồn tại.", 404);
 
@@ -156,12 +162,7 @@ public class StudentService : IStudentService
                 id, student.FullName);
         }
 
-        // Ngắt navigation Parent trước Update để EF Core không mark Parent là Modified
-        var parentRef   = student.Parent;
-        student.Parent  = null!;
-        _studentRepo.Update(student);
         await _studentRepo.SaveChangesAsync(ct);
-        student.Parent = parentRef;   // Khôi phục để AutoMapper map được Parent fields
 
         _logger.LogInformation("Student {StudentId} status changed: {Old} → {New}", id, oldStatus, request.Status);
         return ServiceResult<StudentResponse>.Success(_mapper.Map<StudentResponse>(student));

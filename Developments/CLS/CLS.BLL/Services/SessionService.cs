@@ -214,7 +214,7 @@ public class SessionService : ISessionService
 
         if (teacherConflict is not null)
             return ServiceResult<object?>.Fail(
-                "Xung đột lịch học: Giáo viên đã được phân công cho một buổi học khác trong khoảng thời gian đã chọn.",
+                "Giáo viên đã được phân công cho một buổi học khác trong khoảng thời gian đã chọn.",
                 409,
                 BuildConflictData("teacher", teacherConflict));
 
@@ -223,7 +223,7 @@ public class SessionService : ISessionService
 
         if (roomConflict is not null)
             return ServiceResult<object?>.Fail(
-                "Xung đột lịch học: Phòng học đã được sử dụng trong khoảng thời gian đã chọn.",
+                "Phòng học đã được sử dụng trong khoảng thời gian đã chọn.",
                 409,
                 BuildConflictData("room", roomConflict));
 

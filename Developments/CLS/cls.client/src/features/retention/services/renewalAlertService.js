@@ -5,7 +5,7 @@ import { apiClient } from '@/shared/services/apiClient';
  * Gọi API endpoints liên quan đến renewal alerts.
  */
 
-/** GET /api/v1/renewal-alerts — Danh sách cảnh báo gia hạn (phân trang, sort, filter) */
+/** GET /api/v1/renewal-alerts — Danh sách thông báo gia hạn (phân trang, sort, filter) */
 export const getRenewalAlerts = ({ page = 1, pageSize = 10, status, sortBy, sortDir } = {}) =>
   apiClient.get('/renewal-alerts', {
     params: { page, pageSize, status, sortBy, sortDir },

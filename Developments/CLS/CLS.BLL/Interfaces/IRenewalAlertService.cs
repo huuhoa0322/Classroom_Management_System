@@ -8,7 +8,7 @@ namespace CLS.BLL.Interfaces;
 /// </summary>
 public interface IRenewalAlertService
 {
-    /// <summary>Lấy danh sách cảnh báo gia hạn (phân trang, sort, filter).</summary>
+    /// <summary>Lấy danh sách thông báo gia hạn (phân trang, sort, filter).</summary>
     Task<PagedResult<RenewalAlertResponse>> GetAlertsAsync(
         int page, int pageSize,
         string? status, string? sortBy, string? sortDir,

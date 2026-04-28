@@ -39,7 +39,7 @@ export function useNotificationHub() {
         increment(count);
         addToast({
           type: 'warning',
-          message: `🔔 Có ${count} cảnh báo gia hạn mới cần xử lý!`,
+          message: `🔔 Có ${count} thông báo gia hạn mới cần xử lý!`,
         });
       }
     });

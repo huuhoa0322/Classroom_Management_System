@@ -12,7 +12,7 @@ const adminNavItems = [
   { label: 'Học sinh',   path: ROUTE_PATHS.STUDENTS,   icon: '👨‍🎓' },
   { label: 'Lớp học',    path: ROUTE_PATHS.CLASSES,    icon: '🏫' },
   { label: 'Lịch học',   path: ROUTE_PATHS.SESSIONS,   icon: '📅' },
-  { label: 'Cảnh báo gia hạn', path: ROUTE_PATHS.RENEWAL_ALERTS, icon: '🔔', showBadge: true },
+  { label: 'Thông báo gia hạn', path: ROUTE_PATHS.RENEWAL_ALERTS, icon: '🔔', showBadge: true },
 ];
 
 const teacherNavItems = [
@@ -116,7 +116,7 @@ export function MainLayout() {
             <button
               onClick={() => navigate(ROUTE_PATHS.RENEWAL_ALERTS)}
               className="relative p-2 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors"
-              title="Cảnh báo gia hạn"
+              title="Thông báo gia hạn"
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
                 <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />

@@ -5,7 +5,7 @@ import { useToastStore } from '@/shared/stores/toastStore';
 import { ALERT_STATUS } from '@/shared/utils/constants';
 
 /**
- * RenewalAlertTable — Bảng cảnh báo gia hạn gói học (CLS-006).
+ * RenewalAlertTable — Bảng thông báo gia hạn gói học (CLS-006).
  * Features: phân trang, sort, filter status, toggle "Đã tư vấn".
  */
 export function RenewalAlertTable() {

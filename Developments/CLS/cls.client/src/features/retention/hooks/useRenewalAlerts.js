@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getRenewalAlerts, updateAlertStatus } from '../services/renewalAlertService';
 
 /**
- * Hook: Lấy danh sách cảnh báo gia hạn (phân trang, sort, filter).
+ * Hook: Lấy danh sách thông báo gia hạn (phân trang, sort, filter).
  * @param {number} page
  * @param {number} pageSize
  * @param {string|null} status - 'pending' | 'consulted' | null (all)

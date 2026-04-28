@@ -72,7 +72,7 @@ export const DEFAULT_PAGINATION = {
 };
 
 /**
- * Trạng thái cảnh báo gia hạn (Alert Notification — CLS-006).
+ * Trạng thái thông báo gia hạn (Alert Notification — CLS-006).
  */
 export const ALERT_STATUS = {
   PENDING: 'pending',

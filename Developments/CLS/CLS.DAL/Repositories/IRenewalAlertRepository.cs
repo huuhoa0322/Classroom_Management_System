@@ -3,7 +3,7 @@ using CLS.DAL.Entities;
 namespace CLS.DAL.Repositories;
 
 /// <summary>
-/// Repository cho AlertNotification — cảnh báo gia hạn gói học (CLS-006 + CLS-010).
+/// Repository cho AlertNotification — thông báo gia hạn gói học (CLS-006 + CLS-010).
 /// Không extend IRepository&lt;T&gt; vì AlertNotification không kế thừa BaseEntity.
 /// </summary>
 public interface IRenewalAlertRepository

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CLS.Server.Controllers;
 
 /// <summary>
-/// API cảnh báo gia hạn gói học — CLS-006: Review Package Renewal Alerts.
+/// API thông báo gia hạn gói học — CLS-006: Review Package Renewal Alerts.
 /// </summary>
 [ApiController]
 [Route(AppConstants.Routes.Alerts)]
@@ -22,7 +22,7 @@ public class RenewalAlertsController : ControllerBase
         => _alertService = alertService;
 
     // ── GET /api/v1/renewal-alerts ────────────────────────────────────────────
-    /// <summary>Lấy danh sách cảnh báo gia hạn (phân trang, sort, filter).</summary>
+    /// <summary>Lấy danh sách thông báo gia hạn (phân trang, sort, filter).</summary>
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<PagedResult<RenewalAlertResponse>>), 200)]
     public async Task<IActionResult> GetAlerts(
@@ -35,7 +35,7 @@ public class RenewalAlertsController : ControllerBase
     {
         var result = await _alertService.GetAlertsAsync(page, pageSize, status, sortBy, sortDir, ct);
         return Ok(ApiResponse<PagedResult<RenewalAlertResponse>>.Success(
-            result, "Lấy danh sách cảnh báo gia hạn thành công."));
+            result, "Lấy danh sách thông báo gia hạn thành công."));
     }
 
     // ── PATCH /api/v1/renewal-alerts/{id}/status ──────────────────────────────

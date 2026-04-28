@@ -1,7 +1,7 @@
 namespace CLS.DAL.Entities;
 
 /// <summary>
-/// Thông báo cảnh báo gia hạn gói học (Renewal Alert).
+/// Thông báo gia hạn gói học (Renewal Alert).
 /// Bảng: alert_notifications
 ///
 /// Đây là bảng APPEND-ONLY — KHÔNG kế thừa BaseEntity.

@@ -120,7 +120,7 @@ public static class AppConstants
     }
 
     // ── Depletion Scan Thresholds (CLS-010) ───────────────────────────────────
-    /// <summary>Ngưỡng cảnh báo gia hạn gói học — dùng bởi DepletionScanService.</summary>
+    /// <summary>Ngưỡng thông báo gia hạn gói học — dùng bởi DepletionScanService.</summary>
     public static class DepletionThresholds
     {
         /// <summary>Số buổi còn lại tối thiểu để trigger alert.</summary>

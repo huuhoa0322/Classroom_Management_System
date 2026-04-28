@@ -3,7 +3,7 @@ import { RenewalAlertTable } from '../components/RenewalAlertTable';
 import { useNotificationStore } from '@/shared/stores/notificationStore';
 
 /**
- * RenewalAlertsPage — Trang quản lý cảnh báo gia hạn gói học (CLS-006).
+ * RenewalAlertsPage — Trang quản lý thông báo gia hạn gói học (CLS-006).
  * Reset notification badge khi user navigate vào trang này.
  */
 export default function RenewalAlertsPage() {
@@ -18,7 +18,7 @@ export default function RenewalAlertsPage() {
     <div className="space-y-6">
       {/* ── Header ──────────────────────────────────────────────────── */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">🔔 Cảnh báo gia hạn</h1>
+        <h1 className="text-2xl font-bold text-gray-900">🔔 Thông báo gia hạn</h1>
         <p className="text-sm text-gray-500 mt-1">
           Danh sách học sinh có gói học sắp hết buổi hoặc sắp hết hạn. 
           Hãy liên hệ phụ huynh để tư vấn gia hạn.

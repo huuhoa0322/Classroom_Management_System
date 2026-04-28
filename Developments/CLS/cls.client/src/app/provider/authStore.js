@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 
 /**
  * Zustand Auth Store — Quản lý trạng thái xác thực toàn cục của ứng dụng CLS.
- * Chỉ persist token (không persist user object để tránh lộ thông tin nhạy cảm).
+ * Persist token + user info cơ bản (id, fullName, email, role) để duy trì phiên sau refresh.
  */
 export const useAuthStore = create(
   persist(
@@ -52,8 +52,9 @@ export const useAuthStore = create(
     }),
     {
       name: 'cls-auth-storage',  // Tên key trong localStorage
-      // Chỉ persist token, KHÔNG persist user object (bảo mật)
+      // Persist token + user info cơ bản để duy trì phiên sau F5 refresh
       partialize: (state) => ({
+        user: state.user,
         accessToken: state.accessToken,
         refreshToken: state.refreshToken,
         isAuthenticated: state.isAuthenticated,

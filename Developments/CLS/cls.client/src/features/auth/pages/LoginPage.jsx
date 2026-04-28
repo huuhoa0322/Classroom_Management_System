@@ -1,5 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useLogin } from '../hooks/useAuth';
+
+/**
+ * Trạng thái kết nối server:
+ * - 'connecting': Đang ping health check (cold start)
+ * - 'ready':      Server đã sẵn sàng
+ * - 'error':      Không kết nối được (retry)
+ */
+const SERVER_STATUS = {
+  CONNECTING: 'connecting',
+  READY: 'ready',
+  ERROR: 'error',
+};
 
 export default function LoginPage() {
   const [email, setEmail]       = useState('');
@@ -7,6 +19,58 @@ export default function LoginPage() {
   const [showPass, setShowPass] = useState(false);
 
   const { mutate: login, isPending, error } = useLogin();
+
+  // ── Warm-up health check — đánh thức server Render Free Tier ────────────
+  const [serverStatus, setServerStatus] = useState(SERVER_STATUS.CONNECTING);
+  const [bannerVisible, setBannerVisible] = useState(true);
+  const retryCount = useRef(0);
+  const maxRetries = 3;
+
+  useEffect(() => {
+    let cancelled = false;
+    let hideTimer;
+
+    const pingHealth = async () => {
+      const baseUrl = import.meta.env.VITE_API_BASE_URL || '/api/v1';
+      // Health endpoint nằm ở root, không nằm trong /api/v1
+      const healthUrl = baseUrl.replace(/\/api\/v1\/?$/, '') + '/health';
+
+      try {
+        const res = await fetch(healthUrl, {
+          method: 'GET',
+          signal: AbortSignal.timeout(60000), // 60s cho cold start
+        });
+
+        if (!cancelled && res.ok) {
+          setServerStatus(SERVER_STATUS.READY);
+          // Auto-hide banner sau 2 giây khi đã sẵn sàng
+          hideTimer = setTimeout(() => {
+            if (!cancelled) setBannerVisible(false);
+          }, 2000);
+        } else if (!cancelled) {
+          throw new Error('Health check failed');
+        }
+      } catch {
+        if (cancelled) return;
+
+        retryCount.current += 1;
+        if (retryCount.current < maxRetries) {
+          setServerStatus(SERVER_STATUS.CONNECTING);
+          // Retry sau 3 giây
+          setTimeout(() => { if (!cancelled) pingHealth(); }, 3000);
+        } else {
+          setServerStatus(SERVER_STATUS.ERROR);
+        }
+      }
+    };
+
+    pingHealth();
+
+    return () => {
+      cancelled = true;
+      clearTimeout(hideTimer);
+    };
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -16,8 +80,45 @@ export default function LoginPage() {
   // Trích error message — apiClient interceptor đã unwrap thành Error(message)
   const errorMsg = error?.message ?? null;
 
+  // ── Server status banner config ──────────────────────────────────────────
+  const statusConfig = {
+    [SERVER_STATUS.CONNECTING]: {
+      icon: '🔄',
+      text: 'Đang kết nối máy chủ...',
+      bgClass: 'bg-amber-50 border-amber-200 text-amber-700',
+      showSpinner: true,
+    },
+    [SERVER_STATUS.READY]: {
+      icon: '✅',
+      text: 'Máy chủ đã sẵn sàng',
+      bgClass: 'bg-green-50 border-green-200 text-green-700',
+      showSpinner: false,
+    },
+    [SERVER_STATUS.ERROR]: {
+      icon: '⚠️',
+      text: 'Máy chủ đang khởi động, vui lòng đợi...',
+      bgClass: 'bg-amber-50 border-amber-200 text-amber-700',
+      showSpinner: true,
+    },
+  };
+
+  const currentStatus = statusConfig[serverStatus];
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+
+      {/* Server warm-up status banner — góc phải trên màn hình */}
+      {bannerVisible && (
+        <div className={`fixed top-4 right-4 z-50 border rounded-lg px-4 py-3 text-sm flex items-center gap-2 shadow-lg transition-all ${currentStatus.bgClass}`}>
+          {currentStatus.showSpinner ? (
+            <span className="w-4 h-4 border-2 border-current/30 border-t-current rounded-full animate-spin flex-shrink-0" />
+          ) : (
+            <span>{currentStatus.icon}</span>
+          )}
+          <span>{currentStatus.text}</span>
+        </div>
+      )}
+
       <div className="w-full max-w-md">
 
         {/* ── Card ─────────────────────────────────────────────────────── */}

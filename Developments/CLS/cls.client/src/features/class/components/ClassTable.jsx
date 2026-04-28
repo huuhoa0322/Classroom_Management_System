@@ -2,6 +2,17 @@ import { getStatusBadge } from '@/shared/utils/formatters';
 
 /**
  * ClassTable — Bảng danh sách lớp học.
+ *
+ * @param {{
+ *   classes: { items: Array, totalPages: number, pageSize: number },
+ *   isLoading: boolean,
+ *   page: number,
+ *   onPageChange: (page: number) => void,
+ *   onEdit: (cls: Object) => void,
+ *   onManageStudents: (cls: Object) => void,
+ *   onToggleStatus: (cls: Object) => void,
+ *   isTogglingStatus: boolean
+ * }} props
  */
 export function ClassTable({
   classes,

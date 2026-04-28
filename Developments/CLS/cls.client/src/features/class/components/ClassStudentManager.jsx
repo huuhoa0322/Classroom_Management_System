@@ -6,6 +6,11 @@ import { toast } from '@/shared/stores/toastStore';
 /**
  * ClassStudentManager — Modal quản lý học sinh trong lớp.
  * Hỗ trợ đăng ký nhiều HS cùng lúc + hủy đăng ký từng HS.
+ *
+ * @param {{
+ *   classInfo: { id: number, name: string },
+ *   onClose: () => void
+ * }} props
  */
 export function ClassStudentManager({ classInfo, onClose }) {
   const classId = classInfo?.id;

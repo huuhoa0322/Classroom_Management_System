@@ -137,7 +137,7 @@ export const StudentForm = ({ student, onSubmit, isLoading, onCancel }) => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Quan hệ <span className="text-red-500">*</span>
+              Phụ huynh là gì của học sinh? <span className="text-red-500">*</span>
             </label>
             <select
               {...register('parentRelationship')}
@@ -145,7 +145,7 @@ export const StudentForm = ({ student, onSubmit, isLoading, onCancel }) => {
                 errors.parentRelationship ? 'border-red-400' : 'border-gray-300'
               }`}
             >
-              <option value="">-- Chọn quan hệ --</option>
+              <option value="">-- Chọn --</option>
               <option value="Bố">Bố</option>
               <option value="Mẹ">Mẹ</option>
               <option value="Người giám hộ">Người giám hộ</option>

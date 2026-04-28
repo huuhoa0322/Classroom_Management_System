@@ -70,7 +70,10 @@ public class ClassesController : ControllerBase
     public async Task<IActionResult> Create(
         [FromBody] CreateClassRequest request, CancellationToken ct = default)
     {
-        var userId = int.Parse(User.FindFirstValue(AppConstants.ClaimNames.UserId)!);
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out var userId))
+            return Unauthorized(ApiResponse<object>.Fail("Không xác định được người dùng.", 401));
+
         var result = await _classService.CreateAsync(request, userId, ct);
         return this.ToCreatedAtActionResponse(
             result,

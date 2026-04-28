@@ -48,6 +48,14 @@ public class ClassRepository : IClassRepository
             .Include(c => c.Sessions)
             .FirstOrDefaultAsync(c => c.Id == id, ct);
 
+    public async Task<Class?> GetByIdWithDetailsReadOnlyAsync(int id, CancellationToken ct = default)
+        => await _ctx.Classes
+            .AsNoTracking()
+            .Include(c => c.ClassStudents)
+                .ThenInclude(cs => cs.Student)
+            .Include(c => c.Sessions)
+            .FirstOrDefaultAsync(c => c.Id == id, ct);
+
     public async Task<bool> ExistsByNameAsync(string name, int? excludeId = null, CancellationToken ct = default)
     {
         var query = _ctx.Classes.Where(c => c.Name == name);
@@ -55,6 +63,7 @@ public class ClassRepository : IClassRepository
             query = query.Where(c => c.Id != excludeId.Value);
         return await query.AnyAsync(ct);
     }
+
 
 
     public async Task AddAsync(Class entity, CancellationToken ct = default)

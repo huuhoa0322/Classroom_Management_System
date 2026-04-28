@@ -31,7 +31,7 @@ public class CreateStudentRequestValidator : AbstractValidator<CreateStudentRequ
             .WithMessage("Số điện thoại phụ huynh phải có 10-11 chữ số.");
 
         RuleFor(x => x.ParentRelationship)
-            .NotEmpty().WithMessage("Quan hệ với học sinh là bắt buộc.")
-            .MaximumLength(50).WithMessage("Quan hệ không được vượt quá 50 ký tự.");
+            .NotEmpty().WithMessage("Phụ huynh bắt buộc phải chọn.")
+            .MaximumLength(50).WithMessage("Không được vượt quá 50 ký tự.");
     }
 }

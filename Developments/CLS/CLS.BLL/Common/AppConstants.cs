@@ -64,6 +64,20 @@ public static class AppConstants
         public const string Inactive = "inactive";
     }
 
+    // ── Class Status ──────────────────────────────────────────────────────────
+    public static class ClassStatus
+    {
+        public const string Active   = "active";
+        public const string Inactive = "inactive";
+    }
+
+    // ── ClassStudent (Enrollment) Status ──────────────────────────────────────
+    public static class ClassStudentStatus
+    {
+        public const string Active   = "active";
+        public const string Inactive = "inactive";
+    }
+
     // ── Payment Status (CLS-003) ──────────────────────────────────────────────
     public static class PaymentStatus
     {

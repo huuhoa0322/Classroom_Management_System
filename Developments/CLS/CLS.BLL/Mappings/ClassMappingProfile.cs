@@ -1,4 +1,5 @@
 using AutoMapper;
+using CLS.BLL.Common;
 using CLS.BLL.DTOs.Classes;
 using CLS.DAL.Entities;
 
@@ -11,7 +12,8 @@ public class ClassMappingProfile : Profile
     {
         CreateMap<Class, ClassResponse>()
             .ForMember(d => d.StudentCount,
-                       o => o.MapFrom(s => s.ClassStudents.Count(cs => cs.Status == "active")))
+                       o => o.MapFrom(s => s.ClassStudents.Count(
+                           cs => cs.Status == AppConstants.ClassStudentStatus.Active)))
             .ForMember(d => d.SessionCount,
                        o => o.MapFrom(s => s.Sessions.Count));
 

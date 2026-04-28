@@ -19,6 +19,7 @@ export default function ClassPage() {
   const [showForm, setShowForm] = useState(false);
   const [editingClass, setEditingClass] = useState(null);
   const [managingClass, setManagingClass] = useState(null);
+  const [confirmingClass, setConfirmingClass] = useState(null);
 
   // Data hook
   const { data: classes, isLoading, isError } = useClassList(page);
@@ -64,16 +65,27 @@ export default function ClassPage() {
     setShowForm(true);
   };
 
+  // Mở modal xác nhận thay vì window.confirm
   const handleToggleStatus = (cls) => {
-    const newStatus = cls.status === 'active' ? 'inactive' : 'active';
+    setConfirmingClass(cls);
+  };
+
+  const confirmToggleStatus = () => {
+    if (!confirmingClass) return;
+    const newStatus = confirmingClass.status === 'active' ? 'inactive' : 'active';
     const label = newStatus === 'active' ? 'kích hoạt' : 'tạm dừng';
-    if (!window.confirm(`Bạn muốn ${label} lớp "${cls.name}"?`)) return;
 
     updateStatus.mutate(
-      { id: cls.id, status: newStatus },
+      { id: confirmingClass.id, status: newStatus },
       {
-        onSuccess: () => toast.success(`Đã ${label} lớp "${cls.name}".`),
-        onError: (err) => toast.error(err.message || 'Không thể đổi trạng thái.'),
+        onSuccess: () => {
+          toast.success(`Đã ${label} lớp "${confirmingClass.name}".`);
+          setConfirmingClass(null);
+        },
+        onError: (err) => {
+          toast.error(err.message || 'Không thể đổi trạng thái.');
+          setConfirmingClass(null);
+        },
       }
     );
   };
@@ -86,6 +98,12 @@ export default function ClassPage() {
   };
 
   const isSubmitting = createClass.isPending || updateClass.isPending;
+
+  // Tính label cho modal xác nhận
+  const confirmLabel = confirmingClass
+    ? confirmingClass.status === 'active' ? 'tạm dừng' : 'kích hoạt'
+    : '';
+  const confirmIsDeactivate = confirmingClass?.status === 'active';
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -158,6 +176,67 @@ export default function ClassPage() {
           classInfo={managingClass}
           onClose={() => setManagingClass(null)}
         />
+      )}
+
+      {/* Modal — Xác nhận đổi trạng thái */}
+      {confirmingClass && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm mx-4">
+            {/* Icon */}
+            <div className={`w-12 h-12 mx-auto mb-4 rounded-full flex items-center justify-center ${
+              confirmIsDeactivate ? 'bg-yellow-100' : 'bg-green-100'
+            }`}>
+              <span className="text-2xl">{confirmIsDeactivate ? '⏸' : '▶'}</span>
+            </div>
+
+            {/* Title */}
+            <h3 className="text-lg font-semibold text-gray-900 text-center">
+              Xác nhận {confirmLabel} lớp
+            </h3>
+
+            {/* Message */}
+            <p className="text-sm text-gray-500 text-center mt-2 leading-relaxed">
+              Bạn có chắc muốn <span className="font-medium text-gray-700">{confirmLabel}</span> lớp
+              {' '}<span className="font-semibold text-gray-900">&quot;{confirmingClass.name}&quot;</span>?
+              {confirmIsDeactivate && (
+                <span className="block mt-1 text-yellow-600">
+                  Lớp sẽ không thể nhận học sinh mới sau khi tạm dừng.
+                </span>
+              )}
+            </p>
+
+            {/* Actions */}
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => setConfirmingClass(null)}
+                disabled={updateStatus.isPending}
+                className="flex-1 px-4 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={confirmToggleStatus}
+                disabled={updateStatus.isPending}
+                className={`flex-1 px-4 py-2.5 text-sm font-medium text-white rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2 ${
+                  confirmIsDeactivate
+                    ? 'bg-yellow-500 hover:bg-yellow-600'
+                    : 'bg-green-600 hover:bg-green-700'
+                }`}
+              >
+                {updateStatus.isPending ? (
+                  <>
+                    <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                    Đang xử lý...
+                  </>
+                ) : (
+                  <>
+                    {confirmIsDeactivate ? '⏸ Tạm dừng' : '▶ Kích hoạt'}
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

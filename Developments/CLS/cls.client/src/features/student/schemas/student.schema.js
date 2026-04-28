@@ -36,8 +36,8 @@ export const createStudentSchema = z.object({
     }),
   parentRelationship: z
     .string()
-    .min(1, 'Quan hệ với học sinh là bắt buộc.')
-    .max(50, 'Quan hệ không được vượt quá 50 ký tự.'),
+    .min(1, 'Phụ huynh bắt buộc phải chọn.')
+    .max(50, 'Không được vượt quá 50 ký tự.'),
 });
 
 /**
@@ -73,6 +73,6 @@ export const updateStudentSchema = z.object({
     }),
   parentRelationship: z
     .string()
-    .min(1, 'Quan hệ với học sinh là bắt buộc.')
-    .max(50, 'Quan hệ không được vượt quá 50 ký tự.'),
+    .min(1, 'Phụ huynh bắt buộc phải chọn.')
+    .max(50, 'Không được vượt quá 50 ký tự.'),
 });

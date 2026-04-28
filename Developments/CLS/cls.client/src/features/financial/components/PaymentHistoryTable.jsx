@@ -21,6 +21,7 @@ export function PaymentHistoryTable({
   onPageChange,
   onUpdateStatus,
   isUpdating,
+  showStudentColumn = true,
 }) {
   const [confirmAction, setConfirmAction] = useState(null);
 
@@ -64,7 +65,9 @@ export function PaymentHistoryTable({
           <thead>
             <tr className="border-b border-gray-200">
               <th className="text-left py-3 px-4 font-medium text-gray-500">Ngày</th>
-              <th className="text-left py-3 px-4 font-medium text-gray-500">Học sinh</th>
+              {showStudentColumn && (
+                <th className="text-left py-3 px-4 font-medium text-gray-500">Học sinh</th>
+              )}
               <th className="text-left py-3 px-4 font-medium text-gray-500">Gói học</th>
               <th className="text-right py-3 px-4 font-medium text-gray-500">Số tiền</th>
               <th className="text-center py-3 px-4 font-medium text-gray-500">Trạng thái</th>
@@ -80,7 +83,9 @@ export function PaymentHistoryTable({
                   <td className="py-3 px-4 whitespace-nowrap">
                     {formatDateTime(payment.paymentDate)}
                   </td>
-                  <td className="py-3 px-4 font-medium text-gray-800">{payment.studentName}</td>
+                  {showStudentColumn && (
+                    <td className="py-3 px-4 font-medium text-gray-800">{payment.studentName}</td>
+                  )}
                   <td className="py-3 px-4">{payment.packageName}</td>
                   <td className="py-3 px-4 text-right font-medium">
                     {formatCurrency(payment.amount)}

@@ -6,6 +6,7 @@ import {
   useRecordPayment,
   useUpdatePaymentStatus,
 } from '../hooks/usePayment';
+import { useStudentDetail } from '@/features/student/hooks/useStudents';
 import { StudentPackageList } from '../components/StudentPackageList';
 import { PaymentHistoryTable } from '../components/PaymentHistoryTable';
 import { PaymentForm } from '../components/PaymentForm';
@@ -23,6 +24,7 @@ export default function StudentFinancialPage() {
   const [showPaymentForm, setShowPaymentForm] = useState(false);
 
   // Data hooks
+  const { data: student, isLoading: loadingStudent } = useStudentDetail(studentId);
   const { data: packages, isLoading: loadingPackages, isError: errorPackages } = useStudentPackages(studentId);
   const { data: payments, isLoading: loadingPayments, isError: errorPayments } = useStudentPayments(studentId, paymentPage);
 
@@ -68,7 +70,7 @@ export default function StudentFinancialPage() {
             ← Quay lại danh sách học sinh
           </Link>
           <h1 className="text-2xl font-bold text-gray-800">
-            Tài chính học sinh #{studentId}
+            Tài chính học sinh {loadingStudent ? '...' : (student?.fullName || `#${studentId}`)}
           </h1>
           <p className="text-gray-500 text-sm mt-1">
             Quản lý gói học và lịch sử thanh toán
@@ -122,6 +124,7 @@ export default function StudentFinancialPage() {
             onPageChange={setPaymentPage}
             onUpdateStatus={handleUpdateStatus}
             isUpdating={updatePaymentStatus.isPending}
+            showStudentColumn={false}
           />
         </div>
       </section>

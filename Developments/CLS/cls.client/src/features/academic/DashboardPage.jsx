@@ -1,19 +1,13 @@
 import { Link } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { apiClient } from '@/shared/services/apiClient';
+import { useDashboardStats } from './hooks/useDashboard';
 import { ROUTE_PATHS } from '@/shared/utils/constants';
 import { formatCurrency } from '@/shared/utils/formatters';
-
-const fetchStats = () => apiClient.get('/dashboard/stats');
 
 /**
  * DashboardPage — Trang tổng quan cho Admin với thống kê thực tế.
  */
 export default function DashboardPage() {
-  const { data: stats, isLoading } = useQuery({
-    queryKey: ['dashboard', 'stats'],
-    queryFn: fetchStats,
-  });
+  const { data: stats, isLoading } = useDashboardStats();
 
   const cards = [
     { label: 'Học sinh', value: stats?.totalStudents, icon: '👨‍🎓', color: 'bg-indigo-50 text-indigo-600', to: ROUTE_PATHS.STUDENTS },

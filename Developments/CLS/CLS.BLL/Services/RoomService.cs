@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace CLS.BLL.Services;
 
+/// <summary>Service xử lý nghiệp vụ quản lý phòng học.</summary>
 public class RoomService : IRoomService
 {
     private readonly IRoomRepository _repo;
@@ -28,12 +29,14 @@ public class RoomService : IRoomService
         _updateValidator = updateValidator;
     }
 
+    /// <summary>Lấy danh sách phòng phân trang.</summary>
     public async Task<PagedResult<RoomResponse>> GetAllAsync(int page, int pageSize, CancellationToken ct = default)
     {
         var (items, total) = await _repo.GetPagedAsync(page, pageSize, ct);
         return PagedResult<RoomResponse>.Create(_mapper.Map<List<RoomResponse>>(items), total, page, pageSize);
     }
 
+    /// <summary>Lấy chi tiết phòng theo ID.</summary>
     public async Task<ServiceResult<RoomResponse>> GetByIdAsync(int id, CancellationToken ct = default)
     {
         var entity = await _repo.GetByIdAsync(id, ct);
@@ -41,6 +44,7 @@ public class RoomService : IRoomService
         return ServiceResult<RoomResponse>.Success(_mapper.Map<RoomResponse>(entity));
     }
 
+    /// <summary>Tạo phòng mới — kiểm tra tên trùng.</summary>
     public async Task<ServiceResult<RoomResponse>> CreateAsync(CreateRoomRequest request, CancellationToken ct = default)
     {
         var v = await _createValidator.ValidateAsync(request, ct);
@@ -57,6 +61,7 @@ public class RoomService : IRoomService
         return ServiceResult<RoomResponse>.Success(_mapper.Map<RoomResponse>(entity));
     }
 
+    /// <summary>Cập nhật thông tin phòng — kiểm tra tên trùng (loại trừ chính nó).</summary>
     public async Task<ServiceResult<RoomResponse>> UpdateAsync(int id, UpdateRoomRequest request, CancellationToken ct = default)
     {
         var v = await _updateValidator.ValidateAsync(request, ct);
@@ -77,6 +82,7 @@ public class RoomService : IRoomService
         return ServiceResult<RoomResponse>.Success(_mapper.Map<RoomResponse>(entity));
     }
 
+    /// <summary>Đổi trạng thái phòng: active ↔ inactive.</summary>
     public async Task<ServiceResult<RoomResponse>> UpdateStatusAsync(int id, UpdateRoomStatusRequest request, CancellationToken ct = default)
     {
         var valid = new[] { AppConstants.RoomStatus.Active, AppConstants.RoomStatus.Inactive };

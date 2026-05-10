@@ -19,7 +19,7 @@ public class RoomRepository : IRoomRepository
     public async Task<List<Room>> GetAllActiveAsync(CancellationToken ct = default)
         => await _ctx.Rooms
             .AsNoTracking()
-            .Where(r => r.Status == "active")
+            .Where(r => r.Status == Common.DalConstants.Status.Active)
             .OrderBy(r => r.Name)
             .ToListAsync(ct);
 
@@ -34,7 +34,8 @@ public class RoomRepository : IRoomRepository
 
     public async Task<bool> ExistsByNameAsync(string name, int? excludeId = null, CancellationToken ct = default)
     {
-        var query = _ctx.Rooms.Where(r => r.Name == name);
+        var normalizedName = name.Trim().ToLower();
+        var query = _ctx.Rooms.Where(r => r.Name.ToLower() == normalizedName);
         if (excludeId.HasValue) query = query.Where(r => r.Id != excludeId.Value);
         return await query.AnyAsync(ct);
     }

@@ -1,5 +1,9 @@
 import { getStatusBadge, formatCurrency } from '@/shared/utils/formatters';
 
+/**
+ * Bảng hiển thị danh sách gói học phí.
+ * @param {{ packages: Object, isLoading: boolean, page: number, onPageChange: Function, onEdit: Function, onToggleStatus: Function, isTogglingStatus: boolean }} props
+ */
 export function PackageTable({ packages, isLoading, page, onPageChange, onEdit, onToggleStatus, isTogglingStatus }) {
   const items = packages?.items || [];
   const totalPages = packages?.totalPages || 1;

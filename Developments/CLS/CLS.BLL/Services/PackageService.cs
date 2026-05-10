@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace CLS.BLL.Services;
 
+/// <summary>Service xử lý nghiệp vụ quản lý gói học phí.</summary>
 public class PackageService : IPackageService
 {
     private readonly ITuitionPackageRepository _repo;
@@ -21,16 +22,29 @@ public class PackageService : IPackageService
         ITuitionPackageRepository repo, IMapper mapper, ILogger<PackageService> logger,
         IValidator<CreatePackageRequest> createValidator, IValidator<UpdatePackageRequest> updateValidator)
     {
-        _repo = repo; _mapper = mapper; _logger = logger;
-        _createValidator = createValidator; _updateValidator = updateValidator;
+        _repo = repo;
+        _mapper = mapper;
+        _logger = logger;
+        _createValidator = createValidator;
+        _updateValidator = updateValidator;
     }
 
+    /// <summary>Lấy danh sách gói phân trang.</summary>
     public async Task<PagedResult<PackageResponse>> GetAllAsync(int page, int pageSize, CancellationToken ct = default)
     {
         var (items, total) = await _repo.GetPagedAsync(page, pageSize, ct);
         return PagedResult<PackageResponse>.Create(_mapper.Map<List<PackageResponse>>(items), total, page, pageSize);
     }
 
+    /// <summary>Lấy chi tiết gói theo ID.</summary>
+    public async Task<ServiceResult<PackageResponse>> GetByIdAsync(int id, CancellationToken ct = default)
+    {
+        var entity = await _repo.GetByIdAsync(id, ct);
+        if (entity is null) return ServiceResult<PackageResponse>.Fail($"Gói #{id} không tồn tại.", 404);
+        return ServiceResult<PackageResponse>.Success(_mapper.Map<PackageResponse>(entity));
+    }
+
+    /// <summary>Tạo gói học mới — kiểm tra tên trùng.</summary>
     public async Task<ServiceResult<PackageResponse>> CreateAsync(CreatePackageRequest request, CancellationToken ct = default)
     {
         var v = await _createValidator.ValidateAsync(request, ct);
@@ -54,6 +68,7 @@ public class PackageService : IPackageService
         return ServiceResult<PackageResponse>.Success(_mapper.Map<PackageResponse>(entity));
     }
 
+    /// <summary>Cập nhật thông tin gói — kiểm tra tên trùng (loại trừ chính nó).</summary>
     public async Task<ServiceResult<PackageResponse>> UpdateAsync(int id, UpdatePackageRequest request, CancellationToken ct = default)
     {
         var v = await _updateValidator.ValidateAsync(request, ct);
@@ -76,6 +91,7 @@ public class PackageService : IPackageService
         return ServiceResult<PackageResponse>.Success(_mapper.Map<PackageResponse>(entity));
     }
 
+    /// <summary>Đổi trạng thái gói: active ↔ inactive.</summary>
     public async Task<ServiceResult<PackageResponse>> UpdateStatusAsync(int id, UpdatePackageStatusRequest request, CancellationToken ct = default)
     {
         var valid = new[] { AppConstants.TuitionPackageStatus.Active, AppConstants.TuitionPackageStatus.Inactive };

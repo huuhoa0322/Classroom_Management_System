@@ -2,6 +2,10 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { packageSchema } from '../schemas/packageSchema';
 
+/**
+ * Form tạo/chỉnh sửa gói học phí.
+ * @param {{ onSubmit: Function, onCancel: Function, isSubmitting: boolean, defaultValues?: Object }} props
+ */
 export function PackageForm({ onSubmit, onCancel, isSubmitting, defaultValues }) {
   const isEdit = !!defaultValues;
   const { register, handleSubmit, formState: { errors, isValid } } = useForm({

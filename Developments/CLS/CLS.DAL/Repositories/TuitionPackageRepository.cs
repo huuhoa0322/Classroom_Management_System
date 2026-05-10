@@ -19,7 +19,7 @@ public class TuitionPackageRepository : ITuitionPackageRepository
     public async Task<List<TuitionPackage>> GetAllActiveAsync(CancellationToken ct = default)
         => await _ctx.TuitionPackages
             .AsNoTracking()
-            .Where(p => p.Status == "active")
+            .Where(p => p.Status == Common.DalConstants.Status.Active)
             .OrderBy(p => p.TotalSessions)
             .ToListAsync(ct);
 
@@ -37,7 +37,8 @@ public class TuitionPackageRepository : ITuitionPackageRepository
 
     public async Task<bool> ExistsByNameAsync(string name, int? excludeId = null, CancellationToken ct = default)
     {
-        var query = _ctx.TuitionPackages.Where(p => p.Name == name);
+        var normalizedName = name.Trim().ToLower();
+        var query = _ctx.TuitionPackages.Where(p => p.Name.ToLower() == normalizedName);
         if (excludeId.HasValue) query = query.Where(p => p.Id != excludeId.Value);
         return await query.AnyAsync(ct);
     }

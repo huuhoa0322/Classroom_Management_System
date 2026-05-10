@@ -194,6 +194,7 @@ try
     builder.Services.AddScoped<IRoomService, RoomService>();
     builder.Services.AddScoped<IPackageService, PackageService>();
     builder.Services.AddScoped<IUserManagementService, UserManagementService>();
+    builder.Services.AddScoped<IDashboardService, DashboardService>();
 
     // ── SignalR — Real-time notifications ─────────────────────────────────────
     builder.Services.AddSignalR();

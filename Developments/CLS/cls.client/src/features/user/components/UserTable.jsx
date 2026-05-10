@@ -1,5 +1,9 @@
 import { getStatusBadge } from '@/shared/utils/formatters';
 
+/**
+ * Bảng hiển thị danh sách tài khoản (Admin/Teacher).
+ * @param {{ users: Object, isLoading: boolean, page: number, onPageChange: Function, onEdit: Function, onToggleStatus: Function, onResetPassword: Function, isTogglingStatus: boolean }} props
+ */
 export function UserTable({ users, isLoading, page, onPageChange, onEdit, onToggleStatus, onResetPassword, isTogglingStatus }) {
   const items = users?.items || [];
   const totalPages = users?.totalPages || 1;

@@ -2,6 +2,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createUserSchema, updateUserSchema } from '../schemas/userSchema';
 
+/**
+ * Form tạo/chỉnh sửa tài khoản giáo viên.
+ * Khi tạo mới: hiển thị field mật khẩu. Khi chỉnh sửa: ẩn field mật khẩu.
+ * @param {{ onSubmit: Function, onCancel: Function, isSubmitting: boolean, defaultValues?: Object }} props
+ */
 export function UserForm({ onSubmit, onCancel, isSubmitting, defaultValues }) {
   const isEdit = !!defaultValues;
   const { register, handleSubmit, formState: { errors, isValid } } = useForm({

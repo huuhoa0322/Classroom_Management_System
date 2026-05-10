@@ -19,7 +19,7 @@ public class UserRepository : IUserRepository
     public async Task<List<User>> GetTeachersAsync(CancellationToken ct = default)
         => await _ctx.Users
             .AsNoTracking()
-            .Where(u => u.Role == "Teacher" && u.Status == "active")
+            .Where(u => u.Role == Common.DalConstants.Roles.Teacher && u.Status == Common.DalConstants.Status.Active)
             .OrderBy(u => u.FullName)
             .ToListAsync(ct);
 

@@ -190,6 +190,11 @@ try
     // ── Services (Academic Quality Assurance / UC-09) ──────────────────────────
     builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 
+    // ── Services (Admin Management — Rooms, Packages, Users) ─────────────────
+    builder.Services.AddScoped<IRoomService, RoomService>();
+    builder.Services.AddScoped<IPackageService, PackageService>();
+    builder.Services.AddScoped<IUserManagementService, UserManagementService>();
+
     // ── SignalR — Real-time notifications ─────────────────────────────────────
     builder.Services.AddSignalR();
 

@@ -1,4 +1,5 @@
 using CLS.BLL.Common;
+using CLS.BLL.DTOs.Packages;
 using CLS.BLL.DTOs.Payments;
 using CLS.BLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -7,28 +8,74 @@ using Microsoft.AspNetCore.Mvc;
 namespace CLS.Server.Controllers;
 
 /// <summary>
-/// API danh mục gói học — catalog để Admin chọn khi tạo payment.
+/// API quản lý gói học — CRUD + dropdown catalog.
 /// </summary>
 [ApiController]
 [Route("api/v1/tuition-packages")]
 [Authorize(Roles = "Admin")]
-[ProducesResponseType(typeof(ApiResponse<object>), 401)]
-[ProducesResponseType(typeof(ApiResponse<object>), 403)]
 public class TuitionPackagesController : ControllerBase
 {
+    private readonly IPackageService _packageService;
     private readonly IPaymentService _paymentService;
 
-    public TuitionPackagesController(IPaymentService paymentService)
-        => _paymentService = paymentService;
+    public TuitionPackagesController(IPackageService packageService, IPaymentService paymentService)
+    {
+        _packageService = packageService;
+        _paymentService = paymentService;
+    }
 
-    // ── GET /api/v1/tuition-packages ──────────────────────────────────────────
-    /// <summary>Lấy danh sách gói học đang active (cho dropdown chọn gói).</summary>
+    /// <summary>Lấy danh sách gói (phân trang).</summary>
     [HttpGet]
+    [ProducesResponseType(typeof(ApiResponse<PagedResult<PackageResponse>>), 200)]
+    public async Task<IActionResult> GetAll(
+        [FromQuery] int page = AppConstants.Pagination.DefaultPage,
+        [FromQuery] int pageSize = AppConstants.Pagination.DefaultPageSize,
+        CancellationToken ct = default)
+    {
+        var result = await _packageService.GetAllAsync(page, pageSize, ct);
+        return Ok(ApiResponse<PagedResult<PackageResponse>>.Success(result, "Lấy danh sách gói thành công."));
+    }
+
+    /// <summary>Lấy danh sách gói active (dropdown).</summary>
+    [HttpGet("dropdown")]
     [ProducesResponseType(typeof(ApiResponse<IEnumerable<TuitionPackageDto>>), 200)]
-    public async Task<IActionResult> GetAvailablePackages(CancellationToken ct = default)
+    public async Task<IActionResult> GetDropdown(CancellationToken ct = default)
     {
         var result = await _paymentService.GetAvailablePackagesAsync(ct);
-        return Ok(ApiResponse<IEnumerable<TuitionPackageDto>>.Success(result,
-            "Lấy danh sách gói học thành công."));
+        return Ok(ApiResponse<IEnumerable<TuitionPackageDto>>.Success(result, "Lấy danh sách gói thành công."));
+    }
+
+    /// <summary>Tạo gói mới.</summary>
+    [HttpPost]
+    [ProducesResponseType(typeof(ApiResponse<PackageResponse>), 201)]
+    [ProducesResponseType(typeof(ApiResponse<object>), 400)]
+    [ProducesResponseType(typeof(ApiResponse<object>), 409)]
+    public async Task<IActionResult> Create([FromBody] CreatePackageRequest request, CancellationToken ct = default)
+    {
+        var result = await _packageService.CreateAsync(request, ct);
+        return this.ToCreatedAtActionResponse(result, nameof(GetAll), _ => new { }, "Tạo gói thành công.");
+    }
+
+    /// <summary>Cập nhật gói.</summary>
+    [HttpPut("{id:int}")]
+    [ProducesResponseType(typeof(ApiResponse<PackageResponse>), 200)]
+    [ProducesResponseType(typeof(ApiResponse<object>), 400)]
+    [ProducesResponseType(typeof(ApiResponse<object>), 404)]
+    [ProducesResponseType(typeof(ApiResponse<object>), 409)]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdatePackageRequest request, CancellationToken ct = default)
+    {
+        var result = await _packageService.UpdateAsync(id, request, ct);
+        return this.ToOkResponse(result, "Cập nhật gói thành công.");
+    }
+
+    /// <summary>Đổi trạng thái gói: active ↔ inactive.</summary>
+    [HttpPatch("{id:int}/status")]
+    [ProducesResponseType(typeof(ApiResponse<PackageResponse>), 200)]
+    [ProducesResponseType(typeof(ApiResponse<object>), 400)]
+    [ProducesResponseType(typeof(ApiResponse<object>), 404)]
+    public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdatePackageStatusRequest request, CancellationToken ct = default)
+    {
+        var result = await _packageService.UpdateStatusAsync(id, request, ct);
+        return this.ToOkResponse(result, $"Cập nhật trạng thái gói thành '{request.Status}' thành công.");
     }
 }

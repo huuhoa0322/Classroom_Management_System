@@ -1,0 +1,6 @@
+namespace CLS.BLL.DTOs.Users;
+
+public class UpdateUserStatusRequest
+{
+    public string Status { get; set; } = string.Empty;
+}

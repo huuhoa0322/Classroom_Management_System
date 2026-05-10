@@ -11,7 +11,7 @@ public class TuitionPackageRepository : ITuitionPackageRepository
     public TuitionPackageRepository(AppDbContext ctx) => _ctx = ctx;
 
     public async Task<TuitionPackage?> GetByIdAsync(int id, CancellationToken ct = default)
-        => await _ctx.TuitionPackages.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id, ct);
+        => await _ctx.TuitionPackages.FirstOrDefaultAsync(p => p.Id == id, ct);
 
     public async Task<IEnumerable<TuitionPackage>> GetAllAsync(CancellationToken ct = default)
         => await _ctx.TuitionPackages.AsNoTracking().ToListAsync(ct);
@@ -23,11 +23,29 @@ public class TuitionPackageRepository : ITuitionPackageRepository
             .OrderBy(p => p.TotalSessions)
             .ToListAsync(ct);
 
+    public async Task<(List<TuitionPackage> Items, int Total)> GetPagedAsync(
+        int page, int pageSize, CancellationToken ct = default)
+    {
+        var query = _ctx.TuitionPackages
+            .AsNoTracking()
+            .Include(p => p.StudentPackages)
+            .OrderBy(p => p.Name);
+        var total = await query.CountAsync(ct);
+        var items = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync(ct);
+        return (items, total);
+    }
+
+    public async Task<bool> ExistsByNameAsync(string name, int? excludeId = null, CancellationToken ct = default)
+    {
+        var query = _ctx.TuitionPackages.Where(p => p.Name == name);
+        if (excludeId.HasValue) query = query.Where(p => p.Id != excludeId.Value);
+        return await query.AnyAsync(ct);
+    }
+
     public async Task AddAsync(TuitionPackage entity, CancellationToken ct = default)
         => await _ctx.TuitionPackages.AddAsync(entity, ct);
 
-    public void Update(TuitionPackage entity)
-        => _ctx.TuitionPackages.Update(entity);
+    public void Update(TuitionPackage entity) => _ctx.TuitionPackages.Update(entity);
 
     public void Delete(TuitionPackage entity)
     {

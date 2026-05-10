@@ -157,4 +157,25 @@ public static class AppConstants
         /// <summary>Thời hạn submit feedback sau khi buổi học kết thúc (12 giờ).</summary>
         public const int FeedbackWindowHours = 12;
     }
+
+    // ── Room Status ───────────────────────────────────────────────────────────
+    public static class RoomStatus
+    {
+        public const string Active   = "active";
+        public const string Inactive = "inactive";
+    }
+
+    // ── Tuition Package Status ────────────────────────────────────────────────
+    public static class TuitionPackageStatus
+    {
+        public const string Active   = "active";
+        public const string Inactive = "inactive";
+    }
+
+    // ── User Status ───────────────────────────────────────────────────────────
+    public static class UserAccountStatus
+    {
+        public const string Active   = "active";
+        public const string Inactive = "inactive";
+    }
 }

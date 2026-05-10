@@ -18,11 +18,15 @@ export const ROUTE_PATHS = {
   STUDENT_FINANCIALS: '/students/:id/financials',
   PAYMENTS: '/payments',
   CLASSES: '/classes',
+  ROOMS: '/rooms',
+  PACKAGES: '/packages',
+  USERS: '/users',
   SESSIONS: '/sessions',
   ATTENDANCE: '/attendance',
   TIMETABLE: '/timetable',
   RENEWAL_ALERTS: '/renewal-alerts',
 };
+
 
 /**
  * Trạng thái chung của các entity.

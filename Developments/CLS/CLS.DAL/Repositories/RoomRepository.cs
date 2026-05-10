@@ -23,6 +23,22 @@ public class RoomRepository : IRoomRepository
             .OrderBy(r => r.Name)
             .ToListAsync(ct);
 
+    public async Task<(List<Room> Items, int Total)> GetPagedAsync(
+        int page, int pageSize, CancellationToken ct = default)
+    {
+        var query = _ctx.Rooms.AsNoTracking().OrderBy(r => r.Name);
+        var total = await query.CountAsync(ct);
+        var items = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync(ct);
+        return (items, total);
+    }
+
+    public async Task<bool> ExistsByNameAsync(string name, int? excludeId = null, CancellationToken ct = default)
+    {
+        var query = _ctx.Rooms.Where(r => r.Name == name);
+        if (excludeId.HasValue) query = query.Where(r => r.Id != excludeId.Value);
+        return await query.AnyAsync(ct);
+    }
+
     public async Task AddAsync(Room entity, CancellationToken ct = default)
         => await _ctx.Rooms.AddAsync(entity, ct);
 

@@ -8,6 +8,9 @@ import LoginPage from '@/features/auth/pages/LoginPage';
 import DashboardPage from '@/features/academic/DashboardPage';
 import StudentPage from '@/features/student/pages/StudentPage';
 import ClassPage from '@/features/class/pages/ClassPage';
+import RoomPage from '@/features/room/pages/RoomPage';
+import PackagePage from '@/features/package/pages/PackagePage';
+import UserPage from '@/features/user/pages/UserPage';
 import SessionPage from '@/features/session/pages/SessionPage';
 import AttendancePage from '@/features/attendance/pages/AttendancePage';
 import TimetablePage from '@/features/attendance/pages/TimetablePage';
@@ -42,6 +45,9 @@ export default function AppRouter() {
         <Route path="students/:id/financials" element={<StudentFinancialPage />} />
         <Route path="payments" element={<PaymentManagementPage />} />
         <Route path="classes" element={<ClassPage />} />
+        <Route path="rooms" element={<RoomPage />} />
+        <Route path="packages" element={<PackagePage />} />
+        <Route path="users" element={<UserPage />} />
         <Route path="sessions" element={<SessionPage />} />
         <Route path="attendance" element={<AttendancePage />} />
         <Route path="timetable" element={<TimetablePage />} />
@@ -56,4 +62,3 @@ export default function AppRouter() {
     </Routes>
   );
 }
-

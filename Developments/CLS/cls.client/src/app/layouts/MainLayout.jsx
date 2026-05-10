@@ -11,6 +11,9 @@ const adminNavItems = [
   { label: 'Dashboard',  path: ROUTE_PATHS.DASHBOARD,  icon: '📊' },
   { label: 'Học sinh',   path: ROUTE_PATHS.STUDENTS,   icon: '👨‍🎓' },
   { label: 'Lớp học',    path: ROUTE_PATHS.CLASSES,    icon: '🏫' },
+  { label: 'Phòng học',  path: ROUTE_PATHS.ROOMS,      icon: '🚪' },
+  { label: 'Gói học',    path: ROUTE_PATHS.PACKAGES,   icon: '📦' },
+  { label: 'Tài khoản',  path: ROUTE_PATHS.USERS,     icon: '👤' },
   { label: 'Lịch học',   path: ROUTE_PATHS.SESSIONS,   icon: '📅' },
   { label: 'Thông báo gia hạn', path: ROUTE_PATHS.RENEWAL_ALERTS, icon: '🔔', showBadge: true },
 ];

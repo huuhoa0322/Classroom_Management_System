@@ -36,11 +36,12 @@ export function useSubmitFeedback() {
     mutationFn: ({ sessionId, data }) =>
       feedbackService.submitFeedback(sessionId, data),
     onSuccess: (_data, variables) => {
+      const sid = String(variables.sessionId);
       queryClient.invalidateQueries({
-        queryKey: ['feedback-list', variables.sessionId],
+        queryKey: ['feedback-list', sid],
       });
       queryClient.invalidateQueries({
-        queryKey: ['student-feedback', variables.sessionId],
+        queryKey: ['student-feedback', sid],
       });
     },
   });

@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SESSION_STATUS } from '@/shared/utils/constants';
 
@@ -36,9 +37,24 @@ export default function SessionCard({ session, isFuture = false }) {
   const timeStr = (iso) =>
     new Date(iso).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
 
-  const canAttend = !isFuture
-    && (session.status === SESSION_STATUS.SCHEDULED
-      || session.status === SESSION_STATUS.IN_PROGRESS);
+  // Re-evaluate every 30s so the button auto-enables when startTime arrives
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 30_000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const sessionStart = new Date(session.startTime);
+  const hasStarted = now >= sessionStart;
+
+  const isAttendableStatus =
+    session.status === SESSION_STATUS.SCHEDULED
+    || session.status === SESSION_STATUS.IN_PROGRESS;
+
+  // Can actively click the button
+  const canAttend = !isFuture && isAttendableStatus && hasStarted;
+  // Show a disabled/dimmed button (today, correct status, but not yet time)
+  const showDisabledAttend = !isFuture && isAttendableStatus && !hasStarted;
 
   return (
     <div className={`rounded-lg border p-3 ${config.bg} transition-shadow ${
@@ -72,6 +88,16 @@ export default function SessionCard({ session, isFuture = false }) {
           className="w-full text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md py-1.5 transition-colors"
         >
           ✅ Điểm danh
+        </button>
+      )}
+
+      {showDisabledAttend && (
+        <button
+          disabled
+          title={`Điểm danh mở lúc ${timeStr(session.startTime)}`}
+          className="w-full text-xs font-medium text-gray-400 bg-gray-100 border border-gray-200 rounded-md py-1.5 cursor-not-allowed opacity-60"
+        >
+          🕐 Chưa đến giờ
         </button>
       )}
 

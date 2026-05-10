@@ -63,7 +63,7 @@ export function SessionForm({ onSubmit, onCancel, isSubmitting, defaultValues, a
             className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
           >
             <option value="">— Chọn lớp —</option>
-            {classes?.map((c) => (
+            {Array.isArray(classes) && classes.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
               </option>
@@ -88,7 +88,7 @@ export function SessionForm({ onSubmit, onCancel, isSubmitting, defaultValues, a
             className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
           >
             <option value="">— Chọn giáo viên —</option>
-            {teachers?.map((t) => (
+            {Array.isArray(teachers) && teachers.map((t) => (
               <option key={t.id} value={t.id}>
                 {t.fullName}
               </option>
@@ -113,7 +113,7 @@ export function SessionForm({ onSubmit, onCancel, isSubmitting, defaultValues, a
             className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
           >
             <option value="">— Chọn phòng —</option>
-            {rooms?.map((r) => (
+            {Array.isArray(rooms) && rooms.map((r) => (
               <option key={r.id} value={r.id}>
                 {r.name} (Sức chứa: {r.capacity})
               </option>

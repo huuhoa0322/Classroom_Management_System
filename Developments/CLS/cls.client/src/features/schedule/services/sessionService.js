@@ -24,9 +24,9 @@ export const getAllSessions = ({ page = 1, pageSize = 10 } = {}) =>
 export const getClasses = () =>
   apiClient.get('/classes/dropdown');
 
-/** GET /api/v1/rooms — Danh sách phòng (dropdown) */
+/** GET /api/v1/rooms/dropdown — Danh sách phòng active (dropdown) */
 export const getRooms = () =>
-  apiClient.get('/rooms');
+  apiClient.get('/rooms/dropdown');
 
 /** GET /api/v1/teachers — Danh sách giáo viên (dropdown) */
 export const getTeachers = () =>

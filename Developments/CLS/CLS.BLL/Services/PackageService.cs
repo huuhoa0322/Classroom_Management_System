@@ -1,6 +1,6 @@
 using AutoMapper;
 using CLS.BLL.Common;
-using CLS.BLL.DTOs.Packages;
+using CLS.BLL.DTOs.StudentPackages;
 using CLS.BLL.Interfaces;
 using CLS.DAL.Entities;
 using CLS.DAL.Repositories;

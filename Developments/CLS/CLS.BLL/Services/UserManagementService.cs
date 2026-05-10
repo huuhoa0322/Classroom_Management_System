@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace CLS.BLL.Services;
 
+/// <summary>Service xử lý nghiệp vụ quản lý tài khoản (Teacher).</summary>
 public class UserManagementService : IUserManagementService
 {
     private readonly IUserRepository _repo;
@@ -21,16 +22,21 @@ public class UserManagementService : IUserManagementService
         IUserRepository repo, IMapper mapper, ILogger<UserManagementService> logger,
         IValidator<CreateUserRequest> createValidator, IValidator<UpdateUserRequest> updateValidator)
     {
-        _repo = repo; _mapper = mapper; _logger = logger;
-        _createValidator = createValidator; _updateValidator = updateValidator;
+        _repo = repo;
+        _mapper = mapper;
+        _logger = logger;
+        _createValidator = createValidator;
+        _updateValidator = updateValidator;
     }
 
+    /// <summary>Lấy danh sách tài khoản phân trang.</summary>
     public async Task<PagedResult<UserResponse>> GetAllAsync(int page, int pageSize, CancellationToken ct = default)
     {
         var (items, total) = await _repo.GetPagedAsync(page, pageSize, ct);
         return PagedResult<UserResponse>.Create(_mapper.Map<List<UserResponse>>(items), total, page, pageSize);
     }
 
+    /// <summary>Lấy chi tiết tài khoản theo ID.</summary>
     public async Task<ServiceResult<UserResponse>> GetByIdAsync(int id, CancellationToken ct = default)
     {
         var entity = await _repo.GetByIdAsync(id, ct);
@@ -64,6 +70,7 @@ public class UserManagementService : IUserManagementService
         return ServiceResult<UserResponse>.Success(_mapper.Map<UserResponse>(entity));
     }
 
+    /// <summary>Cập nhật thông tin tài khoản — kiểm tra email trùng.</summary>
     public async Task<ServiceResult<UserResponse>> UpdateAsync(int id, UpdateUserRequest request, CancellationToken ct = default)
     {
         var v = await _updateValidator.ValidateAsync(request, ct);
@@ -85,6 +92,7 @@ public class UserManagementService : IUserManagementService
         return ServiceResult<UserResponse>.Success(_mapper.Map<UserResponse>(entity));
     }
 
+    /// <summary>Đổi trạng thái tài khoản: active ↔ inactive.</summary>
     public async Task<ServiceResult<UserResponse>> UpdateStatusAsync(int id, UpdateUserStatusRequest request, CancellationToken ct = default)
     {
         var valid = new[] { AppConstants.UserAccountStatus.Active, AppConstants.UserAccountStatus.Inactive };

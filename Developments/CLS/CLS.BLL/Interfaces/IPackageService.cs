@@ -1,5 +1,5 @@
 using CLS.BLL.Common;
-using CLS.BLL.DTOs.Packages;
+using CLS.BLL.DTOs.StudentPackages;
 
 namespace CLS.BLL.Interfaces;
 

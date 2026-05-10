@@ -1,4 +1,4 @@
-using CLS.BLL.DTOs.Packages;
+using CLS.BLL.DTOs.StudentPackages;
 using FluentValidation;
 
 namespace CLS.BLL.Validators;

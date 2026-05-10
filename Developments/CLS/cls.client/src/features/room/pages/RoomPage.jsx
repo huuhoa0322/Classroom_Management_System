@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useRoomList, useCreateRoom, useUpdateRoom, useUpdateRoomStatus } from '../hooks/useRoom';
 import { RoomTable } from '../components/RoomTable';
 import { RoomForm } from '../components/RoomForm';
+import { ConnectionErrorBanner } from '@/shared/components/ConnectionErrorBanner';
 import { toast } from '@/shared/stores/toastStore';
 
 export default function RoomPage() {
@@ -10,7 +11,7 @@ export default function RoomPage() {
   const [editingRoom, setEditingRoom] = useState(null);
   const [confirmingRoom, setConfirmingRoom] = useState(null);
 
-  const { data: rooms, isLoading, isError } = useRoomList(page);
+  const { data: rooms, isLoading, isError, error, refetch } = useRoomList(page);
   const createRoom = useCreateRoom();
   const updateRoom = useUpdateRoom();
   const updateStatus = useUpdateRoomStatus();
@@ -45,7 +46,7 @@ export default function RoomPage() {
         </button>
       </div>
 
-      {isError && <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-sm text-red-700 mb-6">Không thể tải danh sách phòng.</div>}
+      {isError && <ConnectionErrorBanner error={error} onRetry={() => refetch()} />}
 
       <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-4">
         <RoomTable rooms={rooms} isLoading={isLoading} page={page} onPageChange={setPage} onEdit={handleEdit} onToggleStatus={handleToggleStatus} isTogglingStatus={updateStatus.isPending} />

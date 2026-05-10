@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useStudentList, useUpdateStudentStatus } from '../hooks/useStudents';
 import { StatusBadge } from './StatusBadge';
 import { formatDate } from '@/shared/utils/formatters';
+import { ConnectionErrorBanner } from '@/shared/components/ConnectionErrorBanner';
 import { toast } from '@/shared/stores/toastStore';
 
 /**
@@ -13,7 +14,7 @@ export const StudentList = ({ onEdit }) => {
   const [page, setPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState('');
 
-  const { data, isLoading, isError } = useStudentList({
+  const { data, isLoading, isError, error, refetch } = useStudentList({
     page,
     pageSize: 10,
     status: statusFilter || undefined,
@@ -52,10 +53,7 @@ export const StudentList = ({ onEdit }) => {
 
   if (isError) {
     return (
-      <div className="text-center py-12 text-red-500">
-        <p className="text-lg font-medium">Có lỗi xảy ra khi tải dữ liệu.</p>
-        <p className="text-sm mt-1">Vui lòng thử lại sau.</p>
-      </div>
+      <ConnectionErrorBanner error={error} onRetry={() => refetch()} />
     );
   }
 

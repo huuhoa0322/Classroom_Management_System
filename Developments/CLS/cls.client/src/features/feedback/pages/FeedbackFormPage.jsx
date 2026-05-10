@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useStudentFeedback, useSubmitFeedback } from '../hooks/useFeedback';
 import { SlaTimer } from '../components/SlaTimer';
+import { ConnectionErrorBanner } from '@/shared/components/ConnectionErrorBanner';
 import { useToastStore } from '@/shared/stores/toastStore';
 import { formatDateTime } from '@/shared/utils/formatters';
 
@@ -14,7 +15,7 @@ export default function FeedbackFormPage() {
   const navigate = useNavigate();
   const addToast = useToastStore((s) => s.addToast);
 
-  const { data: detail, isLoading, isError, error } = useStudentFeedback(sessionId, studentId);
+  const { data: detail, isLoading, isError, error, refetch } = useStudentFeedback(sessionId, studentId);
   const submitMutation = useSubmitFeedback();
 
   const [score, setScore] = useState('');
@@ -91,9 +92,7 @@ export default function FeedbackFormPage() {
   if (isError) {
     return (
       <div className="p-6">
-        <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-red-700 text-sm">
-          {error?.message || 'Không thể tải thông tin đánh giá.'}
-        </div>
+        <ConnectionErrorBanner error={error} onRetry={() => refetch()} />
       </div>
     );
   }

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { usePackageList, useCreatePackage, useUpdatePackage, useUpdatePackageStatus } from '../hooks/usePackage';
 import { PackageTable } from '../components/PackageTable';
 import { PackageForm } from '../components/PackageForm';
+import { ConnectionErrorBanner } from '@/shared/components/ConnectionErrorBanner';
 import { toast } from '@/shared/stores/toastStore';
 
 export default function PackagePage() {
@@ -10,7 +11,7 @@ export default function PackagePage() {
   const [editingPkg, setEditingPkg] = useState(null);
   const [confirmingPkg, setConfirmingPkg] = useState(null);
 
-  const { data: packages, isLoading, isError } = usePackageList(page);
+  const { data: packages, isLoading, isError, error, refetch } = usePackageList(page);
   const createPkg = useCreatePackage();
   const updatePkg = useUpdatePackage();
   const updateStatus = useUpdatePackageStatus();
@@ -40,7 +41,7 @@ export default function PackagePage() {
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>Tạo gói
         </button>
       </div>
-      {isError && <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-sm text-red-700 mb-6">Không thể tải danh sách gói.</div>}
+      {isError && <ConnectionErrorBanner error={error} onRetry={() => refetch()} />}
       <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-4">
         <PackageTable packages={packages} isLoading={isLoading} page={page} onPageChange={setPage} onEdit={handleEdit} onToggleStatus={handleToggleStatus} isTogglingStatus={updateStatus.isPending} />
       </div>

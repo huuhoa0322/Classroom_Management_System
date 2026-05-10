@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useRenewalAlerts, useUpdateAlertStatus } from '../hooks/useRenewalAlerts';
 import { formatDateTime, getStatusBadge } from '@/shared/utils/formatters';
+import { ConnectionErrorBanner } from '@/shared/components/ConnectionErrorBanner';
 import { useToastStore } from '@/shared/stores/toastStore';
 import { ALERT_STATUS } from '@/shared/utils/constants';
 
@@ -19,7 +20,7 @@ export function RenewalAlertTable() {
   const [sortDir, setSortDir] = useState('desc');
 
   // ── Data ───────────────────────────────────────────────────────────────
-  const { data, isLoading, error } = useRenewalAlerts(page, pageSize, statusFilter, sortBy, sortDir);
+  const { data, isLoading, error, refetch } = useRenewalAlerts(page, pageSize, statusFilter, sortBy, sortDir);
   const updateStatus = useUpdateAlertStatus();
 
   const alerts = data?.items ?? [];
@@ -79,10 +80,7 @@ export function RenewalAlertTable() {
   // ── Error ──────────────────────────────────────────────────────────────
   if (error) {
     return (
-      <div className="text-center py-10 text-red-500">
-        <p className="text-lg font-medium">Không thể tải dữ liệu</p>
-        <p className="text-sm mt-1">{error.message}</p>
-      </div>
+      <ConnectionErrorBanner error={error} onRetry={() => refetch()} />
     );
   }
 

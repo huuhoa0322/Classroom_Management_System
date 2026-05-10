@@ -1,13 +1,14 @@
 import { Link } from 'react-router-dom';
 import { useDashboardStats } from './hooks/useDashboard';
 import { ROUTE_PATHS } from '@/shared/utils/constants';
+import { ConnectionErrorBanner } from '@/shared/components/ConnectionErrorBanner';
 import { formatCurrency } from '@/shared/utils/formatters';
 
 /**
  * DashboardPage — Trang tổng quan cho Admin với thống kê thực tế.
  */
 export default function DashboardPage() {
-  const { data: stats, isLoading } = useDashboardStats();
+  const { data: stats, isLoading, isError, error, refetch } = useDashboardStats();
 
   const cards = [
     { label: 'Học sinh', value: stats?.totalStudents, icon: '👨‍🎓', color: 'bg-indigo-50 text-indigo-600', to: ROUTE_PATHS.STUDENTS },
@@ -23,6 +24,13 @@ export default function DashboardPage() {
       <h1 className="text-2xl font-bold text-gray-800 mb-1">Dashboard</h1>
       <p className="text-sm text-gray-500">Tổng quan Hệ thống Quản lý Lớp học CLS</p>
 
+      {/* Connection / server error banner */}
+      {isError && (
+        <div className="mt-4">
+          <ConnectionErrorBanner error={error} onRetry={() => refetch()} />
+        </div>
+      )}
+
       <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {cards.map((card) => (
           <Link
@@ -34,6 +42,8 @@ export default function DashboardPage() {
             <div className="text-2xl font-bold">
               {isLoading ? (
                 <div className="h-7 w-16 bg-gray-200/50 rounded animate-pulse" />
+              ) : isError ? (
+                <span className="text-base text-gray-400">—</span>
               ) : (
                 card.value ?? '—'
               )}
@@ -45,3 +55,4 @@ export default function DashboardPage() {
     </div>
   );
 }
+

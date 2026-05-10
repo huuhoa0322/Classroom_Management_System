@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { useTimetable } from '../hooks/useAttendance';
 import WeekNavigator from '../components/WeekNavigator';
 import TimetableWeekView from '../components/TimetableWeekView';
+import { ConnectionErrorBanner } from '@/shared/components/ConnectionErrorBanner';
 
 /**
  * Lấy Monday (đầu tuần) của ngày d.
@@ -32,7 +33,7 @@ export default function TimetablePage() {
     };
   }, [weekStart]);
 
-  const { data: sessions, isLoading, isError, error } = useTimetable(from, to);
+  const { data: sessions, isLoading, isError, error, refetch } = useTimetable(from, to);
 
   const goPrev = () => {
     setWeekStart((prev) => {
@@ -79,9 +80,7 @@ export default function TimetablePage() {
       )}
 
       {isError && (
-        <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-red-700 text-sm">
-          {error?.message || 'Không thể tải lịch dạy. Vui lòng thử lại.'}
-        </div>
+        <ConnectionErrorBanner error={error} onRetry={() => refetch()} />
       )}
 
       {!isLoading && !isError && (

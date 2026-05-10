@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useFeedbackList } from '../hooks/useFeedback';
 import { SlaTimer } from '../components/SlaTimer';
+import { ConnectionErrorBanner } from '@/shared/components/ConnectionErrorBanner';
 import { formatDateTime } from '@/shared/utils/formatters';
 
 /**
@@ -11,7 +12,7 @@ export default function FeedbackListPage() {
   const { sessionId } = useParams();
   const navigate = useNavigate();
 
-  const { data: sheet, isLoading, isError, error } = useFeedbackList(sessionId);
+  const { data: sheet, isLoading, isError, error, refetch } = useFeedbackList(sessionId);
 
   if (isLoading) {
     return (
@@ -24,9 +25,7 @@ export default function FeedbackListPage() {
   if (isError) {
     return (
       <div className="p-6">
-        <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-red-700 text-sm">
-          {error?.message || 'Không thể tải danh sách đánh giá.'}
-        </div>
+        <ConnectionErrorBanner error={error} onRetry={() => refetch()} />
       </div>
     );
   }

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useUserList, useCreateUser, useUpdateUser, useUpdateUserStatus, useResetPassword } from '../hooks/useUser';
 import { UserTable } from '../components/UserTable';
 import { UserForm } from '../components/UserForm';
+import { ConnectionErrorBanner } from '@/shared/components/ConnectionErrorBanner';
 import { toast } from '@/shared/stores/toastStore';
 
 export default function UserPage() {
@@ -12,7 +13,7 @@ export default function UserPage() {
   const [resetConfirmUser, setResetConfirmUser] = useState(null);
   const [resetResult, setResetResult] = useState(null);
 
-  const { data: users, isLoading, isError } = useUserList(page);
+  const { data: users, isLoading, isError, error, refetch } = useUserList(page);
   const createUser = useCreateUser();
   const updateUser = useUpdateUser();
   const updateStatus = useUpdateUserStatus();
@@ -76,7 +77,7 @@ export default function UserPage() {
         </button>
       </div>
 
-      {isError && <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-sm text-red-700 mb-6">Không thể tải danh sách tài khoản.</div>}
+      {isError && <ConnectionErrorBanner error={error} onRetry={() => refetch()} />}
 
       <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-4">
         <UserTable users={users} isLoading={isLoading} page={page} onPageChange={setPage} onEdit={handleEdit} onToggleStatus={handleToggleStatus} onResetPassword={handleResetPassword} isTogglingStatus={updateStatus.isPending} />

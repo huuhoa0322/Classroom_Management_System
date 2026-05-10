@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAttendanceSheet, useSubmitAttendance } from '../hooks/useAttendance';
 import AttendanceSheet from '../components/AttendanceSheet';
+import { ConnectionErrorBanner } from '@/shared/components/ConnectionErrorBanner';
 import { useToastStore } from '@/shared/stores/toastStore';
 import { formatDateTime } from '@/shared/utils/formatters';
 
@@ -13,7 +14,7 @@ export default function AttendancePage() {
   const navigate = useNavigate();
   const addToast = useToastStore((s) => s.addToast);
 
-  const { data: sheet, isLoading, isError, error } = useAttendanceSheet(sessionId);
+  const { data: sheet, isLoading, isError, error, refetch } = useAttendanceSheet(sessionId);
   const submitMutation = useSubmitAttendance();
 
   const handleSubmit = (records) => {
@@ -51,9 +52,7 @@ export default function AttendancePage() {
   if (isError) {
     return (
       <div className="p-6">
-        <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-red-700 text-sm">
-          {error?.message || 'Không thể tải sheet điểm danh.'}
-        </div>
+        <ConnectionErrorBanner error={error} onRetry={() => refetch()} />
       </div>
     );
   }

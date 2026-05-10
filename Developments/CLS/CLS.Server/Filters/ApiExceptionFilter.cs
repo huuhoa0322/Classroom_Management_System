@@ -1,23 +1,26 @@
+using System.Data.Common;
 using CLS.BLL.Common.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System.Text.Json;
 
 namespace CLS.Server.Filters;
 
 /// <summary>
-/// Global MVC Exception Filter — bắt tất cả exceptions trong controller pipeline
-/// và trả về ApiResponse format thống nhất.
+/// Global MVC Action Filter — bọc toàn bộ controller action bằng try-catch THẬT SỰ.
 ///
-/// Vì filter chạy trong MVC pipeline (user code), Visual Studio sẽ coi exception
-/// là "handled" và KHÔNG hiển thị dialog "Exception User-Unhandled" gây gián đoạn.
+/// ⚠️ Khác biệt quan trọng so với IExceptionFilter:
+///   - IExceptionFilter.OnException() được MVC framework GỌI SAU KHI exception xảy ra
+///     → VS debugger vẫn coi exception là "User-Unhandled" tại throw site
+///   - IAsyncActionFilter.OnActionExecutionAsync() BỌC action bằng try-catch trực tiếp
+///     → VS debugger coi exception là "handled" → KHÔNG break
 ///
 /// Thứ tự ưu tiên:
-///   1. ValidationException  → 400 + errors field
-///   2. ClsException (domain) → StatusCode từ exception (401, 404, 409, v.v.)
-///   3. Exception (bất kỳ)   → 500 (không leak stack trace ra Production)
+///   1. ValidationException       → 400 + errors field
+///   2. ClsException (domain)     → StatusCode từ exception (401, 404, 409, v.v.)
+///   3. Transient DB Exception    → 503 (auto-detected NpgsqlException, SocketException, ...)
+///   4. Exception (bất kỳ)        → 500 (không leak stack trace ra Production)
 /// </summary>
-public class ApiExceptionFilter : IExceptionFilter
+public class ApiExceptionFilter : IAsyncActionFilter
 {
     private readonly ILogger<ApiExceptionFilter> _logger;
     private readonly IHostEnvironment _env;
@@ -28,13 +31,25 @@ public class ApiExceptionFilter : IExceptionFilter
         _env = env;
     }
 
-    public void OnException(ExceptionContext context)
+    public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+    {
+        try
+        {
+            await next();
+        }
+        catch (Exception ex)
+        {
+            HandleException(context, ex);
+        }
+    }
+
+    private void HandleException(ActionExecutingContext context, Exception exception)
     {
         int statusCode;
         string message;
         object? data = null;
 
-        switch (context.Exception)
+        switch (exception)
         {
             case ValidationException validationEx:
                 statusCode = 400;
@@ -52,12 +67,24 @@ public class ApiExceptionFilter : IExceptionFilter
                 break;
 
             default:
-                statusCode = 500;
-                message = _env.IsDevelopment()
-                    ? context.Exception.Message
-                    : "An unexpected error occurred. Please try again later.";
-                _logger.LogError(context.Exception, "Unexpected error at {Method} {Path}",
-                    context.HttpContext.Request.Method, context.HttpContext.Request.Path);
+                // Phát hiện lỗi kết nối DB từ repository (NpgsqlException, SocketException, ...)
+                if (IsTransientDatabaseException(exception))
+                {
+                    statusCode = 503;
+                    message = "Không thể kết nối đến cơ sở dữ liệu. Vui lòng thử lại sau.";
+                    _logger.LogError(exception,
+                        "Transient database error at {Method} {Path}",
+                        context.HttpContext.Request.Method, context.HttpContext.Request.Path);
+                }
+                else
+                {
+                    statusCode = 500;
+                    message = _env.IsDevelopment()
+                        ? exception.Message
+                        : "An unexpected error occurred. Please try again later.";
+                    _logger.LogError(exception, "Unexpected error at {Method} {Path}",
+                        context.HttpContext.Request.Method, context.HttpContext.Request.Path);
+                }
                 break;
         }
 
@@ -69,6 +96,21 @@ public class ApiExceptionFilter : IExceptionFilter
         };
 
         context.Result = new ObjectResult(response) { StatusCode = statusCode };
-        context.ExceptionHandled = true; // ← Đánh dấu đã xử lý → VS không break
+    }
+
+    /// <summary>
+    /// Kiểm tra exception chain có chứa lỗi transient database (mất kết nối, timeout) không.
+    /// </summary>
+    private static bool IsTransientDatabaseException(Exception ex)
+    {
+        if (ex is DbException) return true;
+        if (ex is System.Net.Sockets.SocketException) return true;
+        if (ex is TimeoutException) return true;
+
+        // InvalidOperationException wrapping "transient failure"
+        if (ex is InvalidOperationException && ex.InnerException is not null)
+            return IsTransientDatabaseException(ex.InnerException);
+
+        return false;
     }
 }

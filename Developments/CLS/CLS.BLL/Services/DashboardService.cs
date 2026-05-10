@@ -10,6 +10,9 @@ namespace CLS.BLL.Services;
 /// Service tổng hợp thống kê Dashboard — read-only cross-module reporting.
 /// Sử dụng AppDbContext trực tiếp vì đây là truy vấn aggregate tổng hợp,
 /// không thuộc trách nhiệm của bất kỳ module repository đơn lẻ nào.
+///
+/// Lỗi kết nối DB (NpgsqlException, SocketException, ...) sẽ propagate lên
+/// ApiExceptionFilter và được tự động phát hiện → trả về 503 Service Unavailable.
 /// </summary>
 public class DashboardService : IDashboardService
 {

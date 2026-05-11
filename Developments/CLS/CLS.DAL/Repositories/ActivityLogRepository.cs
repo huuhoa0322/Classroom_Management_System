@@ -26,6 +26,7 @@ public class ActivityLogRepository : IActivityLogRepository
     {
         var query = _ctx.ActivityLogs
             .AsNoTracking()
+            .IgnoreQueryFilters()  // Audit log: phải thấy cả user đã soft-delete
             .Include(a => a.User)
             .AsQueryable();
 

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '@/app/provider/authStore';
 import { ROUTE_PATHS } from '@/shared/utils/constants';
 import { Toast } from '@/shared/components/Toast';
@@ -29,6 +30,7 @@ const teacherNavItems = [
 export function MainLayout() {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const unreadCount = useNotificationStore((s) => s.unreadCount);
 
@@ -39,6 +41,7 @@ export function MainLayout() {
   useNotificationHub();
 
   const handleLogout = () => {
+    queryClient.clear();   // Xóa toàn bộ cache Query — tránh hiển thị data của user cũ
     logout();
     navigate(ROUTE_PATHS.LOGIN, { replace: true });
   };

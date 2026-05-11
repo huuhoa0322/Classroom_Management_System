@@ -196,6 +196,10 @@ try
     builder.Services.AddScoped<IUserManagementService, UserManagementService>();
     builder.Services.AddScoped<IDashboardService, DashboardService>();
 
+    // ── Activity Logs (System Audit) ──────────────────────────────────────────
+    builder.Services.AddScoped<IActivityLogRepository, ActivityLogRepository>();
+    builder.Services.AddScoped<IActivityLogService, ActivityLogService>();
+
     // ── SignalR — Real-time notifications ─────────────────────────────────────
     builder.Services.AddSignalR();
 

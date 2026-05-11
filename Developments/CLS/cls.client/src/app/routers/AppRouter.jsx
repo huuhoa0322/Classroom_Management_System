@@ -21,6 +21,7 @@ import FeedbackFormPage from '@/features/feedback/pages/FeedbackFormPage';
 import StudentFinancialPage from '@/features/financial/pages/StudentFinancialPage';
 import PaymentManagementPage from '@/features/financial/pages/PaymentManagementPage';
 import RenewalAlertsPage from '@/features/retention/pages/RenewalAlertsPage';
+import ActivityLogPage from '@/features/activity-log/pages/ActivityLogPage';
 
 /**
  * RoleBasedIndex — Redirect theo role khi truy cập trang gốc (/).
@@ -72,6 +73,7 @@ export default function AppRouter() {
         <Route path="timetable/:sessionId/feedback" element={<FeedbackListPage />} />
         <Route path="timetable/:sessionId/feedback/:studentId" element={<FeedbackFormPage />} />
         <Route path="renewal-alerts" element={<RenewalAlertsPage />} />
+        <Route path="activity-logs" element={<ActivityLogPage />} />
       </Route>
 
       {/* ── Fallback ───────────────────────────────────────────────────── */}

@@ -41,6 +41,9 @@ public class AppDbContext : DbContext
     // ── Academic Quality Assurance (UC-09) ──────────────────────────────────
     public DbSet<Feedback> Feedbacks => Set<Feedback>();
 
+    // ── System Audit (Activity Logs) ─────────────────────────────────────────
+    public DbSet<ActivityLog> ActivityLogs => Set<ActivityLog>();
+
     // ─────────────────────────────────────────────────────────────────────────
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -25,6 +25,7 @@ export const ROUTE_PATHS = {
   ATTENDANCE: '/attendance',
   TIMETABLE: '/timetable',
   RENEWAL_ALERTS: '/renewal-alerts',
+  ACTIVITY_LOGS: '/activity-logs',
 };
 
 

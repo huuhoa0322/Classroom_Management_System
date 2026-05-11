@@ -17,6 +17,7 @@ const adminNavItems = [
   { label: 'Tài khoản',  path: ROUTE_PATHS.USERS,     icon: '👤' },
   { label: 'Lịch học',   path: ROUTE_PATHS.SESSIONS,   icon: '📅' },
   { label: 'Thông báo gia hạn', path: ROUTE_PATHS.RENEWAL_ALERTS, icon: '🔔', showBadge: true },
+  { label: 'Nhật ký hoạt động', path: ROUTE_PATHS.ACTIVITY_LOGS, icon: '📋' },
 ];
 
 const teacherNavItems = [

@@ -44,33 +44,30 @@ internal static class ControllerResultExtensions
     // ── Activity Logging Helper ─────────────────────────────────────────────
 
     /// <summary>
-    /// Fire-and-forget ghi activity log sau khi action thành công.
-    /// Không block response — lỗi ghi log chỉ được log warning, không ảnh hưởng user.
+    /// Ghi activity log inline (await) — giữ đúng DI scope.
+    /// Lỗi ghi log được swallow, không ảnh hưởng response.
     /// </summary>
-    internal static void LogActivity(
+    internal static async Task LogActivityAsync(
         this ControllerBase controller,
         IActivityLogService activityLogService,
         string actionType,
         string description)
     {
-        var userId = GetCurrentUserId(controller);
+        var userId = controller.GetCurrentUserId();
         if (userId <= 0) return;
 
-        // Fire-and-forget — không await
-        _ = Task.Run(async () =>
+        try
         {
-            try
-            {
-                await activityLogService.LogAsync(userId, actionType, description);
-            }
-            catch
-            {
-                // Swallow — activity log failure must never break the main flow
-            }
-        });
+            await activityLogService.LogAsync(userId, actionType, description);
+        }
+        catch
+        {
+            // Activity log failure must never break the main flow
+        }
     }
 
-    private static int GetCurrentUserId(ControllerBase controller)
+    /// <summary>Lấy userId từ JWT claims — dùng chung cho mọi Controller.</summary>
+    internal static int GetCurrentUserId(this ControllerBase controller)
     {
         var claim = controller.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)
                     ?? controller.User.FindFirst("sub");

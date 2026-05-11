@@ -37,7 +37,7 @@ public class SessionsController : ControllerBase
     {
         var result = await _sessionService.CreateSessionAsync(request, ct);
         if (result.IsSuccess)
-            this.LogActivity(_activityLogService, AppConstants.ActionTypes.Create, $"Tạo buổi học lúc {request.StartTime:dd/MM/yyyy HH:mm}");
+            await this.LogActivityAsync(_activityLogService, AppConstants.ActionTypes.Create, $"Tạo buổi học lúc {request.StartTime:dd/MM/yyyy HH:mm}");
         return this.ToCreatedAtActionResponse(
             result,
             nameof(CreateSession),
@@ -57,7 +57,7 @@ public class SessionsController : ControllerBase
     {
         var result = await _sessionService.UpdateSessionAsync(id, request, ct);
         if (result.IsSuccess)
-            this.LogActivity(_activityLogService, AppConstants.ActionTypes.Update, $"Cập nhật buổi học #{id}");
+            await this.LogActivityAsync(_activityLogService, AppConstants.ActionTypes.Update, $"Cập nhật buổi học #{id}");
         return this.ToOkResponse(result, "Cập nhật buổi học thành công.");
     }
 
@@ -70,7 +70,7 @@ public class SessionsController : ControllerBase
     {
         var result = await _sessionService.DeleteSessionAsync(id, ct);
         if (result.IsSuccess)
-            this.LogActivity(_activityLogService, AppConstants.ActionTypes.Delete, $"Xóa buổi học #{id}");
+            await this.LogActivityAsync(_activityLogService, AppConstants.ActionTypes.Delete, $"Xóa buổi học #{id}");
         return this.ToOkResponse(result, "Đã xóa buổi học thành công.");
     }
 

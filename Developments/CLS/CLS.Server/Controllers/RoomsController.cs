@@ -66,7 +66,7 @@ public class RoomsController : ControllerBase
     {
         var result = await _roomService.CreateAsync(request, ct);
         if (result.IsSuccess)
-            this.LogActivity(_activityLogService, AppConstants.ActionTypes.Create, $"Tạo phòng: {request.Name}");
+            await this.LogActivityAsync(_activityLogService, AppConstants.ActionTypes.Create, $"Tạo phòng: {request.Name}");
         return this.ToCreatedAtActionResponse(result, nameof(GetById), r => new { id = r.Id }, "Tạo phòng thành công.");
     }
 
@@ -80,7 +80,7 @@ public class RoomsController : ControllerBase
     {
         var result = await _roomService.UpdateAsync(id, request, ct);
         if (result.IsSuccess)
-            this.LogActivity(_activityLogService, AppConstants.ActionTypes.Update, $"Cập nhật phòng #{id}: {request.Name}");
+            await this.LogActivityAsync(_activityLogService, AppConstants.ActionTypes.Update, $"Cập nhật phòng #{id}: {request.Name}");
         return this.ToOkResponse(result, "Cập nhật phòng thành công.");
     }
 
@@ -93,7 +93,7 @@ public class RoomsController : ControllerBase
     {
         var result = await _roomService.UpdateStatusAsync(id, request, ct);
         if (result.IsSuccess)
-            this.LogActivity(_activityLogService, AppConstants.ActionTypes.StatusChange, $"Đổi trạng thái phòng #{id} → {request.Status}");
+            await this.LogActivityAsync(_activityLogService, AppConstants.ActionTypes.StatusChange, $"Đổi trạng thái phòng #{id} → {request.Status}");
         return this.ToOkResponse(result, $"Cập nhật trạng thái phòng thành '{request.Status}' thành công.");
     }
 }

@@ -54,7 +54,7 @@ public class UsersController : ControllerBase
     {
         var result = await _userService.CreateTeacherAsync(request, ct);
         if (result.IsSuccess)
-            this.LogActivity(_activityLogService, AppConstants.ActionTypes.Create, $"Tạo tài khoản giáo viên: {request.Email}");
+            await this.LogActivityAsync(_activityLogService, AppConstants.ActionTypes.Create, $"Tạo tài khoản giáo viên: {request.Email}");
         return this.ToCreatedAtActionResponse(result, nameof(GetById), u => new { id = u.Id }, "Tạo tài khoản giáo viên thành công.");
     }
 
@@ -68,7 +68,7 @@ public class UsersController : ControllerBase
     {
         var result = await _userService.UpdateAsync(id, request, ct);
         if (result.IsSuccess)
-            this.LogActivity(_activityLogService, AppConstants.ActionTypes.Update, $"Cập nhật tài khoản #{id}: {request.Email}");
+            await this.LogActivityAsync(_activityLogService, AppConstants.ActionTypes.Update, $"Cập nhật tài khoản #{id}: {request.Email}");
         return this.ToOkResponse(result, "Cập nhật tài khoản thành công.");
     }
 
@@ -81,7 +81,7 @@ public class UsersController : ControllerBase
     {
         var result = await _userService.UpdateStatusAsync(id, request, ct);
         if (result.IsSuccess)
-            this.LogActivity(_activityLogService, AppConstants.ActionTypes.StatusChange, $"Đổi trạng thái tài khoản #{id} → {request.Status}");
+            await this.LogActivityAsync(_activityLogService, AppConstants.ActionTypes.StatusChange, $"Đổi trạng thái tài khoản #{id} → {request.Status}");
         return this.ToOkResponse(result, "Cập nhật trạng thái tài khoản thành công.");
     }
 
@@ -92,6 +92,8 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> ResetPassword(int id, CancellationToken ct = default)
     {
         var result = await _userService.ResetPasswordAsync(id, ct);
+        if (result.IsSuccess)
+            await this.LogActivityAsync(_activityLogService, AppConstants.ActionTypes.Update, $"Reset mật khẩu tài khoản #{id}");
         return this.ToOkResponse(result, "Đặt lại mật khẩu thành công.");
     }
 }

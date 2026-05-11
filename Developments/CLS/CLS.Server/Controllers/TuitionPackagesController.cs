@@ -56,7 +56,7 @@ public class TuitionPackagesController : ControllerBase
     {
         var result = await _packageService.CreateAsync(request, ct);
         if (result.IsSuccess)
-            this.LogActivity(_activityLogService, AppConstants.ActionTypes.Create, $"Tạo gói học: {request.Name}");
+            await this.LogActivityAsync(_activityLogService, AppConstants.ActionTypes.Create, $"Tạo gói học: {request.Name}");
         return this.ToCreatedAtActionResponse(result, nameof(GetAll), _ => new { }, "Tạo gói thành công.");
     }
 
@@ -70,7 +70,7 @@ public class TuitionPackagesController : ControllerBase
     {
         var result = await _packageService.UpdateAsync(id, request, ct);
         if (result.IsSuccess)
-            this.LogActivity(_activityLogService, AppConstants.ActionTypes.Update, $"Cập nhật gói #{id}: {request.Name}");
+            await this.LogActivityAsync(_activityLogService, AppConstants.ActionTypes.Update, $"Cập nhật gói #{id}: {request.Name}");
         return this.ToOkResponse(result, "Cập nhật gói thành công.");
     }
 
@@ -83,7 +83,7 @@ public class TuitionPackagesController : ControllerBase
     {
         var result = await _packageService.UpdateStatusAsync(id, request, ct);
         if (result.IsSuccess)
-            this.LogActivity(_activityLogService, AppConstants.ActionTypes.StatusChange, $"Đổi trạng thái gói #{id} → {request.Status}");
+            await this.LogActivityAsync(_activityLogService, AppConstants.ActionTypes.StatusChange, $"Đổi trạng thái gói #{id} → {request.Status}");
         return this.ToOkResponse(result, $"Cập nhật trạng thái gói thành '{request.Status}' thành công.");
     }
 }

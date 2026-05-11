@@ -187,6 +187,7 @@ public static class AppConstants
         public const string Update       = "update";
         public const string Delete       = "delete";
         public const string Login        = "login";
+        public const string Logout       = "logout";
         public const string StatusChange = "status_change";
     }
 }

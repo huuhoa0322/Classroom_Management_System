@@ -84,24 +84,21 @@ public class AuthService : IAuthService
 
         _logger.LogInformation("User {Email} ({Role}) logged in successfully", user.Email, user.Role);
 
-        // Ghi activity log — fire-and-forget, không block login response
-        _ = Task.Run(async () =>
+        // Ghi activity log — inline await, giữ đúng DI scope
+        try
         {
-            try
+            await _activityLogRepo.AddAsync(new DAL.Entities.ActivityLog
             {
-                await _activityLogRepo.AddAsync(new DAL.Entities.ActivityLog
-                {
-                    UserId = user.Id,
-                    ActionType = AppConstants.ActionTypes.Login,
-                    Description = $"Đăng nhập hệ thống ({user.Role})"
-                });
-                await _activityLogRepo.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, "Failed to write login activity log for User {UserId}", user.Id);
-            }
-        });
+                UserId = user.Id,
+                ActionType = AppConstants.ActionTypes.Login,
+                Description = $"Đăng nhập hệ thống ({user.Role})"
+            });
+            await _activityLogRepo.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to write login activity log for User {UserId}", user.Id);
+        }
 
         return ServiceResult<LoginResponse>.Success(
             new LoginResponse

@@ -4,7 +4,6 @@ using CLS.BLL.DTOs.Sessions;
 using CLS.BLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace CLS.Server.Controllers;
 
@@ -72,13 +71,13 @@ public class ClassesController : ControllerBase
     public async Task<IActionResult> Create(
         [FromBody] CreateClassRequest request, CancellationToken ct = default)
     {
-        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out var userId))
+        var userId = this.GetCurrentUserId();
+        if (userId <= 0)
             return Unauthorized(ApiResponse<object>.Fail("Không xác định được người dùng.", 401));
 
         var result = await _classService.CreateAsync(request, userId, ct);
         if (result.IsSuccess)
-            this.LogActivity(_activityLogService, AppConstants.ActionTypes.Create, $"Tạo lớp học: {request.Name}");
+            await this.LogActivityAsync(_activityLogService, AppConstants.ActionTypes.Create, $"Tạo lớp học: {request.Name}");
         return this.ToCreatedAtActionResponse(
             result,
             nameof(GetById),
@@ -98,7 +97,7 @@ public class ClassesController : ControllerBase
     {
         var result = await _classService.UpdateAsync(id, request, ct);
         if (result.IsSuccess)
-            this.LogActivity(_activityLogService, AppConstants.ActionTypes.Update, $"Cập nhật lớp #{id}: {request.Name}");
+            await this.LogActivityAsync(_activityLogService, AppConstants.ActionTypes.Update, $"Cập nhật lớp #{id}: {request.Name}");
         return this.ToOkResponse(result, "Cập nhật lớp học thành công.");
     }
 
@@ -113,7 +112,7 @@ public class ClassesController : ControllerBase
     {
         var result = await _classService.UpdateStatusAsync(id, request, ct);
         if (result.IsSuccess)
-            this.LogActivity(_activityLogService, AppConstants.ActionTypes.StatusChange, $"Đổi trạng thái lớp #{id} → {request.Status}");
+            await this.LogActivityAsync(_activityLogService, AppConstants.ActionTypes.StatusChange, $"Đổi trạng thái lớp #{id} → {request.Status}");
         return this.ToOkResponse(result, $"Cập nhật trạng thái lớp thành '{request.Status}' thành công.");
     }
 

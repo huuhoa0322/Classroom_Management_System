@@ -3,7 +3,6 @@ using CLS.BLL.DTOs.Payments;
 using CLS.BLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace CLS.Server.Controllers;
 
@@ -35,10 +34,10 @@ public class PaymentsController : ControllerBase
     public async Task<IActionResult> RecordPayment(
         [FromBody] RecordPaymentRequest request, CancellationToken ct = default)
     {
-        var adminUserId = GetCurrentUserId();
+        var adminUserId = this.GetCurrentUserId();
         var result = await _paymentService.RecordPaymentAsync(request, adminUserId, ct);
         if (result.IsSuccess)
-            this.LogActivity(_activityLogService, AppConstants.ActionTypes.Create, $"Ghi nhận thanh toán cho học sinh #{request.StudentId}");
+            await this.LogActivityAsync(_activityLogService, AppConstants.ActionTypes.Create, $"Ghi nhận thanh toán cho học sinh #{request.StudentId}");
         return this.ToCreatedAtActionResponse(
             result,
             nameof(RecordPayment),
@@ -58,7 +57,7 @@ public class PaymentsController : ControllerBase
     {
         var result = await _paymentService.UpdatePaymentStatusAsync(id, request, ct);
         if (result.IsSuccess)
-            this.LogActivity(_activityLogService, AppConstants.ActionTypes.StatusChange, $"Cập nhật trạng thái thanh toán #{id} → {request.Status}");
+            await this.LogActivityAsync(_activityLogService, AppConstants.ActionTypes.StatusChange, $"Cập nhật trạng thái thanh toán #{id} → {request.Status}");
         return this.ToOkResponse(result,
             $"Cập nhật trạng thái thanh toán thành '{request.Status}' thành công.");
     }
@@ -92,11 +91,4 @@ public class PaymentsController : ControllerBase
             "Lấy toàn bộ lịch sử thanh toán thành công."));
     }
 
-    // ── Helper: lấy userId từ JWT claims ──────────────────────────────────────
-    private int GetCurrentUserId()
-    {
-        var claim = User.FindFirst(ClaimTypes.NameIdentifier)
-                    ?? User.FindFirst("sub");
-        return claim is not null && int.TryParse(claim.Value, out var id) ? id : 0;
-    }
 }

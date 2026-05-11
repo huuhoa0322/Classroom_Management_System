@@ -15,8 +15,13 @@ namespace CLS.Server.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly IUserManagementService _userService;
+    private readonly IActivityLogService _activityLogService;
 
-    public UsersController(IUserManagementService userService) => _userService = userService;
+    public UsersController(IUserManagementService userService, IActivityLogService activityLogService)
+    {
+        _userService = userService;
+        _activityLogService = activityLogService;
+    }
 
     /// <summary>Lấy danh sách tài khoản (phân trang).</summary>
     [HttpGet]
@@ -48,6 +53,8 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> Create([FromBody] CreateUserRequest request, CancellationToken ct = default)
     {
         var result = await _userService.CreateTeacherAsync(request, ct);
+        if (result.IsSuccess)
+            this.LogActivity(_activityLogService, AppConstants.ActionTypes.Create, $"Tạo tài khoản giáo viên: {request.Email}");
         return this.ToCreatedAtActionResponse(result, nameof(GetById), u => new { id = u.Id }, "Tạo tài khoản giáo viên thành công.");
     }
 
@@ -60,6 +67,8 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> Update(int id, [FromBody] UpdateUserRequest request, CancellationToken ct = default)
     {
         var result = await _userService.UpdateAsync(id, request, ct);
+        if (result.IsSuccess)
+            this.LogActivity(_activityLogService, AppConstants.ActionTypes.Update, $"Cập nhật tài khoản #{id}: {request.Email}");
         return this.ToOkResponse(result, "Cập nhật tài khoản thành công.");
     }
 
@@ -71,6 +80,8 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateUserStatusRequest request, CancellationToken ct = default)
     {
         var result = await _userService.UpdateStatusAsync(id, request, ct);
+        if (result.IsSuccess)
+            this.LogActivity(_activityLogService, AppConstants.ActionTypes.StatusChange, $"Đổi trạng thái tài khoản #{id} → {request.Status}");
         return this.ToOkResponse(result, "Cập nhật trạng thái tài khoản thành công.");
     }
 

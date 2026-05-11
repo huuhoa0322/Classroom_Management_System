@@ -17,11 +17,13 @@ public class TuitionPackagesController : ControllerBase
 {
     private readonly IPackageService _packageService;
     private readonly IPaymentService _paymentService;
+    private readonly IActivityLogService _activityLogService;
 
-    public TuitionPackagesController(IPackageService packageService, IPaymentService paymentService)
+    public TuitionPackagesController(IPackageService packageService, IPaymentService paymentService, IActivityLogService activityLogService)
     {
         _packageService = packageService;
         _paymentService = paymentService;
+        _activityLogService = activityLogService;
     }
 
     /// <summary>Lấy danh sách gói (phân trang).</summary>
@@ -53,6 +55,8 @@ public class TuitionPackagesController : ControllerBase
     public async Task<IActionResult> Create([FromBody] CreatePackageRequest request, CancellationToken ct = default)
     {
         var result = await _packageService.CreateAsync(request, ct);
+        if (result.IsSuccess)
+            this.LogActivity(_activityLogService, AppConstants.ActionTypes.Create, $"Tạo gói học: {request.Name}");
         return this.ToCreatedAtActionResponse(result, nameof(GetAll), _ => new { }, "Tạo gói thành công.");
     }
 
@@ -65,6 +69,8 @@ public class TuitionPackagesController : ControllerBase
     public async Task<IActionResult> Update(int id, [FromBody] UpdatePackageRequest request, CancellationToken ct = default)
     {
         var result = await _packageService.UpdateAsync(id, request, ct);
+        if (result.IsSuccess)
+            this.LogActivity(_activityLogService, AppConstants.ActionTypes.Update, $"Cập nhật gói #{id}: {request.Name}");
         return this.ToOkResponse(result, "Cập nhật gói thành công.");
     }
 
@@ -76,6 +82,8 @@ public class TuitionPackagesController : ControllerBase
     public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdatePackageStatusRequest request, CancellationToken ct = default)
     {
         var result = await _packageService.UpdateStatusAsync(id, request, ct);
+        if (result.IsSuccess)
+            this.LogActivity(_activityLogService, AppConstants.ActionTypes.StatusChange, $"Đổi trạng thái gói #{id} → {request.Status}");
         return this.ToOkResponse(result, $"Cập nhật trạng thái gói thành '{request.Status}' thành công.");
     }
 }

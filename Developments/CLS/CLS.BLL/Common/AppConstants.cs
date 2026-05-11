@@ -178,4 +178,15 @@ public static class AppConstants
         public const string Active   = "active";
         public const string Inactive = "inactive";
     }
+
+    // ── Activity Log Action Types ─────────────────────────────────────────
+    /// <summary>Các action_type chuẩn dùng cho bảng activity_logs.</summary>
+    public static class ActionTypes
+    {
+        public const string Create       = "create";
+        public const string Update       = "update";
+        public const string Delete       = "delete";
+        public const string Login        = "login";
+        public const string StatusChange = "status_change";
+    }
 }

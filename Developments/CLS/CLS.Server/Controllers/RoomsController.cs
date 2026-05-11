@@ -17,11 +17,13 @@ public class RoomsController : ControllerBase
 {
     private readonly IRoomService _roomService;
     private readonly ISessionService _sessionService;
+    private readonly IActivityLogService _activityLogService;
 
-    public RoomsController(IRoomService roomService, ISessionService sessionService)
+    public RoomsController(IRoomService roomService, ISessionService sessionService, IActivityLogService activityLogService)
     {
         _roomService = roomService;
         _sessionService = sessionService;
+        _activityLogService = activityLogService;
     }
 
     /// <summary>Lấy danh sách phòng (phân trang).</summary>
@@ -63,6 +65,8 @@ public class RoomsController : ControllerBase
     public async Task<IActionResult> Create([FromBody] CreateRoomRequest request, CancellationToken ct = default)
     {
         var result = await _roomService.CreateAsync(request, ct);
+        if (result.IsSuccess)
+            this.LogActivity(_activityLogService, AppConstants.ActionTypes.Create, $"Tạo phòng: {request.Name}");
         return this.ToCreatedAtActionResponse(result, nameof(GetById), r => new { id = r.Id }, "Tạo phòng thành công.");
     }
 
@@ -75,6 +79,8 @@ public class RoomsController : ControllerBase
     public async Task<IActionResult> Update(int id, [FromBody] UpdateRoomRequest request, CancellationToken ct = default)
     {
         var result = await _roomService.UpdateAsync(id, request, ct);
+        if (result.IsSuccess)
+            this.LogActivity(_activityLogService, AppConstants.ActionTypes.Update, $"Cập nhật phòng #{id}: {request.Name}");
         return this.ToOkResponse(result, "Cập nhật phòng thành công.");
     }
 
@@ -86,6 +92,8 @@ public class RoomsController : ControllerBase
     public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateRoomStatusRequest request, CancellationToken ct = default)
     {
         var result = await _roomService.UpdateStatusAsync(id, request, ct);
+        if (result.IsSuccess)
+            this.LogActivity(_activityLogService, AppConstants.ActionTypes.StatusChange, $"Đổi trạng thái phòng #{id} → {request.Status}");
         return this.ToOkResponse(result, $"Cập nhật trạng thái phòng thành '{request.Status}' thành công.");
     }
 }

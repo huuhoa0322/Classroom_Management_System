@@ -3,6 +3,7 @@ using CLS.BLL.DTOs;
 using CLS.BLL.DTOs.Auth;
 using CLS.BLL.Interfaces;
 using CLS.DAL.Data;
+using CLS.DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -13,12 +14,16 @@ public class AuthService : IAuthService
     private readonly AppDbContext _ctx;
     private readonly IJwtService _jwtService;
     private readonly ILogger<AuthService> _logger;
+    private readonly IActivityLogRepository _activityLogRepo;
 
-    public AuthService(AppDbContext ctx, IJwtService jwtService, ILogger<AuthService> logger)
+    public AuthService(
+        AppDbContext ctx, IJwtService jwtService, ILogger<AuthService> logger,
+        IActivityLogRepository activityLogRepo)
     {
-        _ctx        = ctx;
-        _jwtService = jwtService;
-        _logger     = logger;
+        _ctx             = ctx;
+        _jwtService      = jwtService;
+        _logger          = logger;
+        _activityLogRepo = activityLogRepo;
     }
 
     public async Task<ServiceResult<LoginResponse>> LoginAsync(LoginRequest request, CancellationToken ct = default)
@@ -78,6 +83,25 @@ public class AuthService : IAuthService
         var refreshToken = _jwtService.GenerateRefreshToken();
 
         _logger.LogInformation("User {Email} ({Role}) logged in successfully", user.Email, user.Role);
+
+        // Ghi activity log — fire-and-forget, không block login response
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await _activityLogRepo.AddAsync(new DAL.Entities.ActivityLog
+                {
+                    UserId = user.Id,
+                    ActionType = AppConstants.ActionTypes.Login,
+                    Description = $"Đăng nhập hệ thống ({user.Role})"
+                });
+                await _activityLogRepo.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to write login activity log for User {UserId}", user.Id);
+            }
+        });
 
         return ServiceResult<LoginResponse>.Success(
             new LoginResponse

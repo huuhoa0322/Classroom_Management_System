@@ -17,9 +17,13 @@ namespace CLS.Server.Controllers;
 public class SessionsController : ControllerBase
 {
     private readonly ISessionService _sessionService;
+    private readonly IActivityLogService _activityLogService;
 
-    public SessionsController(ISessionService sessionService)
-        => _sessionService = sessionService;
+    public SessionsController(ISessionService sessionService, IActivityLogService activityLogService)
+    {
+        _sessionService = sessionService;
+        _activityLogService = activityLogService;
+    }
 
     // ── POST /api/v1/sessions ─────────────────────────────────────────────────
     /// <summary>Tạo buổi học mới (auto-validate conflict).</summary>
@@ -32,6 +36,8 @@ public class SessionsController : ControllerBase
         [FromBody] CreateSessionRequest request, CancellationToken ct = default)
     {
         var result = await _sessionService.CreateSessionAsync(request, ct);
+        if (result.IsSuccess)
+            this.LogActivity(_activityLogService, AppConstants.ActionTypes.Create, $"Tạo buổi học lúc {request.StartTime:dd/MM/yyyy HH:mm}");
         return this.ToCreatedAtActionResponse(
             result,
             nameof(CreateSession),
@@ -50,6 +56,8 @@ public class SessionsController : ControllerBase
         int id, [FromBody] UpdateSessionRequest request, CancellationToken ct = default)
     {
         var result = await _sessionService.UpdateSessionAsync(id, request, ct);
+        if (result.IsSuccess)
+            this.LogActivity(_activityLogService, AppConstants.ActionTypes.Update, $"Cập nhật buổi học #{id}");
         return this.ToOkResponse(result, "Cập nhật buổi học thành công.");
     }
 
@@ -61,6 +69,8 @@ public class SessionsController : ControllerBase
     public async Task<IActionResult> DeleteSession(int id, CancellationToken ct = default)
     {
         var result = await _sessionService.DeleteSessionAsync(id, ct);
+        if (result.IsSuccess)
+            this.LogActivity(_activityLogService, AppConstants.ActionTypes.Delete, $"Xóa buổi học #{id}");
         return this.ToOkResponse(result, "Đã xóa buổi học thành công.");
     }
 

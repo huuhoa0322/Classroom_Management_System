@@ -18,11 +18,13 @@ public class ClassesController : ControllerBase
 {
     private readonly IClassService   _classService;
     private readonly ISessionService _sessionService;
+    private readonly IActivityLogService _activityLogService;
 
-    public ClassesController(IClassService classService, ISessionService sessionService)
+    public ClassesController(IClassService classService, ISessionService sessionService, IActivityLogService activityLogService)
     {
         _classService   = classService;
         _sessionService = sessionService;
+        _activityLogService = activityLogService;
     }
 
     // ── GET /api/v1/classes ───────────────────────────────────────────────────
@@ -75,6 +77,8 @@ public class ClassesController : ControllerBase
             return Unauthorized(ApiResponse<object>.Fail("Không xác định được người dùng.", 401));
 
         var result = await _classService.CreateAsync(request, userId, ct);
+        if (result.IsSuccess)
+            this.LogActivity(_activityLogService, AppConstants.ActionTypes.Create, $"Tạo lớp học: {request.Name}");
         return this.ToCreatedAtActionResponse(
             result,
             nameof(GetById),
@@ -93,6 +97,8 @@ public class ClassesController : ControllerBase
         int id, [FromBody] UpdateClassRequest request, CancellationToken ct = default)
     {
         var result = await _classService.UpdateAsync(id, request, ct);
+        if (result.IsSuccess)
+            this.LogActivity(_activityLogService, AppConstants.ActionTypes.Update, $"Cập nhật lớp #{id}: {request.Name}");
         return this.ToOkResponse(result, "Cập nhật lớp học thành công.");
     }
 
@@ -106,6 +112,8 @@ public class ClassesController : ControllerBase
         int id, [FromBody] UpdateClassStatusRequest request, CancellationToken ct = default)
     {
         var result = await _classService.UpdateStatusAsync(id, request, ct);
+        if (result.IsSuccess)
+            this.LogActivity(_activityLogService, AppConstants.ActionTypes.StatusChange, $"Đổi trạng thái lớp #{id} → {request.Status}");
         return this.ToOkResponse(result, $"Cập nhật trạng thái lớp thành '{request.Status}' thành công.");
     }
 

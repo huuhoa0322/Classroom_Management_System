@@ -261,7 +261,7 @@ src/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/TuanKiet0704/Classroom_Management_System.git
+git clone https://github.com/huuhoa0322/Classroom_Management_System.git
 cd Classroom_Management_System
 ```
 

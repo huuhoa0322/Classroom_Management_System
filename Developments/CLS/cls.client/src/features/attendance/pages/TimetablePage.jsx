@@ -18,7 +18,7 @@ function getMonday(d = new Date()) {
 
 /**
  * TimetablePage — UC-07: Xem lịch dạy cá nhân.
- * Hiển thị lịch tuần (Mon–Sun) với navigation prev/next.
+ * Hiển thị lịch tuần (Mon–Sun) với filter dropdown năm + tuần.
  */
 export default function TimetablePage() {
   const [weekStart, setWeekStart] = useState(() => getMonday());
@@ -34,22 +34,6 @@ export default function TimetablePage() {
   }, [weekStart]);
 
   const { data: sessions, isLoading, isError, error, refetch } = useTimetable(from, to);
-
-  const goPrev = () => {
-    setWeekStart((prev) => {
-      const d = new Date(prev);
-      d.setDate(d.getDate() - 7);
-      return d;
-    });
-  };
-
-  const goNext = () => {
-    setWeekStart((prev) => {
-      const d = new Date(prev);
-      d.setDate(d.getDate() + 7);
-      return d;
-    });
-  };
 
   return (
     <div className="p-6 space-y-6">
@@ -67,8 +51,7 @@ export default function TimetablePage() {
 
         <WeekNavigator
           weekStart={weekStart}
-          onPrev={goPrev}
-          onNext={goNext}
+          onJumpToWeek={(monday) => setWeekStart(monday)}
         />
       </div>
 

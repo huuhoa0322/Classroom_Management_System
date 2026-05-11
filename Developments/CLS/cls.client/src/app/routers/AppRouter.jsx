@@ -2,6 +2,8 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { PrivateRoute } from '@/app/guards/PrivateRoute';
 import { MainLayout } from '@/app/layouts/MainLayout';
 import { AuthLayout } from '@/app/layouts/AuthLayout';
+import { useAuthStore } from '@/app/provider/authStore';
+import { USER_ROLES, ROUTE_PATHS } from '@/shared/utils/constants';
 
 // ── Pages ──────────────────────────────────────────────────────────────────
 import LoginPage from '@/features/auth/pages/LoginPage';
@@ -19,6 +21,21 @@ import FeedbackFormPage from '@/features/feedback/pages/FeedbackFormPage';
 import StudentFinancialPage from '@/features/financial/pages/StudentFinancialPage';
 import PaymentManagementPage from '@/features/financial/pages/PaymentManagementPage';
 import RenewalAlertsPage from '@/features/retention/pages/RenewalAlertsPage';
+
+/**
+ * RoleBasedIndex — Redirect theo role khi truy cập trang gốc (/).
+ * - Admin   → Dashboard
+ * - Teacher → Thời khóa biểu (/timetable)
+ */
+function RoleBasedIndex() {
+  const user = useAuthStore((s) => s.user);
+
+  if (user?.role === USER_ROLES.TEACHER) {
+    return <Navigate to={ROUTE_PATHS.TIMETABLE} replace />;
+  }
+
+  return <DashboardPage />;
+}
 
 /**
  * AppRouter — Định nghĩa toàn bộ cấu trúc route của ứng dụng CLS.
@@ -40,7 +57,7 @@ export default function AppRouter() {
           </PrivateRoute>
         }
       >
-        <Route index element={<DashboardPage />} />
+        <Route index element={<RoleBasedIndex />} />
         <Route path="students" element={<StudentPage />} />
         <Route path="students/:id/financials" element={<StudentFinancialPage />} />
         <Route path="payments" element={<PaymentManagementPage />} />
@@ -62,3 +79,4 @@ export default function AppRouter() {
     </Routes>
   );
 }
+

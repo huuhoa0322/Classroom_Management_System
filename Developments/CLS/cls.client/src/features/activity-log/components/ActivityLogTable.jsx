@@ -1,3 +1,5 @@
+import { formatDateTime } from '@/shared/utils/formatters';
+
 /**
  * Badge config cho từng loại action_type.
  * Màu sắc giúp Admin phân biệt nhanh loại hành động.
@@ -12,18 +14,6 @@ const ACTION_BADGES = {
 };
 
 const DEFAULT_BADGE = { label: 'Khác', className: 'bg-gray-100 text-gray-600', icon: '📌' };
-
-/**
- * Format thời gian dạng ngắn gọn: "11/05/2026 23:05"
- */
-function formatDateTime(dateStr) {
-  if (!dateStr) return '—';
-  const d = new Date(dateStr);
-  return d.toLocaleString('vi-VN', {
-    day: '2-digit', month: '2-digit', year: 'numeric',
-    hour: '2-digit', minute: '2-digit',
-  });
-}
 
 /**
  * ActivityLogTable — Bảng hiển thị nhật ký hoạt động với badge màu cho action type.

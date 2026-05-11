@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useActivityLogList } from '../hooks/useActivityLog';
 import { ActivityLogTable } from '../components/ActivityLogTable';
 import { ConnectionErrorBanner } from '@/shared/components/ConnectionErrorBanner';
+import { DEFAULT_PAGINATION } from '@/shared/utils/constants';
 
 /** Danh sách action types cho dropdown lọc. */
 const ACTION_TYPE_OPTIONS = [
@@ -30,7 +31,7 @@ export default function ActivityLogPage() {
 
   const { data: logs, isLoading, isError, error, refetch } = useActivityLogList({
     page,
-    pageSize: 20,
+    pageSize: DEFAULT_PAGINATION.PAGE_SIZE,
     actionType: actionType || undefined,
     from,
     to,

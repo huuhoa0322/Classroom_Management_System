@@ -110,8 +110,9 @@ public class UsersController : ControllerBase
             var action = result.Value!.IsLocked ? "Khóa" : "Mở khóa";
             await this.LogActivityAsync(_activityLogService, AppConstants.ActionTypes.StatusChange, $"{action} tài khoản #{id}");
         }
-        return this.ToOkResponse(result, result.IsSuccess && result.Value!.IsLocked
-            ? "Đã khóa tài khoản."
-            : "Đã mở khóa tài khoản.");
+        var message = result.IsSuccess
+            ? (result.Value!.IsLocked ? "Đã khóa tài khoản." : "Đã mở khóa tài khoản.")
+            : result.Message;
+        return this.ToOkResponse(result, message);
     }
 }

@@ -51,7 +51,7 @@ export function UserTable({ users, isLoading, page, onPageChange, onEdit, onTogg
                       <button onClick={() => onToggleStatus(user)} disabled={isTogglingStatus} className={`text-xs font-medium ${isActive ? 'text-yellow-600 hover:text-yellow-800' : 'text-green-600 hover:text-green-800'}`}>
                         {isActive ? 'ǁ Tạm dừng' : '▶ Kích hoạt'}
                       </button>
-                      <button onClick={() => onToggleLock(user)} className={`text-xs font-medium ${user.isLocked ? 'text-green-600 hover:text-green-800' : 'text-red-600 hover:text-red-800'}`}>
+                      <button onClick={() => onToggleLock(user)} disabled={isTogglingStatus} className={`text-xs font-medium ${user.isLocked ? 'text-green-600 hover:text-green-800' : 'text-red-600 hover:text-red-800'}`}>
                         {user.isLocked ? '🔓 Mở khóa' : '🔒 Khóa'}
                       </button>
                     </>

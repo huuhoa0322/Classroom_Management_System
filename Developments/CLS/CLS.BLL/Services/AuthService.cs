@@ -55,7 +55,7 @@ public class AuthService : IAuthService
         //    Bỏ AsNoTracking() — cần update lockout fields
         var user = await _ctx.Users
             .FirstOrDefaultAsync(u => u.Email.ToLower() == normalizedEmail
-                                   && u.Status == "active", ct);
+                                   && u.Status == AppConstants.UserAccountStatus.Active, ct);
 
         if (user is null)
         {

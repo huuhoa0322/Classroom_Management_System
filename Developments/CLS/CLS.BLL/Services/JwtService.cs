@@ -63,9 +63,9 @@ public class JwtService : IJwtService
         return Convert.ToBase64String(bytes);
     }
 
-    // ── ValidateToken ─────────────────────────────────────────────────────────
+    // ── ValidateTokenAsync ─────────────────────────────────────────────────────
     /// <inheritdoc/>
-    public ClaimsPrincipal? ValidateToken(string token)
+    public async Task<ClaimsPrincipal?> ValidateTokenAsync(string token)
     {
         try
         {
@@ -81,12 +81,7 @@ public class JwtService : IJwtService
                 ClockSkew                = TimeSpan.Zero
             };
 
-            // JsonWebTokenHandler.ValidateTokenAsync là async — dùng GetResult() ổn
-            // vì method này không có await bên trong (sync context safe)
-            var result = _tokenHandler
-                .ValidateTokenAsync(token, parameters)
-                .GetAwaiter()
-                .GetResult();
+            var result = await _tokenHandler.ValidateTokenAsync(token, parameters);
 
             return result.IsValid
                 ? new ClaimsPrincipal(result.ClaimsIdentity)

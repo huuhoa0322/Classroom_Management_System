@@ -29,5 +29,5 @@ public interface IJwtService
     /// (dùng cho refresh flow — access token đã hết hạn nhưng cần đọc claims).
     /// Trả về null nếu token invalid hoặc có exception.
     /// </summary>
-    ClaimsPrincipal? ValidateToken(string token);
+    Task<ClaimsPrincipal?> ValidateTokenAsync(string token);
 }

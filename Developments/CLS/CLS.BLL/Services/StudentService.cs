@@ -38,6 +38,7 @@ public class StudentService : IStudentService
     public async Task<PagedResult<StudentResponse>> GetAllAsync(
         int page, int pageSize, string? status, CancellationToken ct = default)
     {
+        (page, pageSize) = AppConstants.Pagination.Clamp(page, pageSize);
         var (students, total) = await _studentRepo.GetPagedAsync(page, pageSize, status, ct);
         var items = _mapper.Map<List<StudentResponse>>(students);
         return PagedResult<StudentResponse>.Create(items, total, page, pageSize);

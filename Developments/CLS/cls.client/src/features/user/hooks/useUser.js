@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getUsers, createUser, updateUser, updateUserStatus, resetUserPassword } from '../services/userService';
+import { getUsers, createUser, updateUser, updateUserStatus, resetUserPassword, toggleUserLock } from '../services/userService';
 
 // ── Query key factory ─────────────────────────────────────────────────────
 export const userKeys = {
@@ -50,3 +50,13 @@ export function useResetPassword() {
     onSuccess: () => qc.invalidateQueries({ queryKey: userKeys.all }),
   });
 }
+
+/** Admin khóa/mở khóa tài khoản thủ công. */
+export function useToggleLock() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id) => toggleUserLock(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: userKeys.all }),
+  });
+}
+

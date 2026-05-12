@@ -41,6 +41,7 @@ public class ClassService : IClassService
     public async Task<PagedResult<ClassResponse>> GetAllAsync(
         int page, int pageSize, CancellationToken ct = default)
     {
+        (page, pageSize) = AppConstants.Pagination.Clamp(page, pageSize);
         var (classes, total) = await _classRepo.GetPagedAsync(page, pageSize, ct);
         var items = _mapper.Map<List<ClassResponse>>(classes);
         return PagedResult<ClassResponse>.Create(items, total, page, pageSize);

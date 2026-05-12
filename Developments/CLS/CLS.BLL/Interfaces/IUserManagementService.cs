@@ -23,4 +23,7 @@ public interface IUserManagementService
 
     /// <summary>Đặt lại mật khẩu ngẫu nhiên.</summary>
     Task<ServiceResult<ResetPasswordResponse>> ResetPasswordAsync(int id, CancellationToken ct = default);
+
+    /// <summary>Admin khóa/mở khóa tài khoản thủ công.</summary>
+    Task<ServiceResult<UserResponse>> ToggleLockAsync(int id, CancellationToken ct = default);
 }

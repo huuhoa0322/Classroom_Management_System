@@ -32,6 +32,7 @@ public class PackageService : IPackageService
     /// <summary>Lấy danh sách gói phân trang.</summary>
     public async Task<PagedResult<PackageResponse>> GetAllAsync(int page, int pageSize, CancellationToken ct = default)
     {
+        (page, pageSize) = AppConstants.Pagination.Clamp(page, pageSize);
         var (items, total) = await _repo.GetPagedAsync(page, pageSize, ct);
         return PagedResult<PackageResponse>.Create(_mapper.Map<List<PackageResponse>>(items), total, page, pageSize);
     }

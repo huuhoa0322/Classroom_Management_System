@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Text;
+using System.Threading.RateLimiting;
 using CLS.BLL.Interfaces;
 using CLS.BLL.Mappings;
 using CLS.BLL.Services;
@@ -9,6 +10,7 @@ using CLS.Server.Middlewares;
 using CLS.Server.Filters;
 using CLS.Server.Hubs;
 using CLS.Server.BackgroundServices;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -42,12 +44,41 @@ try
                   .AllowAnyMethod()
                   .AllowCredentials());
 
+        // Production: Chỉ cho phép origins được whitelist + credentials cho SignalR
+        var allowedOrigins = (builder.Configuration.GetValue<string>("AllowedOrigins") ?? "")
+            .Split([',', ';'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Where(o => !string.IsNullOrWhiteSpace(o))
+            .ToArray();
+
         options.AddPolicy("ProductionCors", policy =>
-            policy.WithOrigins(
-                    builder.Configuration.GetValue<string>("AllowedOrigins") ?? ""
-                  )
+            policy.WithOrigins(allowedOrigins)
                   .AllowAnyHeader()
-                  .AllowAnyMethod());
+                  .AllowAnyMethod()
+                  .AllowCredentials());        // ← SignalR yêu cầu credentials
+    });
+
+    // ── Rate Limiting — chống brute-force + API abuse (Security §C1) ──────────
+    builder.Services.AddRateLimiter(options =>
+    {
+        options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+        // Login endpoint: tối đa 5 request/IP/phút — chống brute-force password
+        options.AddFixedWindowLimiter("login", limiter =>
+        {
+            limiter.PermitLimit = 5;
+            limiter.Window = TimeSpan.FromMinutes(1);
+            limiter.QueueLimit = 0;
+        });
+
+        // Global API: tối đa 100 request/IP/phút — chống DoS
+        options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(ctx =>
+            RateLimitPartition.GetFixedWindowLimiter(
+                ctx.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                _ => new FixedWindowRateLimiterOptions
+                {
+                    PermitLimit = 100,
+                    Window = TimeSpan.FromMinutes(1)
+                }));
     });
 
     // ── Controllers + JSON camelCase + Global Exception Filter ─────────────────
@@ -237,14 +268,26 @@ try
     // ── Middleware pipeline (thứ tự quan trọng) ───────────────────────────────
     app.UseSerilogRequestLogging();
 
-    // HTTPS redirect TẮT khi chạy behind reverse proxy (Render, Nginx)
-    // Render handles TLS termination at edge → app chỉ cần listen HTTP
-    // Nếu self-host không qua proxy, bật lại dòng dưới:
+    // HTTPS redirect TẮT — Render handles TLS termination at edge
     // app.UseHttpsRedirection();
 
     // CORS phải đứng TRƯỚC Authentication/Authorization
     var corsPolicy = app.Environment.IsDevelopment() ? "DevCors" : "ProductionCors";
     app.UseCors(corsPolicy);
+
+    // ── Security Headers — chống clickjacking, MIME sniffing, XSS (Security §H2) ─
+    app.Use(async (context, next) =>
+    {
+        context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+        context.Response.Headers["X-Frame-Options"] = "DENY";
+        context.Response.Headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
+        context.Response.Headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()";
+        context.Response.Headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none'";
+        await next();
+    });
+
+    // ── Rate Limiter — TRƯỚC Authentication để chặn sớm (Security §C1) ────────
+    app.UseRateLimiter();
 
     app.UseExceptionHandler();  // ← Framework-level handler, không bị VS break
 

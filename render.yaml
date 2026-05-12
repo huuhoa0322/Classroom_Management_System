@@ -45,4 +45,4 @@ services:
 
       # CORS — Frontend URL (update when frontend is deployed)
       - key: AllowedOrigins
-        value: http://localhost:5173
+        value: https://cls-nice.vercel.app

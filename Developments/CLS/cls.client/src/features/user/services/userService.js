@@ -15,3 +15,6 @@ export const updateUserStatus = (id, payload) => apiClient.patch(`/users/${id}/s
 
 /** PATCH /api/v1/users/:id/reset-password */
 export const resetUserPassword = (id) => apiClient.patch(`/users/${id}/reset-password`);
+
+/** PATCH /api/v1/users/:id/toggle-lock */
+export const toggleUserLock = (id) => apiClient.patch(`/users/${id}/toggle-lock`);

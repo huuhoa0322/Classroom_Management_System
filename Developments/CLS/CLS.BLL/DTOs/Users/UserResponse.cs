@@ -8,5 +8,6 @@ public class UserResponse
     public string? Phone { get; set; }
     public string Role { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
+    public bool IsLocked { get; set; }
     public DateTime CreatedAt { get; set; }
 }

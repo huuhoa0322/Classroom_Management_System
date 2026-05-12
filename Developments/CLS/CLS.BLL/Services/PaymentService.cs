@@ -172,6 +172,7 @@ public class PaymentService : IPaymentService
     public async Task<PagedResult<PaymentResponse>> GetPaymentsByStudentAsync(
         int studentId, int page, int pageSize, CancellationToken ct = default)
     {
+        (page, pageSize) = AppConstants.Pagination.Clamp(page, pageSize);
         var (payments, total) = await _paymentRepo.GetPagedByStudentIdAsync(studentId, page, pageSize, ct);
         var items = _mapper.Map<List<PaymentResponse>>(payments);
         return PagedResult<PaymentResponse>.Create(items, total, page, pageSize);
@@ -181,6 +182,7 @@ public class PaymentService : IPaymentService
     public async Task<PagedResult<PaymentResponse>> GetAllPaymentsAsync(
         int page, int pageSize, CancellationToken ct = default)
     {
+        (page, pageSize) = AppConstants.Pagination.Clamp(page, pageSize);
         var (payments, total) = await _paymentRepo.GetPagedAllAsync(page, pageSize, ct);
         var items = _mapper.Map<List<PaymentResponse>>(payments);
         return PagedResult<PaymentResponse>.Create(items, total, page, pageSize);

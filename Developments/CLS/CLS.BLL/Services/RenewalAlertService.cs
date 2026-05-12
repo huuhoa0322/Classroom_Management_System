@@ -37,8 +37,7 @@ public class RenewalAlertService : IRenewalAlertService
         string? status, string? sortBy, string? sortDir,
         CancellationToken ct = default)
     {
-        page = Math.Max(page, AppConstants.Pagination.DefaultPage);
-        pageSize = Math.Clamp(pageSize, 1, AppConstants.Pagination.MaxPageSize);
+        (page, pageSize) = AppConstants.Pagination.Clamp(page, pageSize);
 
         var alerts = await _alertRepo.GetAlertsPagedAsync(page, pageSize, status, sortBy, sortDir, ct);
         var totalCount = await _alertRepo.CountAsync(status, ct);

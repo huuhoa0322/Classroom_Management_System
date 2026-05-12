@@ -34,6 +34,7 @@ public class ActivityLogService : IActivityLogService
         DateTime? to = null,
         CancellationToken ct = default)
     {
+        (page, pageSize) = AppConstants.Pagination.Clamp(page, pageSize);
         var (items, total) = await _repo.GetPagedAsync(page, pageSize, userId, actionType, from, to, ct);
         return PagedResult<ActivityLogResponse>.Create(
             _mapper.Map<List<ActivityLogResponse>>(items), total, page, pageSize);

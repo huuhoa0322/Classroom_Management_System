@@ -182,6 +182,7 @@ public class SessionService : ISessionService
     public async Task<PagedResult<SessionResponse>> GetAllSessionsAsync(
         int page, int pageSize, CancellationToken ct = default)
     {
+        (page, pageSize) = AppConstants.Pagination.Clamp(page, pageSize);
         var (sessions, total) = await _sessionRepo.GetPagedAllAsync(page, pageSize, ct);
         var items = _mapper.Map<List<SessionResponse>>(sessions);
         return PagedResult<SessionResponse>.Create(items, total, page, pageSize);

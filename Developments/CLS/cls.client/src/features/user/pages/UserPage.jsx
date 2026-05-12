@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useUserList, useCreateUser, useUpdateUser, useUpdateUserStatus, useResetPassword } from '../hooks/useUser';
+import { useUserList, useCreateUser, useUpdateUser, useUpdateUserStatus, useResetPassword, useToggleLock } from '../hooks/useUser';
 import { UserTable } from '../components/UserTable';
 import { UserForm } from '../components/UserForm';
 import { ConnectionErrorBanner } from '@/shared/components/ConnectionErrorBanner';
@@ -12,12 +12,14 @@ export default function UserPage() {
   const [confirmingUser, setConfirmingUser] = useState(null);
   const [resetConfirmUser, setResetConfirmUser] = useState(null);
   const [resetResult, setResetResult] = useState(null);
+  const [lockConfirmUser, setLockConfirmUser] = useState(null);
 
   const { data: users, isLoading, isError, error, refetch } = useUserList(page);
   const createUser = useCreateUser();
   const updateUser = useUpdateUser();
   const updateStatus = useUpdateUserStatus();
   const resetPw = useResetPassword();
+  const toggleLock = useToggleLock();
 
   const handleCreate = (data) => {
     createUser.mutate(data, {
@@ -37,6 +39,7 @@ export default function UserPage() {
   const handleEdit = (user) => { setEditingUser(user); setShowForm(true); };
   const handleToggleStatus = (user) => setConfirmingUser(user);
   const handleResetPassword = (user) => setResetConfirmUser(user);
+  const handleToggleLock = (user) => setLockConfirmUser(user);
 
   const confirmResetPassword = () => {
     if (!resetConfirmUser) return;
@@ -59,10 +62,20 @@ export default function UserPage() {
     });
   };
 
+  const confirmLockToggle = () => {
+    if (!lockConfirmUser) return;
+    const action = lockConfirmUser.isLocked ? 'mở khóa' : 'khóa';
+    toggleLock.mutate(lockConfirmUser.id, {
+      onSuccess: () => { toast.success(`Đã ${action} tài khoản "${lockConfirmUser.fullName}".`); setLockConfirmUser(null); },
+      onError: (e) => { toast.error(e.message || 'Không thể thực hiện.'); setLockConfirmUser(null); },
+    });
+  };
+
   const handleCloseForm = () => { setShowForm(false); setEditingUser(null); };
   const isSubmitting = createUser.isPending || updateUser.isPending;
   const confirmLabel = confirmingUser ? (confirmingUser.status === 'active' ? 'tạm dừng' : 'kích hoạt') : '';
   const isDeactivate = confirmingUser?.status === 'active';
+  const isLocking = lockConfirmUser && !lockConfirmUser.isLocked;
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -80,7 +93,7 @@ export default function UserPage() {
       {isError && <ConnectionErrorBanner error={error} onRetry={() => refetch()} />}
 
       <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-4">
-        <UserTable users={users} isLoading={isLoading} page={page} onPageChange={setPage} onEdit={handleEdit} onToggleStatus={handleToggleStatus} onResetPassword={handleResetPassword} isTogglingStatus={updateStatus.isPending} />
+        <UserTable users={users} isLoading={isLoading} page={page} onPageChange={setPage} onEdit={handleEdit} onToggleStatus={handleToggleStatus} onResetPassword={handleResetPassword} onToggleLock={handleToggleLock} isTogglingStatus={updateStatus.isPending} />
       </div>
 
       {/* Modal — Tạo/Sửa */}
@@ -109,6 +122,31 @@ export default function UserPage() {
               <button onClick={() => setConfirmingUser(null)} disabled={updateStatus.isPending} className="flex-1 px-4 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 disabled:opacity-50">Hủy</button>
               <button onClick={confirmToggle} disabled={updateStatus.isPending} className={`flex-1 px-4 py-2.5 text-sm font-medium text-white rounded-lg disabled:opacity-50 ${isDeactivate ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-green-600 hover:bg-green-700'}`}>
                 {updateStatus.isPending ? 'Đang xử lý...' : isDeactivate ? '⏸ Tạm dừng' : '▶ Kích hoạt'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal — Xác nhận Khóa/Mở khóa */}
+      {lockConfirmUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm mx-4">
+            <div className={`w-12 h-12 mx-auto mb-4 rounded-full flex items-center justify-center ${isLocking ? 'bg-red-100' : 'bg-green-100'}`}>
+              <span className="text-2xl">{isLocking ? '🔒' : '🔓'}</span>
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 text-center">
+              Xác nhận {isLocking ? 'khóa' : 'mở khóa'} tài khoản
+            </h3>
+            <p className="text-sm text-gray-500 text-center mt-2">
+              Bạn có chắc muốn <span className="font-medium text-gray-700">{isLocking ? 'khóa' : 'mở khóa'}</span> tài khoản <span className="font-semibold text-gray-900">&quot;{lockConfirmUser.fullName}&quot;</span>?
+            </p>
+            {isLocking && <p className="text-xs text-red-500 text-center mt-1">⚠ Tài khoản sẽ không thể đăng nhập cho đến khi được mở khóa.</p>}
+            {!isLocking && <p className="text-xs text-green-600 text-center mt-1">Số lần đăng nhập sai sẽ được reset về 0.</p>}
+            <div className="flex gap-3 mt-6">
+              <button onClick={() => setLockConfirmUser(null)} disabled={toggleLock.isPending} className="flex-1 px-4 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 disabled:opacity-50">Hủy</button>
+              <button onClick={confirmLockToggle} disabled={toggleLock.isPending} className={`flex-1 px-4 py-2.5 text-sm font-medium text-white rounded-lg disabled:opacity-50 ${isLocking ? 'bg-red-500 hover:bg-red-600' : 'bg-green-600 hover:bg-green-700'}`}>
+                {toggleLock.isPending ? 'Đang xử lý...' : isLocking ? '🔒 Khóa' : '🔓 Mở khóa'}
               </button>
             </div>
           </div>

@@ -2,9 +2,9 @@ import { getStatusBadge } from '@/shared/utils/formatters';
 
 /**
  * Bảng hiển thị danh sách tài khoản (Admin/Teacher).
- * @param {{ users: Object, isLoading: boolean, page: number, onPageChange: Function, onEdit: Function, onToggleStatus: Function, onResetPassword: Function, isTogglingStatus: boolean }} props
+ * @param {{ users: Object, isLoading: boolean, page: number, onPageChange: Function, onEdit: Function, onToggleStatus: Function, onResetPassword: Function, onToggleLock: Function, isTogglingStatus: boolean }} props
  */
-export function UserTable({ users, isLoading, page, onPageChange, onEdit, onToggleStatus, onResetPassword, isTogglingStatus }) {
+export function UserTable({ users, isLoading, page, onPageChange, onEdit, onToggleStatus, onResetPassword, onToggleLock, isTogglingStatus }) {
   const items = users?.items || [];
   const totalPages = users?.totalPages || 1;
 
@@ -37,7 +37,12 @@ export function UserTable({ users, isLoading, page, onPageChange, onEdit, onTogg
                 <td className="py-3 text-gray-600">{user.email}</td>
                 <td className="py-3 text-gray-600">{user.phone || '—'}</td>
                 <td className="py-3 text-center"><span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium ${roleBadge(user.role)}`}>{user.role}</span></td>
-                <td className="py-3 text-center"><span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium ${badge.className}`}>{badge.label}</span></td>
+                <td className="py-3 text-center">
+                  {user.isLocked
+                    ? <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">🔒 Đã khóa</span>
+                    : <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium ${badge.className}`}>{badge.label}</span>
+                  }
+                </td>
                 <td className="py-3 text-right space-x-2">
                   {!isAdmin && (
                     <>
@@ -45,6 +50,9 @@ export function UserTable({ users, isLoading, page, onPageChange, onEdit, onTogg
                       <button onClick={() => onResetPassword(user)} className="text-amber-600 hover:text-amber-800 text-xs font-medium">🔑 Đặt lại MK</button>
                       <button onClick={() => onToggleStatus(user)} disabled={isTogglingStatus} className={`text-xs font-medium ${isActive ? 'text-yellow-600 hover:text-yellow-800' : 'text-green-600 hover:text-green-800'}`}>
                         {isActive ? 'ǁ Tạm dừng' : '▶ Kích hoạt'}
+                      </button>
+                      <button onClick={() => onToggleLock(user)} className={`text-xs font-medium ${user.isLocked ? 'text-green-600 hover:text-green-800' : 'text-red-600 hover:text-red-800'}`}>
+                        {user.isLocked ? '🔓 Mở khóa' : '🔒 Khóa'}
                       </button>
                     </>
                   )}
@@ -65,3 +73,4 @@ export function UserTable({ users, isLoading, page, onPageChange, onEdit, onTogg
     </>
   );
 }
+

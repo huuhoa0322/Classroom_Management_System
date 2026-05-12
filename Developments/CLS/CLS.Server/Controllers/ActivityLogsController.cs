@@ -33,9 +33,6 @@ public class ActivityLogsController : ControllerBase
         [FromQuery] DateTime? to = null,
         CancellationToken ct = default)
     {
-        // Clamp pageSize — bảng append-only tăng nhanh, cần chặn abuse
-        pageSize = Math.Clamp(pageSize, 1, AppConstants.Pagination.MaxPageSize);
-
         var result = await _activityLogService.GetAllAsync(page, pageSize, userId, actionType, from, to, ct);
         return Ok(ApiResponse<PagedResult<ActivityLogResponse>>.Success(result, "Lấy nhật ký hoạt động thành công."));
     }

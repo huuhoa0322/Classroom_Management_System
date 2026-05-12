@@ -96,4 +96,22 @@ public class UsersController : ControllerBase
             await this.LogActivityAsync(_activityLogService, AppConstants.ActionTypes.Update, $"Reset mật khẩu tài khoản #{id}");
         return this.ToOkResponse(result, "Đặt lại mật khẩu thành công.");
     }
+
+    /// <summary>Admin khóa/mở khóa tài khoản thủ công.</summary>
+    [HttpPatch("{id:int}/toggle-lock")]
+    [ProducesResponseType(typeof(ApiResponse<UserResponse>), 200)]
+    [ProducesResponseType(typeof(ApiResponse<object>), 403)]
+    [ProducesResponseType(typeof(ApiResponse<object>), 404)]
+    public async Task<IActionResult> ToggleLock(int id, CancellationToken ct = default)
+    {
+        var result = await _userService.ToggleLockAsync(id, ct);
+        if (result.IsSuccess)
+        {
+            var action = result.Value!.IsLocked ? "Khóa" : "Mở khóa";
+            await this.LogActivityAsync(_activityLogService, AppConstants.ActionTypes.StatusChange, $"{action} tài khoản #{id}");
+        }
+        return this.ToOkResponse(result, result.IsSuccess && result.Value!.IsLocked
+            ? "Đã khóa tài khoản."
+            : "Đã mở khóa tài khoản.");
+    }
 }

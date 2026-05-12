@@ -32,6 +32,7 @@ public class RoomService : IRoomService
     /// <summary>Lấy danh sách phòng phân trang.</summary>
     public async Task<PagedResult<RoomResponse>> GetAllAsync(int page, int pageSize, CancellationToken ct = default)
     {
+        (page, pageSize) = AppConstants.Pagination.Clamp(page, pageSize);
         var (items, total) = await _repo.GetPagedAsync(page, pageSize, ct);
         return PagedResult<RoomResponse>.Create(_mapper.Map<List<RoomResponse>>(items), total, page, pageSize);
     }

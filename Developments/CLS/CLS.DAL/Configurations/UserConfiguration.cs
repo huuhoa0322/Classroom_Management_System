@@ -45,6 +45,18 @@ public class UserConfiguration : BaseEntityConfiguration<User>
                .HasDefaultValue("active")
                .IsRequired();
 
+        // ── Account Lockout (Security §M3) ──────────────────────────────────
+        builder.Property(x => x.FailedLoginCount)
+               .HasColumnName("failed_login_count")
+               .HasDefaultValue(0);
+
+        builder.Property(x => x.LockoutEnd)
+               .HasColumnName("lockout_end");
+
+        builder.Property(x => x.IsLocked)
+               .HasColumnName("is_locked")
+               .HasDefaultValue(false);
+
         // Indexes
         builder.HasIndex(x => x.Email).IsUnique();
         builder.HasIndex(x => x.Role);

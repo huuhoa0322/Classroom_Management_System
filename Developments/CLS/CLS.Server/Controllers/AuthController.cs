@@ -3,6 +3,7 @@ using CLS.BLL.DTOs.Auth;
 using CLS.BLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace CLS.Server.Controllers;
 
@@ -19,9 +20,11 @@ public class AuthController : ControllerBase
 
     /// <summary>Đăng nhập bằng Email + Password, nhận JWT access token.</summary>
     [HttpPost("login")]
-    //[AllowAnonymous]
+    [AllowAnonymous]
+    [EnableRateLimiting("login")]
     [ProducesResponseType(typeof(ApiResponse<LoginResponse>), 200)]
     [ProducesResponseType(typeof(ApiResponse<object>), 401)]
+    [ProducesResponseType(429)]
     public async Task<IActionResult> Login([FromBody] LoginRequest? request, CancellationToken ct = default)
     {
         if (request is null)

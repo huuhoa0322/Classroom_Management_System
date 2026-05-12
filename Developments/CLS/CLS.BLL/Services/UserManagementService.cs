@@ -1,4 +1,5 @@
 using AutoMapper;
+using System.Security.Cryptography;
 using CLS.BLL.Common;
 using CLS.BLL.DTOs.Users;
 using CLS.BLL.Interfaces;
@@ -32,6 +33,7 @@ public class UserManagementService : IUserManagementService
     /// <summary>Lấy danh sách tài khoản phân trang.</summary>
     public async Task<PagedResult<UserResponse>> GetAllAsync(int page, int pageSize, CancellationToken ct = default)
     {
+        (page, pageSize) = AppConstants.Pagination.Clamp(page, pageSize);
         var (items, total) = await _repo.GetPagedAsync(page, pageSize, ct);
         return PagedResult<UserResponse>.Create(_mapper.Map<List<UserResponse>>(items), total, page, pageSize);
     }
@@ -125,10 +127,40 @@ public class UserManagementService : IUserManagementService
         return ServiceResult<ResetPasswordResponse>.Success(new ResetPasswordResponse { NewPassword = newPassword });
     }
 
-    private static string GenerateRandomPassword(int length = 10)
+    /// <summary>Admin khóa/mở khóa tài khoản thủ công.</summary>
+    public async Task<ServiceResult<UserResponse>> ToggleLockAsync(int id, CancellationToken ct = default)
     {
-        const string chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789@#$";
-        var random = new Random();
-        return new string(Enumerable.Range(0, length).Select(_ => chars[random.Next(chars.Length)]).ToArray());
+        var entity = await _repo.GetByIdAsync(id, ct);
+        if (entity is null) return ServiceResult<UserResponse>.Fail($"Tài khoản #{id} không tồn tại.", 404);
+
+        if (entity.Role == AppConstants.AppRoles.Admin)
+            return ServiceResult<UserResponse>.Fail("Không thể khóa tài khoản Admin.", 403);
+
+        entity.IsLocked = !entity.IsLocked;
+
+        // Mở khóa → reset lockout state luôn
+        if (!entity.IsLocked)
+        {
+            entity.FailedLoginCount = 0;
+            entity.LockoutEnd = null;
+        }
+
+        _repo.Update(entity);
+        await _repo.SaveChangesAsync(ct);
+
+        var action = entity.IsLocked ? "locked" : "unlocked";
+        _logger.LogInformation("User {UserId} {Action} by Admin", id, action);
+        return ServiceResult<UserResponse>.Success(_mapper.Map<UserResponse>(entity));
+    }
+
+    private static string GenerateRandomPassword(int length = 12)
+    {
+        const string chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789@#$!%";
+        return string.Create(length, chars, static (span, pool) =>
+        {
+            var bytes = RandomNumberGenerator.GetBytes(span.Length);
+            for (int i = 0; i < span.Length; i++)
+                span[i] = pool[bytes[i] % pool.Length];
+        });
     }
 }

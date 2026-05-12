@@ -17,4 +17,14 @@ public class User : BaseEntity
     public string PasswordHash { get; set; } = string.Empty;
     
     public string Status { get; set; } = "active";
+
+    // ── Account Lockout (Security §M3) ────────────────────────────────────────
+    /// <summary>Số lần đăng nhập thất bại liên tiếp.</summary>
+    public int FailedLoginCount { get; set; } = 0;
+
+    /// <summary>Thời điểm hết lockout (UTC). Null = không bị lock.</summary>
+    public DateTime? LockoutEnd { get; set; }
+
+    /// <summary>Admin khóa thủ công — tách biệt với lockout tự động.</summary>
+    public bool IsLocked { get; set; } = false;
 }

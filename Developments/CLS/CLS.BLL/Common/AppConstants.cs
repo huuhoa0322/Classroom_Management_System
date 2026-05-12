@@ -41,6 +41,23 @@ public static class AppConstants
         public const int DefaultPage     = 1;
         public const int DefaultPageSize = 20;
         public const int MaxPageSize     = 100;
+
+        /// <summary>
+        /// Clamp page và pageSize về giá trị hợp lệ — chống DoS qua pageSize abuse.
+        /// Gọi ở đầu mọi method phân trang trong Service layer.
+        /// </summary>
+        public static (int page, int pageSize) Clamp(int page, int pageSize)
+            => (Math.Max(DefaultPage, page),
+                Math.Clamp(pageSize, 1, MaxPageSize));
+    }
+
+    // ── Account Lockout (Security §M3) ───────────────────────────────────────
+    public static class AccountLockout
+    {
+        /// <summary>Số lần sai password liên tiếp trước khi lock.</summary>
+        public const int MaxFailedAttempts = 5;
+        /// <summary>Thời gian lock tài khoản (phút).</summary>
+        public const int LockoutMinutes   = 15;
     }
 
     // ── Claim Types (custom) ──────────────────────────────────────────────────

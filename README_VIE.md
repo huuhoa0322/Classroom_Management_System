@@ -33,11 +33,12 @@
 | **Quản lý Ca học** | Lên lịch các ca học trong tuần (Thứ 2 – Chủ Nhật); gắn lớp với phòng và giáo viên cho từng ca |
 | **Quản lý Phòng** | Quản lý danh sách phòng với sức chứa và cấu hình thiết bị |
 | **Quản lý Gói học phí** | Định nghĩa gói (tên, giá, số buổi, thời hạn); gán gói cho học viên khi đăng ký |
-| **Quản lý Người dùng** | Quản lý tài khoản nhân viên (Admin / Teacher) với phân quyền; đặt lại mật khẩu, bật/tắt trạng thái |
+| **Quản lý Người dùng** | Quản lý tài khoản nhân viên (Admin / Teacher) với phân quyền; đặt lại mật khẩu, bật/tắt trạng thái, khóa/mở khóa tài khoản |
 | **Điểm danh** | Điểm danh theo buổi: Có mặt / Vắng / Đi trễ |
 | **Nhận xét** | Giáo viên gửi nhận xét học thuật cho từng học viên theo buổi |
 | **Quản lý Tài chính** | Xem thông tin tài chính học viên, ghi nhận và xác nhận thanh toán, quản lý vòng đời payment |
 | **Thông báo Gia hạn** | Hệ thống tự động tạo thông báo khi gói học viên còn 30% / 10% số buổi; theo dõi trạng thái tư vấn |
+| **Nhật ký Hoạt động** | Lịch sử kiểm toán mọi thao tác của admin: tạo, cập nhật, xóa, đổi trạng thái, đăng nhập; hỗ trợ tìm kiếm và phân trang |
 
 ### Trang Giáo Viên (Teacher Portal)
 
@@ -113,10 +114,10 @@ Backend theo **kiến trúc 3 lớp (3-layer architecture)**:
 │  Background Services                                     │
 ├──────────────────────────────────────────────────────────┤
 │                    CLS.BLL (Business)                    │
-│  Services → Interfaces → DTOs → Validators → Mappings   │
+│  Services → Interfaces → DTOs → Validators → Mappings    │
 ├──────────────────────────────────────────────────────────┤
 │                    CLS.DAL (Data)                        │
-│  Entities → Repositories → Configurations → Migrations  │
+│  Entities → Repositories → Configurations → Migrations   │
 │  DbContext                                               │
 └──────────────────────────────────────────────────────────┘
          │
@@ -182,7 +183,8 @@ CLS.Server/                    # API Host
 │   ├── UsersController.cs
 │   ├── TeacherController.cs
 │   ├── PaymentsController.cs
-│   └── RenewalAlertsController.cs
+│   ├── RenewalAlertsController.cs
+│   └── ActivityLogsController.cs
 ├── Filters/                   # ApiExceptionFilter
 ├── Middlewares/                # ExceptionHandlingMiddleware
 ├── Hubs/                      # NotificationHub (SignalR)

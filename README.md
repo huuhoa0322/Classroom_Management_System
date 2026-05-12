@@ -33,11 +33,12 @@ A full-stack web application for managing English & Programming tutoring centers
 | **Session Management** | Schedule time slots across the week (Mon – Sun); link classes to rooms and teachers per session |
 | **Room Management** | Manage room inventory with capacity and equipment configuration |
 | **Tuition Packages** | Define packages (name, price, session quota, validity period); assign packages to students upon enrollment |
-| **User Management** | Manage staff accounts (Admin / Teacher) with role-based access; reset passwords, toggle active status |
+| **User Management** | Manage staff accounts (Admin / Teacher) with role-based access; reset passwords, toggle active status, lock/unlock accounts |
 | **Attendance** | Mark attendance per session: Present / Absent / Late |
 | **Feedback** | Teachers submit academic feedback per student per session |
 | **Financial Management** | View student financial details, record and confirm payments, manage payment lifecycle |
 | **Renewal Alerts** | System-generated alerts when student packages reach 30% / 10% remaining sessions; track consultation status |
+| **Activity Logs** | Audit trail of all admin actions: create, update, delete, status change, login; searchable with pagination |
 
 ### Teacher Portal
 
@@ -113,10 +114,10 @@ The backend follows a **3-layer architecture**:
 │  Background Services                                     │
 ├──────────────────────────────────────────────────────────┤
 │                    CLS.BLL (Business)                    │
-│  Services → Interfaces → DTOs → Validators → Mappings   │
+│  Services → Interfaces → DTOs → Validators → Mappings    │
 ├──────────────────────────────────────────────────────────┤
 │                    CLS.DAL (Data)                        │
-│  Entities → Repositories → Configurations → Migrations  │
+│  Entities → Repositories → Configurations → Migrations   │
 │  DbContext                                               │
 └──────────────────────────────────────────────────────────┘
          │
@@ -182,7 +183,8 @@ CLS.Server/                    # API Host
 │   ├── UsersController.cs
 │   ├── TeacherController.cs
 │   ├── PaymentsController.cs
-│   └── RenewalAlertsController.cs
+│   ├── RenewalAlertsController.cs
+│   └── ActivityLogsController.cs
 ├── Filters/                   # ApiExceptionFilter
 ├── Middlewares/                # ExceptionHandlingMiddleware
 ├── Hubs/                      # NotificationHub (SignalR)
